@@ -260,6 +260,20 @@ ingame-ui#FaunaHunt .ingameUiContent {
 
 .spot-hint.is-miss { color: var(--fh-danger); }
 
+/* Shown while the list has stopped reordering, so a frozen list never looks
+   like a frozen panel. */
+.list-hold {
+	flex: 0 0 auto;
+	font-size: 0.7em;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--fh-warn);
+	border: 1px solid rgba(224, 179, 65, 0.4);
+	border-radius: 0.8em;
+	padding: 0.1em 0.5em;
+	white-space: nowrap;
+}
+
 /* --------------------------------------------------------- lifelist */
 
 .lifelist-stats {

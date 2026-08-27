@@ -53,6 +53,7 @@
 	<button id="btnClose">Herd in spotting range</button>
 	<button id="btnCapped">Capped — too much wildlife</button>
 	<button id="btnEmpty">Nothing in range</button>
+	<button id="btnChurn">Flying - list reorders every poll</button>
 	<button id="btnNosim">Service up, sim not loaded</button>
 	<button id="btnOffline">Service offline</button>
 	<div id="log"></div>
@@ -116,10 +117,23 @@ function buildSnapshot() {
 					contact("ECaballus", 3100, 60, 51)];
 		capped = true;
 	}
+	if (MODE === "churn") {
+		// Distances swing every poll, so the distance sort keeps reordering
+		// the rows -- exactly what happens at flying speed.
+		const t = Date.now() / 900;
+		contacts = [
+			contact("BTaurusPrimigenius", 500 + Math.round(400 * (1 + Math.sin(t))), 75, 38),
+			contact("OAriesAries",        500 + Math.round(400 * (1 + Math.sin(t + 2))), 130, 12),
+			contact("ECaballus",          500 + Math.round(400 * (1 + Math.sin(t + 4))), 100, 4),
+		];
+	}
 	if (MODE === "nosim") {
 		return { connected: false, status: "waiting for the simulator",
 			user: null, contacts: [], stats: {}, updated: Date.now()/1000 };
 	}
+	// The real service sorts by distance before sending. The harness must do
+	// the same or it cannot reproduce rows reordering under the cursor.
+	contacts.sort((a, b) => a.distance_m - b.distance_m);
 	return {
 		connected: true, user: user, contacts: contacts,
 		stats: { contacts: contacts.length, individuals: 0, capped: capped, rejected: {} },
@@ -175,6 +189,7 @@ const PANEL_MARKUP = `
 		<div class="spot-bar">
 			<button type="button" id="spotBtn" class="spot-btn">SPOT</button>
 			<span id="spotHint" class="spot-hint"></span>
+			<span id="listHold" class="list-hold hidden">list held</span>
 		</div>
 	</div>
 	<div id="viewLifelist" class="view hidden">
@@ -249,6 +264,7 @@ document.getElementById("btnMixed").onclick = () => setMode("mixed");
 document.getElementById("btnClose").onclick = () => setMode("close");
 document.getElementById("btnCapped").onclick = () => setMode("capped");
 document.getElementById("btnEmpty").onclick = () => setMode("empty");
+document.getElementById("btnChurn").onclick = () => setMode("churn");
 document.getElementById("btnNosim").onclick = () => setMode("nosim");
 document.getElementById("btnOffline").onclick = () => setMode("offline");
 

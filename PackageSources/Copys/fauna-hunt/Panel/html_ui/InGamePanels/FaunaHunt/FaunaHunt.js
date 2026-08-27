@@ -34,6 +34,9 @@ const CANCEL_PENALTY = 5;
 // How long a one-off message in the spot bar survives before the poll
 // loop is allowed to replace it with the standing prompt.
 const HINT_HOLD_MS = 6000;
+// How long the contact list stops reordering after you touch it. Long enough
+// to look up at the window, find the animal and tap the right row.
+const LIST_HOLD_MS = 4000;
 
 // Range tiers, in metres. Tuned against the real streaming behaviour: fauna
 // appears within ~2.8 km on the deck but out to ~30 km at altitude, so the
@@ -200,6 +203,10 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.view = "hunt";
 		this.spotBlockedUntil = 0;
 		this.hintHeldUntil = 0;
+		this.listHeldUntil = 0;
+		this.pointerOverList = false;
+		this.rows = {};
+		this.cappedNote = null;
 		this.quiz = null;
 		this.pollTimer = undefined;
 		this.resetArmed = false;
@@ -245,6 +252,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			huntEmpty: pick("huntEmpty"),
 			spotBtn: pick("spotBtn"),
 			spotHint: pick("spotHint"),
+			listHold: pick("listHold"),
 			lifelistStats: pick("lifelistStats"),
 			lifelistBody: pick("lifelistBody"),
 			difficultyRow: pick("difficultyRow"),
@@ -276,7 +284,20 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		// would be re-bound once a second for nothing.
 		this.nodes.contactList.addEventListener("click", (event) => {
 			const row = event.target.closest ? event.target.closest(".contact") : null;
-			if (row && row.dataset.key) this.tapContact(row.dataset.key);
+			if (row && row.dataset.key) {
+				this.holdList();
+				this.tapContact(row.dataset.key);
+			}
+		});
+		// Hovering holds the order. Mouse events are what the sim's VR
+		// pointer generates too, so this works in the headset.
+		this.nodes.contactList.addEventListener("mouseenter", () => {
+			this.pointerOverList = true;
+			this.updateHoldNote();
+		});
+		this.nodes.contactList.addEventListener("mouseleave", () => {
+			this.pointerOverList = false;
+			this.updateHoldNote();
 		});
 		this.nodes.quizGiveUp.addEventListener("click", () => this.resolveQuiz(null));
 		this.nodes.quizCancel.addEventListener("click", () => this.cancelQuiz());
@@ -453,49 +474,122 @@ class IngamePanelFaunaHunt extends TemplateElement {
 
 	// ---------------------------------------------------------------- hunt
 
+	// Contacts are sorted by distance and the list refreshes every second, so
+	// at flying speed the rows reorder under the cursor -- people were reaching
+	// for one animal and identifying another. Two things prevent that:
+	//
+	//   1. Rows are reconciled by key rather than rebuilt from a string, so a
+	//      row keeps its identity and its element between polls instead of
+	//      being destroyed and recreated mid-reach.
+	//   2. Reordering is HELD while the pointer is over the list, and for a
+	//      moment after any tap. Text inside each row still updates -- only
+	//      the running order is frozen, so nothing moves while you aim.
 	renderHunt() {
 		const list = this.nodes.contactList;
 		const contacts = (this.snapshot && this.snapshot.contacts) || [];
 
+		if (!this.rows) this.rows = {};
+
 		if (!contacts.length) {
+			this.rows = {};
 			list.innerHTML = "";
+			this.cappedNote = null;
 			this.nodes.huntEmpty.classList.toggle("hidden", !this.online);
+			this.updateHoldNote();
 			return;
 		}
 		this.nodes.huntEmpty.classList.add("hidden");
 
-		const rows = contacts.map((contact) => {
-			const described = this.describeContact(contact);
-			const logged = !!this.state.logged[contact.key];
-			const near = contact.distance_m <= SPOT_RANGE_M;
-			// Anything in range can be tapped to identify it. That is far more
-			// discoverable than the SPOT button alone, and it is the only
-			// practical interaction in VR, where typing is not an option.
-			const clickable = near && !logged;
-			const tag = logged
-				? "<span class=\"contact-tag is-logged\">logged</span>"
-				: (near ? "<span class=\"contact-tag\">identify</span>" : "");
-			return "<div class=\"contact" + (near ? " is-near" : "")
-				+ (logged ? " is-logged" : "")
-				+ (clickable ? " is-clickable" : "")
-				+ "\" data-key=\"" + contact.key + "\">"
-				+ "<div class=\"contact-desc\">"
-				+ "<span class=\"contact-what\">" + described.what + "</span>"
-				+ "<span class=\"contact-where\">" + described.where + "</span>"
-				+ "</div>"
-				+ "<span class=\"contact-range\">" + described.range + "</span>"
-				+ tag
-				+ "</div>";
+		// Always refresh what each visible row says, held or not: distances
+		// going stale under the cursor would be worse than rows moving.
+		contacts.forEach((contact) => {
+			const existing = this.rows[contact.key];
+			if (existing) this.fillRow(existing, contact);
 		});
 
-		if (this.snapshot.stats && this.snapshot.stats.capped) {
-			// The sim returns at most 250 objects, so a full list is never a
-			// complete list. Say so rather than implying the area is covered.
-			rows.push("<p class=\"capped-note\">Too much wildlife to track it all "
-				+ "— there is more out there than this list shows.</p>");
+		if (this.listHeld()) {
+			this.updateHoldNote();
+			return;
 		}
 
-		list.innerHTML = rows.join("");
+		const seen = {};
+		contacts.forEach((contact) => {
+			seen[contact.key] = true;
+			let row = this.rows[contact.key];
+			if (!row) {
+				row = document.createElement("div");
+				row.dataset.key = contact.key;
+				this.rows[contact.key] = row;
+				this.fillRow(row, contact);
+			}
+			// appendChild moves a node that is already in the list, so this
+			// reorders in place without recreating anything.
+			list.appendChild(row);
+		});
+
+		Object.keys(this.rows).forEach((key) => {
+			if (seen[key]) return;
+			const row = this.rows[key];
+			if (row.parentNode) row.parentNode.removeChild(row);
+			delete this.rows[key];
+		});
+
+		this.renderCappedNote(list);
+		this.updateHoldNote();
+	}
+
+	fillRow(row, contact) {
+		const described = this.describeContact(contact);
+		const logged = !!this.state.logged[contact.key];
+		const near = contact.distance_m <= SPOT_RANGE_M;
+		// Anything in range can be tapped to identify it. That is far more
+		// discoverable than the SPOT button alone, and it is the only
+		// practical interaction in VR, where typing is not an option.
+		const clickable = near && !logged;
+		row.className = "contact" + (near ? " is-near" : "")
+			+ (logged ? " is-logged" : "")
+			+ (clickable ? " is-clickable" : "");
+		row.innerHTML = "<div class=\"contact-desc\">"
+			+ "<span class=\"contact-what\">" + described.what + "</span>"
+			+ "<span class=\"contact-where\">" + described.where + "</span>"
+			+ "</div>"
+			+ "<span class=\"contact-range\">" + described.range + "</span>"
+			+ (logged
+				? "<span class=\"contact-tag is-logged\">logged</span>"
+				: (near ? "<span class=\"contact-tag\">identify</span>" : ""));
+	}
+
+	renderCappedNote(list) {
+		// The sim returns at most 250 objects, so a full list is never a
+		// complete list. Say so rather than implying the area is covered.
+		const capped = !!(this.snapshot && this.snapshot.stats && this.snapshot.stats.capped);
+		if (!capped) {
+			if (this.cappedNote && this.cappedNote.parentNode) {
+				this.cappedNote.parentNode.removeChild(this.cappedNote);
+			}
+			this.cappedNote = null;
+			return;
+		}
+		if (!this.cappedNote) {
+			this.cappedNote = document.createElement("p");
+			this.cappedNote.className = "capped-note";
+			this.cappedNote.textContent = "Too much wildlife to track it all — "
+				+ "there is more out there than this list shows.";
+		}
+		list.appendChild(this.cappedNote);
+	}
+
+	listHeld() {
+		return this.pointerOverList || Date.now() < this.listHeldUntil;
+	}
+
+	holdList() {
+		this.listHeldUntil = Date.now() + LIST_HOLD_MS;
+	}
+
+	updateHoldNote() {
+		const note = this.nodes.listHold;
+		if (note) note.classList.toggle("hidden", !this.listHeld());
 	}
 
 	contactByKey(key) {
@@ -645,6 +739,10 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		});
 
 		this.hintHeldUntil = 0;
+		this.listHeldUntil = 0;
+		this.pointerOverList = false;
+		this.rows = {};
+		this.cappedNote = null;
 		this.nodes.quizOverlay.classList.remove("hidden");
 		this.updateSpotButton();
 	}
