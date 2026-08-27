@@ -10,11 +10,15 @@
 #                                            finished add-on, linked into Community
 #                                            by Add-on Linker. Nothing is edited here.
 #
-# Two SDK quirks, both handled below:
+# Three SDK quirks, all handled below:
 #   * fspackagetool builds by launching its own copy of the game. If the sim is
 #     already open it just attaches to that instance and silently builds nothing.
 #   * its incremental caching skips real changes, so the output folders are
 #     deleted before every rebuild.
+#   * it STAYS ALIVE after the build is done. The game instance it launches
+#     comes up with an error and sits there until you close that window by
+#     hand. The package is finished well before that, so never wait on the
+#     process to exit -- check the files on disk, which is what this does.
 
 $ErrorActionPreference = "Stop"
 

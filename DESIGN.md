@@ -263,3 +263,15 @@ from there, so the zip name can never drift from what the sim reports.
 - **2.0.0** a rewrite, or anything that breaks existing saves
 
 Bump the number in the package definition before running the build.
+
+## Build gotcha: fspackagetool outlives the build
+
+The tool builds by launching its own copy of the game. That instance comes up
+showing an error and stays on screen until it is closed by hand, so
+`fspackagetool.exe` remains in the process list long after the package is
+finished and written.
+
+Never treat the process exiting as the signal that a build completed, and never
+wait for it. Check the artefacts: `manifest.json`'s `package_version`, or grep
+the built panel for whatever just changed. Waiting on the process has twice cost
+several minutes and once produced a false "no package was produced".
