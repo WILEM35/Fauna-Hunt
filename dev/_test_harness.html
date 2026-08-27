@@ -3,7 +3,10 @@
 <head>
 <meta charset="utf-8"/>
 <title>Fauna Hunt - test harness</title>
-<link rel="stylesheet" href="../PackageSources/Copys/fauna-hunt/Panel/html_ui/InGamePanels/FaunaHunt/FaunaHunt.css"/>
+<!-- Stylesheet and script are injected with a cache-buster below.
+     A plain link/src gets served from cache after an edit, which has
+     twice produced a "the fix does not work" result that was really
+     just yesterday's file. -->
 <style>
 	/* Stand-ins for the sim's own chrome, so the panel sits in something
 	   roughly the size of a real toolbar window. Not shipped. */
@@ -270,12 +273,17 @@ document.getElementById("btnOffline").onclick = () => setMode("offline");
 
 // Load the real species table, then start the panel for real.
 const boot = new RealXHR();
-boot.open("GET", "../PackageSources/Copys/fauna-hunt/Service/species.json", true);
+const css = document.createElement("link");
+	css.rel = "stylesheet";
+	css.href = "../PackageSources/Copys/fauna-hunt/Panel/html_ui/InGamePanels/FaunaHunt/FaunaHunt.css?t=" + Date.now();
+	document.head.appendChild(css);
+
+	boot.open("GET", "../PackageSources/Copys/fauna-hunt/Service/species.json?t=" + Date.now(), true);
 boot.onload = function () {
 	SPECIES = JSON.parse(boot.responseText).species;
 	log("species loaded: " + Object.keys(SPECIES).length);
 	const script = document.createElement("script");
-	script.src = "../PackageSources/Copys/fauna-hunt/Panel/html_ui/InGamePanels/FaunaHunt/FaunaHunt.js";
+	script.src = "../PackageSources/Copys/fauna-hunt/Panel/html_ui/InGamePanels/FaunaHunt/FaunaHunt.js?t=" + Date.now();
 	script.onload = mountPanel;
 	document.head.appendChild(script);
 };

@@ -48,9 +48,20 @@ foreach ($needed in @("manifest.json", "Service\FaunaHuntService.exe",
 if (Test-Path $Staging) { Remove-Item $Staging -Recurse -Force }
 New-Item -ItemType Directory -Path $Staging -Force | Out-Null
 
+# The delivered folder holds a running-able exe. If a copy of the service is
+# running from there it locks the file, and robocopy's DEFAULT behaviour is a
+# million retries thirty seconds apart -- so the script appears to hang forever
+# rather than failing. Check first, and cap the retries regardless.
+$svc = Get-Process -Name "FaunaHuntService" -ErrorAction SilentlyContinue
+if ($svc) {
+    Write-Host "FaunaHuntService.exe is running ($($svc.Count) instance(s))." -ForegroundColor Red
+    Write-Host "It locks the file being replaced. Close those windows and re-run." -ForegroundColor Red
+    exit 1
+}
+
 Write-Host "Staging..." -ForegroundColor Cyan
 Copy-Item $Readme (Join-Path $Staging "README - Read Me First.txt") -Force
-$null = robocopy $Delivered (Join-Path $Staging "wilem35-fauna-hunt") /MIR /NFL /NDL /NJH /NJS /NP
+$null = robocopy $Delivered (Join-Path $Staging "wilem35-fauna-hunt") /MIR /R:2 /W:2 /NFL /NDL /NJH /NJS /NP
 if ($LASTEXITCODE -ge 8) {
     Write-Host "robocopy failed with code $LASTEXITCODE" -ForegroundColor Red
     exit 1

@@ -72,6 +72,9 @@
 
       FaunaHuntService.exe
 
+  Leave it where it is - do not drag it out to your desktop.
+  It needs the files sitting next to it in that folder.
+
   A black window opens and says it is waiting for the
   simulator. LEAVE THIS WINDOW OPEN while you fly.
   Minimise it if it is in the way.

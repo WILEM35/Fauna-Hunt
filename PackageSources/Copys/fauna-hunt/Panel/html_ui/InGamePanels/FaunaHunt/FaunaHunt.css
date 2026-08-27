@@ -176,7 +176,7 @@ ingame-ui#FaunaHunt .ingameUiContent {
 	background: rgba(111, 208, 140, 0.12);
 }
 
-.contact.is-logged { opacity: 0.45; }
+.contact.is-logged { opacity: 0.6; }
 
 .contact-desc {
 	flex: 1 1 auto;
@@ -218,8 +218,26 @@ ingame-ui#FaunaHunt .ingameUiContent {
 }
 
 .contact-tag.is-logged {
+	/* A finished contact should read as finished from across the cockpit:
+	   no accent colour, no border to suggest a control, and a tick. */
 	color: var(--fh-faint);
-	border-color: var(--fh-line);
+	border-color: transparent;
+	background: rgba(255, 255, 255, 0.05);
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3em;
+}
+
+.contact-tag.is-logged svg {
+	flex: 0 0 auto;
+	opacity: 0.9;
+}
+
+/* Finished rows lose the accent stripe too, so a glance down the list
+   separates what is still in play from what is not. */
+.contact.is-logged {
+	border-left-color: var(--fh-line);
+	background: transparent;
 }
 
 .capped-note {

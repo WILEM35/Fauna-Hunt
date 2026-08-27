@@ -584,7 +584,24 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		const list = this.nodes.contactList;
 		const contacts = (this.snapshot && this.snapshot.contacts) || [];
 
-		if (!this.rows) this.rows = {};
+		// Re-derive the row map from what is ACTUALLY in the list, and drop any
+		// duplicate for a key we have already seen. Previously this map was the
+		// only record of which element belonged to which contact, so the moment
+		// the two drifted apart the panel updated one element while an
+		// abandoned copy stayed on screen -- showing "identify" on a herd that
+		// had already been identified, permanently. Rebuilding from the DOM
+		// makes the render idempotent and self-healing however they diverge.
+		this.rows = {};
+		const existingNodes = Array.prototype.slice.call(list.children);
+		existingNodes.forEach((node) => {
+			const key = node.dataset && node.dataset.key;
+			if (!key) return;                       // the capped note, left alone
+			if (this.rows[key]) {
+				if (node.parentNode) node.parentNode.removeChild(node);
+				return;
+			}
+			this.rows[key] = node;
+		});
 
 		if (!contacts.length) {
 			this.rows = {};
@@ -651,7 +668,14 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			+ "</div>"
 			+ "<span class=\"contact-range\">" + described.range + "</span>"
 			+ (logged
-				? "<span class=\"contact-tag is-logged\">identified</span>"
+				// A tick, not the word alone: "identified" and "identify" are
+				// one letter apart at a glance, and people were tapping tiles
+				// they had already finished with.
+				? "<span class=\"contact-tag is-logged\">"
+					+ "<svg viewBox=\"0 0 16 16\" width=\"1em\" height=\"1em\" "
+					+ "fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" "
+					+ "stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\">"
+					+ "<path d=\"M3 8.5 L6.5 12 L13 4.5\"/></svg>done</span>"
 				: (near ? "<span class=\"contact-tag\">identify</span>" : ""));
 	}
 
