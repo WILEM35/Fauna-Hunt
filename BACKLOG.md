@@ -43,10 +43,13 @@ pop-out control. It did bring an opaque backing that made even the clearest
 background setting look like frosted glass, so `panelInvisible` was added
 alongside it to remove that.
 
-Remaining lead: our own `overflow: hidden !important` on `.ingameUiWrapper` and
-`.ingameUiContent` may be clipping controls that exist. If that is not it
-either, the honest conclusion is that these controls are not offered to
-third-party panels, and this should be closed as not possible.
+**Last lead applied in 1.1.0**: `.ingameUiWrapper` no longer clips
+(`overflow: visible`), since that wrapper holds the sim's own title bar.
+Containment still works, so the height fix is not undone.
+
+If the header still has no controls after this, close this item as NOT
+POSSIBLE. Every mechanism I can find has been tried, the SDK documents none,
+and no installed third-party panel has them either.
 
 ### [ ] "You have to be looking at it" — camera-direction gating
 
@@ -70,12 +73,32 @@ SimConnect_CameraGet(handle, referential)
 `Pbh` is the camera's own pitch/bank/heading and `Fov` its field of view, so
 the cone could match what is genuinely visible rather than an invented number.
 
-*Three things to prove with a probe before designing the mechanic:*
+**Probe written: `probe/camera_probe.py`** (1.1.0). It never acquires the
+camera, so if readings come back at all then reading is free.
+
+*Three things it answers:*
 1. Does it follow the VR headset, or only the 2D camera?
 2. Does reading it require `SimConnect_CameraAcquire`? If reading needs taking
    camera control from the player, the feature is dead — that is not
    acceptable in a spotting game.
 3. Does it update at head-turn speed, or only aircraft-turn speed?
+
+### [x] Name the animal on the tile once it has been identified — 1.1.0
+
+An identified contact still reads "a large animal, on its own" — the same
+deliberately vague description it had before you knew what it was. Once you
+have named it, that vagueness has no purpose and the tile should say what it
+actually is: "Hartmann's Mountain Zebra, on its own".
+
+The species name is already on the contact (`common`), and `describeContact()`
+already knows whether it is logged via `isLogged()`, so this is a small change
+to that one function — the vague wording just needs to stop applying once the
+answer is known.
+
+*Worth deciding at the same time:* whether the size and count wording stays
+alongside the name, or whether an identified tile switches entirely to
+"Hartmann's Mountain Zebra x1". Naming it makes the lifelist far more useful to
+read back against the world.
 
 ---
 

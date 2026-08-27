@@ -515,14 +515,20 @@ class IngamePanelFaunaHunt extends TemplateElement {
 	}
 
 	// The heart of the game. Everything the player is told about a contact is
-	// decided here, and the species name is never among it.
+	// decided here, and the species name is never among it -- until it has been
+	// identified, at which point there is nothing left to withhold and the tile
+	// says what the animal actually is.
 	describeContact(contact) {
 		const tier = this.tierFor(contact.distance_m);
-		const size = SIZE_WORDS[contact.size] || "an animal";
+		const size = this.isLogged(contact)
+			? contact.common + (contact.count > 1 ? " × " + contact.count : "")
+			: (SIZE_WORDS[contact.size] || "an animal");
 
 		if (tier === "sector") {
 			return {
-				what: "Movement",
+				// Withholding "Movement" from something you have already named
+				// is just the panel being coy about nothing.
+				what: this.isLogged(contact) ? size : "Movement",
 				where: "somewhere " + sectorOf(contact.bearing_deg),
 				range: "",
 			};
@@ -541,7 +547,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 				? contact.count + " of them"
 				: "on its own";
 			return {
-				what: size + ", " + herd,
+				what: this.isLogged(contact) ? size : size + ", " + herd,
 				where: "bearing " + String(quantise(contact.bearing_deg, 10)).padStart(3, "0") + "°",
 				range: roundTo(contact.distance_m, 100) + " m",
 			};
@@ -552,7 +558,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			? contact.count + " " + plural(contact.count, "animal", "animals")
 			: "A single animal";
 		return {
-			what: count,
+			what: this.isLogged(contact) ? size : count,
 			where: "your " + contact.clock + " o'clock, " + (contact.above ? "high" : "low"),
 			range: roundTo(contact.distance_m, 50) + " m",
 		};

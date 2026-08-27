@@ -20,6 +20,8 @@ RECV_ID_QUIT = 3
 RECV_ID_SIMOBJECT_DATA = 8
 RECV_ID_SIMOBJECT_DATA_BYTYPE = 9
 RECV_ID_ENUMERATE_SIMOBJECT_AND_LIVERY_LIST = 38
+RECV_ID_CAMERA_DATA = 40
+RECV_ID_CAMERA_STATUS = 41
 
 # SIMCONNECT_DATATYPE
 DATATYPE_INT32 = 1
@@ -69,6 +71,17 @@ UNUSED = 0xFFFFFFFF
 # dwSize dwVersion dwID dwRequestID dwObjectID dwDefineID dwFlags
 # dwentrynumber dwoutof dwDefineCount == 10 DWORDs
 SIMOBJECT_DATA_HEADER = 40
+
+# SIMCONNECT_POSITION_REFERENTIAL
+POSITION_REFERENTIAL_NONE = 0
+POSITION_REFERENTIAL_SIMOBJECT = 1
+POSITION_REFERENTIAL_WORLD = 2
+POSITION_REFERENTIAL_EYEPOINT = 3
+POSITION_REFERENTIAL_SIMOBJECT_DATUM = 4
+
+CAMERA_AVAILABILITY = {
+    0: "NOT_ACQUIRED", 1: "ACQUIRED", 2: "ACQUIRED_BY_OTHER", 3: "USER_DISABLED",
+}
 
 # SIMCONNECT_RECV_LIST_TEMPLATE: RECV (3 DWORDs) + dwRequestID dwArraySize
 # dwEntryNumber dwOutOf == 7 DWORDs. Each entry is title[256] + livery[256].
@@ -175,6 +188,42 @@ class RecvListTemplate(ctypes.Structure):
     ]
 
 
+class RecvCameraData(ctypes.Structure):
+    """SIMCONNECT_RECV_CAMERA_DATA -- RECV header then SIMCONNECT_DATA_CAMERA."""
+    _fields_ = [
+        ("dwSize", wintypes.DWORD),
+        ("dwVersion", wintypes.DWORD),
+        ("dwID", wintypes.DWORD),
+        # Position (XYZ doubles)
+        ("posX", ctypes.c_double),
+        ("posY", ctypes.c_double),
+        ("posZ", ctypes.c_double),
+        ("positionReferential", ctypes.c_int),
+        ("positionReferentialObjectId", wintypes.DWORD),
+        # TargetedPos (XYZ doubles)
+        ("targetX", ctypes.c_double),
+        ("targetY", ctypes.c_double),
+        ("targetZ", ctypes.c_double),
+        # Pbh -- pitch, bank, heading of the camera itself
+        ("pitch", ctypes.c_double),
+        ("bank", ctypes.c_double),
+        ("heading", ctypes.c_double),
+        ("rotationReferential", ctypes.c_int),
+        ("rotationReferentialObjectId", wintypes.DWORD),
+        ("fov", ctypes.c_double),
+    ]
+
+
+class RecvCameraStatus(ctypes.Structure):
+    _fields_ = [
+        ("dwSize", wintypes.DWORD),
+        ("dwVersion", wintypes.DWORD),
+        ("dwID", wintypes.DWORD),
+        ("acquiredState", wintypes.DWORD),
+        ("gameControlled", ctypes.c_int),
+    ]
+
+
 class SimConnect:
     """Thin wrapper around the handful of SimConnect entry points we use."""
 
@@ -238,6 +287,13 @@ class SimConnect:
             wintypes.HANDLE, wintypes.DWORD, ctypes.c_int,
         ]
 
+        # Camera. CameraGet is the interesting one: it should report where the
+        # player is actually LOOKING, which in VR is the headset, not the nose.
+        d.SimConnect_CameraGet.restype = ctypes.c_long
+        d.SimConnect_CameraGet.argtypes = [wintypes.HANDLE, wintypes.DWORD]
+        d.SimConnect_CameraGetStatus.restype = ctypes.c_long
+        d.SimConnect_CameraGetStatus.argtypes = [wintypes.HANDLE]
+
     def _open(self, name):
         hr = self.dll.SimConnect_Open(
             ctypes.byref(self.handle), name.encode("utf-8"), None, 0, None, 0
@@ -289,6 +345,16 @@ class SimConnect:
                 "EnumerateSimObjectsAndLiveries(type=%s) failed 0x%08X"
                 % (OBJECT_TYPE_NAMES.get(object_type, object_type), hr & 0xFFFFFFFF)
             )
+
+    def camera_get(self, referential=POSITION_REFERENTIAL_WORLD):
+        hr = self.dll.SimConnect_CameraGet(self.handle, referential)
+        if hr < 0:
+            raise SimConnectError("CameraGet failed 0x%08X" % (hr & 0xFFFFFFFF))
+
+    def camera_get_status(self):
+        hr = self.dll.SimConnect_CameraGetStatus(self.handle)
+        if hr < 0:
+            raise SimConnectError("CameraGetStatus failed 0x%08X" % (hr & 0xFFFFFFFF))
 
     def last_sent_packet_id(self):
         """Send ID of the most recent call -- lets us map exceptions to calls."""

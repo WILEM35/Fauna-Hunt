@@ -48,7 +48,11 @@ ingame-ui#FaunaHunt .ingameUiWrapper {
 	height: inherit !important;
 	min-height: 0 !important;
 	min-width: 0 !important;
-	overflow: hidden !important;
+	/* Deliberately NOT hidden. The wrapper holds the sim's own title bar, and
+	   clipping it was the last remaining explanation for the missing close and
+	   pop-out controls. Containment is done on .ingameUiContent below, which
+	   holds our content and nothing of the sim's. */
+	overflow: visible !important;
 	align-items: stretch !important;
 	flex: 1 1 auto !important;
 	display: flex !important;
