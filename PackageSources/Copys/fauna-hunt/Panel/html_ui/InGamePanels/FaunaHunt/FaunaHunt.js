@@ -41,6 +41,13 @@ const LIST_HOLD_MS = 4000;
 // Keep looking for this long before concluding that nothing is saved.
 const LOAD_RETRIES = 12;
 const LOAD_RETRY_MS = 500;
+// A contact's key includes its herd's averaged position, which drifts as
+// individuals stream in and out -- so the same herd can cross a grid boundary
+// and come back as a "new" contact the panel has never seen. Matching a logged
+// sighting by species and proximity instead of by key exactly makes the
+// identified state stick to the animals rather than to a string.
+const LOGGED_MATCH_M = 500;
+const EARTH_RADIUS_M = 6371000;
 
 // Range tiers, in metres. Tuned against the real streaming behaviour: fauna
 // appears within ~2.8 km on the deck but out to ~30 km at altitude, so the
@@ -185,6 +192,16 @@ function shuffle(list) {
 		out[j] = swap;
 	}
 	return out;
+}
+
+function haversineM(lat1, lon1, lat2, lon2) {
+	const toRad = Math.PI / 180;
+	const p1 = lat1 * toRad, p2 = lat2 * toRad;
+	const dp = p2 - p1;
+	const dl = (lon2 - lon1) * toRad;
+	const a = Math.sin(dp / 2) * Math.sin(dp / 2)
+		+ Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) * Math.sin(dl / 2);
+	return 2 * EARTH_RADIUS_M * Math.asin(Math.min(1, Math.sqrt(a)));
 }
 
 function todayIso() {
@@ -619,7 +636,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 
 	fillRow(row, contact) {
 		const described = this.describeContact(contact);
-		const logged = !!this.state.logged[contact.key];
+		const logged = this.isLogged(contact);
 		const near = contact.distance_m <= SPOT_RANGE_M;
 		// Anything in range can be tapped to identify it. That is far more
 		// discoverable than the SPOT button alone, and it is the only
@@ -634,7 +651,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			+ "</div>"
 			+ "<span class=\"contact-range\">" + described.range + "</span>"
 			+ (logged
-				? "<span class=\"contact-tag is-logged\">logged</span>"
+				? "<span class=\"contact-tag is-logged\">identified</span>"
 				: (near ? "<span class=\"contact-tag\">identify</span>" : ""));
 	}
 
@@ -671,6 +688,24 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		if (note) note.classList.toggle("hidden", !this.listHeld());
 	}
 
+	// True if this herd has already been identified, even if the sim has since
+	// handed it to us under a different key.
+	isLogged(contact) {
+		if (this.state.logged[contact.key]) return true;
+		const logged = this.state.logged;
+		const keys = Object.keys(logged);
+		for (let i = 0; i < keys.length; i++) {
+			const entry = logged[keys[i]];
+			// Older saves stored `true` rather than a position; those can only
+			// ever match on the key, which the line above already covered.
+			if (!entry || entry === true || entry.species !== contact.species) continue;
+			if (haversineM(entry.lat, entry.lon, contact.lat, contact.lon) <= LOGGED_MATCH_M) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	contactByKey(key) {
 		const contacts = (this.snapshot && this.snapshot.contacts) || [];
 		for (let i = 0; i < contacts.length; i++) {
@@ -687,7 +722,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		const contact = this.contactByKey(key);
 		if (!contact) return;
 
-		if (this.state.logged[contact.key]) {
+		if (this.isLogged(contact)) {
 			this.setSpotHint("Already identified: " + contact.common + ".", false, true);
 			return;
 		}
@@ -702,7 +737,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 	eligibleContacts() {
 		const contacts = (this.snapshot && this.snapshot.contacts) || [];
 		return contacts.filter((contact) => {
-			if (this.state.logged[contact.key]) return false;
+			if (this.isLogged(contact)) return false;
 			if (contact.distance_m > SPOT_RANGE_M) return false;
 			const relative = contact.relative_bearing_deg;
 			const offNose = Math.min(relative, 360 - relative);
@@ -867,7 +902,11 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.quiz = null;
 
 		// The herd is spent either way -- no re-rolling the same animals.
-		this.state.logged[contact.key] = true;
+		this.state.logged[contact.key] = {
+			species: contact.species,
+			lat: contact.lat,
+			lon: contact.lon,
+		};
 		delete this.state.attempts[contact.key];
 
 		const alreadyHave = !!this.state.lifelist[contact.species];

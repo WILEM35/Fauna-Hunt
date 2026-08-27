@@ -18,7 +18,12 @@
 	</head>
 	<body class="border-box">
 		<ingamepanel-fauna-hunt>
-			<ingame-ui id="FaunaHunt" panel-id="FAUNA_HUNT" title="Fauna Hunt" content-fit="false" min-width="420" min-height="300">
+			<!-- EXPERIMENT (1.0.3): ingameUiFrame is the sim's own window-frame class.
+			     Two installed third-party panels set it; ours never did, and ours is
+			     the one with no close or pop-out control in its header. Deliberately
+			     WITHOUT panelInvisible, which those panels also set to drop their
+			     background -- we want the frame, not the transparency. -->
+			<ingame-ui id="FaunaHunt" panel-id="FAUNA_HUNT" title="Fauna Hunt" class="ingameUiFrame" content-fit="false" min-width="420" min-height="300">
 				<section id="mainSection" class="main-sect">
 
 					<nav id="tabs" class="tabs">
