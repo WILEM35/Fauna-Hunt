@@ -17,15 +17,8 @@ const STORAGE_KEY = "FaunaHunt_State_v1";
 const POLL_INTERVAL_MS = 1000;
 const DEFAULT_SERVICE_URL = "http://127.0.0.1:8760";
 
-// How close you must be for SPOT to find anything at all.
-const SPOT_RANGE_M = 1200;
-// Contacts inside the cone ahead count; so does anything almost underneath
-// you, since overflying a herd puts it well outside any forward cone.
-const SPOT_CONE_DEG = 45;
-const SPOT_OVERHEAD_M = 600;
-// A missed press costs you this many seconds, so SPOT can't just be mashed.
-const SPOT_COOLDOWN_MS = 8000;
-const MISS_PENALTY = 5;
+// How close you have to be before a contact can be identified at all.
+const IDENTIFY_RANGE_M = 1200;
 // Backing out of an identification costs points: by then you have seen the
 // four-way shortlist, so you could go and look again already knowing the
 // answer is one of four. The shortlist and any wrong guesses are kept, so
@@ -228,7 +221,6 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.online = false;
 		this.status = null;
 		this.view = "hunt";
-		this.spotBlockedUntil = 0;
 		this.hintHeldUntil = 0;
 		this.listHeldUntil = 0;
 		this.pointerOverList = false;
@@ -284,7 +276,6 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			viewSettings: pick("viewSettings"),
 			contactList: pick("contactList"),
 			huntEmpty: pick("huntEmpty"),
-			spotBtn: pick("spotBtn"),
 			spotHint: pick("spotHint"),
 			listHold: pick("listHold"),
 			lifelistStats: pick("lifelistStats"),
@@ -313,7 +304,6 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.nodes.tabs.forEach((tab) => {
 			tab.addEventListener("click", () => this.setView(tab.dataset.view));
 		});
-		this.nodes.spotBtn.addEventListener("click", () => this.attemptSpot());
 		// Delegated: the list is rebuilt every poll, so per-row listeners
 		// would be re-bound once a second for nothing.
 		this.nodes.contactList.addEventListener("click", (event) => {
@@ -464,12 +454,12 @@ class IngamePanelFaunaHunt extends TemplateElement {
 				this.setStatus(data.connected === false ? "nosim" : "ok");
 				if (!this.species) this.fetchSpecies();
 				if (this.view === "hunt") this.renderHunt();
-				this.updateSpotButton();
+				this.updateStatusLine();
 			},
 			() => {
 				this.snapshot = null;
 				this.setStatus("noservice");
-				this.updateSpotButton();
+				this.updateStatusLine();
 			});
 	}
 
@@ -641,8 +631,14 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			return;
 		}
 
+		// Re-attaching every row on every poll drags the scroll position around
+		// under anyone reading a long list, so only nodes that are genuinely in
+		// the wrong place get moved. Scroll position is restored afterwards as
+		// well, since a removal above the viewport still shifts it.
+		const scrollTop = list.scrollTop;
+
 		const seen = {};
-		contacts.forEach((contact) => {
+		contacts.forEach((contact, index) => {
 			seen[contact.key] = true;
 			let row = this.rows[contact.key];
 			if (!row) {
@@ -651,9 +647,9 @@ class IngamePanelFaunaHunt extends TemplateElement {
 				this.rows[contact.key] = row;
 				this.fillRow(row, contact);
 			}
-			// appendChild moves a node that is already in the list, so this
-			// reorders in place without recreating anything.
-			list.appendChild(row);
+			if (list.children[index] !== row) {
+				list.insertBefore(row, list.children[index] || null);
+			}
 		});
 
 		Object.keys(this.rows).forEach((key) => {
@@ -664,13 +660,14 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		});
 
 		this.renderCappedNote(list);
+		if (list.scrollTop !== scrollTop) list.scrollTop = scrollTop;
 		this.updateHoldNote();
 	}
 
 	fillRow(row, contact) {
 		const described = this.describeContact(contact);
 		const logged = this.isLogged(contact);
-		const near = contact.distance_m <= SPOT_RANGE_M;
+		const near = contact.distance_m <= IDENTIFY_RANGE_M;
 		// Anything in range can be tapped to identify it. That is far more
 		// discoverable than the SPOT button alone, and it is the only
 		// practical interaction in VR, where typing is not an option.
@@ -766,62 +763,32 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			this.setSpotHint("Already identified: " + contact.common + ".", false, true);
 			return;
 		}
-		if (contact.distance_m > SPOT_RANGE_M) {
+		if (contact.distance_m > IDENTIFY_RANGE_M) {
 			this.setSpotHint("Too far to be sure. Get within "
-				+ SPOT_RANGE_M + " m of it.", true, true);
+				+ IDENTIFY_RANGE_M + " m of it.", true, true);
 			return;
 		}
 		this.openQuiz(contact);
 	}
 
-	eligibleContacts() {
-		const contacts = (this.snapshot && this.snapshot.contacts) || [];
-		return contacts.filter((contact) => {
-			if (this.isLogged(contact)) return false;
-			if (contact.distance_m > SPOT_RANGE_M) return false;
-			const relative = contact.relative_bearing_deg;
-			const offNose = Math.min(relative, 360 - relative);
-			return offNose <= SPOT_CONE_DEG || contact.distance_m <= SPOT_OVERHEAD_M;
-		});
-	}
-
-	updateSpotButton() {
-		const cooling = Date.now() < this.spotBlockedUntil;
-		const usable = this.online && !cooling && !this.quiz;
-		this.nodes.spotBtn.disabled = !usable;
-
-		if (!this.online) {
-			this.setSpotHint("Waiting for the data service.", false);
-		} else if (cooling) {
-			const left = Math.ceil((this.spotBlockedUntil - Date.now()) / 1000);
-			this.setSpotHint("Lost it. Try again in " + left + "s.", true);
-		} else if (!this.quiz) {
-			this.setSpotHint("Tap a contact to identify it, or press SPOT "
-				+ "for the nearest.", false);
-		}
+	// The status line under the list. There used to be a SPOT button here that
+	// picked a contact for you using a cone test you were never shown, and
+	// fined you five points when it found nothing. Tapping a tile does the
+	// same job and says which animal it means, so the button is gone.
+	updateStatusLine() {
+		if (this.quiz) return;
+		this.setSpotHint(this.online
+			? "Tap a contact to identify it."
+			: "Waiting for the data service.", false);
 	}
 
 	setSpotHint(text, isMiss, hold) {
-		// Without the hold, the once-per-second poll calls updateSpotButton and
+		// Without the hold, the once-per-second poll calls updateStatusLine and
 		// wipes one-off feedback before it can be read.
 		if (!hold && Date.now() < this.hintHeldUntil) return;
 		if (hold) this.hintHeldUntil = Date.now() + HINT_HOLD_MS;
 		this.nodes.spotHint.textContent = text;
 		this.nodes.spotHint.classList.toggle("is-miss", !!isMiss);
-	}
-
-	attemptSpot() {
-		const eligible = this.eligibleContacts();
-		if (!eligible.length) {
-			this.spotBlockedUntil = Date.now() + SPOT_COOLDOWN_MS;
-			this.state.score = Math.max(0, this.state.score - MISS_PENALTY);
-			this.saveState();
-			this.renderScore();
-			this.updateSpotButton();
-			return;
-		}
-		eligible.sort((a, b) => a.distance_m - b.distance_m);
-		this.openQuiz(eligible[0]);
 	}
 
 	// ---------------------------------------------------------------- quiz
@@ -898,7 +865,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.rows = {};
 		this.cappedNote = null;
 		this.nodes.quizOverlay.classList.remove("hidden");
-		this.updateSpotButton();
+		this.updateStatusLine();
 	}
 
 	// Back out without being told the answer. The contact stays available, but
@@ -912,7 +879,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.renderScore();
 		this.setSpotHint("Backed out, -" + CANCEL_PENALTY
 			+ " points. Tap it again when you have had a better look.", true, true);
-		this.updateSpotButton();
+		this.updateStatusLine();
 	}
 
 	guess(button, root) {
@@ -974,7 +941,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.renderScore();
 		this.renderHunt();
 		this.showResult(contact, gaveUp, tries, points, alreadyHave);
-		this.updateSpotButton();
+		this.updateStatusLine();
 	}
 
 	showResult(contact, gaveUp, tries, points, alreadyHave) {

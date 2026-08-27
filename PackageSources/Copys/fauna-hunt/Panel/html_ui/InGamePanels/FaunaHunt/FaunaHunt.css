@@ -21,6 +21,11 @@
 	/* Medium. Matches the Flight Data Tiles panel, which reads correctly in
 	   both 2D and VR. Overridden inline by the Text size setting. */
 	--fh-base: 18;
+	/* The tab row and status bar are chrome, not reading matter. They scale
+	   with the text setting but stop well short of it -- at Extra Large the
+	   two of them were consuming most of a Medium-sized window and crushing
+	   the contact list flat. */
+	--fh-chrome: min(calc(var(--fh-base) * 0.78px), 21px);
 }
 
 /* The sim's <ingame-ui> template puts your content inside .ingameUiWrapper >
@@ -92,6 +97,7 @@ ingame-ui#FaunaHunt .ingameUiContent {
 /* ------------------------------------------------------------- tabs */
 
 .tabs {
+	font-size: var(--fh-chrome);
 	display: flex;
 	align-items: center;
 	gap: 0.15em;
@@ -145,7 +151,9 @@ ingame-ui#FaunaHunt .ingameUiContent {
 
 .contact-list {
 	flex: 1 1 auto;
-	min-height: 0;
+	/* A floor, so the list can never be squeezed to nothing by large text in
+	   a small window -- that is what made scrolling misbehave. */
+	min-height: 3em;
 	overflow-y: auto;
 	padding: 0.35em 0.45em;
 }
@@ -249,6 +257,7 @@ ingame-ui#FaunaHunt .ingameUiContent {
 /* -------------------------------------------------------- spot bar */
 
 .spot-bar {
+	font-size: var(--fh-chrome);
 	flex: 0 0 auto;
 	display: flex;
 	align-items: center;
@@ -257,28 +266,8 @@ ingame-ui#FaunaHunt .ingameUiContent {
 	border-top: 1px solid var(--fh-line);
 }
 
-.spot-btn {
-	background: var(--fh-accent-dim);
-	border: 1px solid var(--fh-accent);
-	color: #eafff0;
-	font-size: 1em;
-	letter-spacing: 0.12em;
-	padding: 0.55em 1.4em;
-	border-radius: 3px;
-	cursor: pointer;
-}
-
-.spot-btn:hover:not(:disabled) { background: var(--fh-accent); color: #08130c; }
-
-.spot-btn:disabled {
-	background: transparent;
-	border-color: var(--fh-line);
-	color: var(--fh-faint);
-	cursor: default;
-}
-
 .spot-hint {
-	font-size: 0.8em;
+	font-size: 0.95em;
 	color: var(--fh-dim);
 	flex: 1 1 auto;
 	line-height: 1.35;
