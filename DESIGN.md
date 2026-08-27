@@ -20,7 +20,7 @@ Established by reading the installed packages and the 2024 SDK headers:
 | `SIMCONNECT_SIMOBJECT_TYPE_ANIMAL` exists | `MSFS 2024 SDK/SimConnect SDK/include/SimConnect.h:224` |
 | ...and does **not** exist in the 2020 SDK | 2020 header stops at `GROUND` |
 | 41 species packages (`fs24-microsoft-simobjects-animals-*`) | `StreamedPackages` |
-| Birds are filed as *passive aircraft* (`fs24-asobo-passiveaircraft-eagle`) | `StreamedPackages` |
+| An eagle ships as a *passive aircraft* (`fs24-asobo-passiveaircraft-eagle`) -- but see the FLYING_ANIMAL finding below | `StreamedPackages` |
 | Effects can be pinned to a sim object by id | `WASM/include/MSFS/MSFS_Vfx.h` — `fsVfxSpawnOnSimObject` |
 | Arbitrary strings pass WASM <-> JS <-> external client | `WASM/include/MSFS/MSFS_CommBus.h`, `SimConnect.h:1130-1132` |
 
@@ -185,14 +185,36 @@ which `build_species_table.py` reduces to **107 species** in `species.json`.
   reskins. **The ANIMAL query returns humans**, so an allowlist is mandatory.
 - `AnimalError` exists as a fallback object and must be filtered.
 
-**Birds: there is exactly one.** `Asobo PassiveAircraft Eagle`, filed under
-`AIRCRAFT`. A regex sweep of the 5221 aircraft titles produced 112 matches, of
-which 111 were airline liveries -- Condor, Osprey, Speedbird, Albatross,
-American Eagle. Only the Asobo eagle is a real animal. The ostrich
-(`SCamelus`) is a bird too, but flightless, so it sits under `ANIMAL`.
+**Birds: unreachable, and my earlier conclusion here was wrong.**
 
-So "birds" is effectively a single species, and does not deserve its own
-toggle. Fold the eagle into the normal hunt as a rare aerial contact.
+The catalogue sweep found no bird titles under `ANIMAL` and I wrote that only
+one bird existed. What that actually proved was that birds are not filed under
+`ANIMAL` -- a different statement, and I should not have generalised it.
+
+Developer mode's Containers window settles it: the sim keeps birds in a
+`FLYING_ANIMAL` container, showing 50 of them overhead near Toronto while
+`ANIMAL` read 0 in the same panel. `probe/type_sweep.py` then asked
+`RequestDataOnSimObjectType` for every type index 0 to 20:
+
+- types 10-20 are rejected outright (`INVALID_ARRAY`), so the enum really does
+  stop at `USER_CURRENT`
+- `ANIMAL` returned 248 objects (cattle, sheep, horses)
+- `ALL` returned 271 -- the same 248 plus the user, its seats and a few others
+- **not one flying animal appeared under any type, `ALL` included**
+
+The WASM headers offer no alternative: `FsSimObjId` appears only as an input to
+the camera and VFX calls, and nothing enumerates sim objects.
+
+So `FLYING_ANIMAL` is simply not exposed to any public API. Birds cannot be
+hunted, and no change to `species.json` or the query would help -- the data
+never leaves the sim. Worth raising with Asobo as an SDK gap; until then, treat
+the ostrich (`SCamelus`, flightless, filed under `ANIMAL`) as the only bird in
+the game.
+
+A second oddity, noted in passing: developer mode's container counts and
+SimConnect's object types are different taxonomies. The Containers window said
+`ANIMAL (0)` at the same moment SimConnect returned 248 animals. Do not read
+one as a check on the other.
 
 ## Open questions the probe answers
 

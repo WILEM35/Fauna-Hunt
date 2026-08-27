@@ -70,9 +70,13 @@ Documented properly in [DESIGN.md](DESIGN.md), but the short list:
   arbitrary subset, so the panel never claims an area is empty.
 - Fauna streaming radius **scales with altitude** — about 2.8 km on the deck,
   30 km at FL280. Climb to search, descend to identify.
-- Only **one bird** exists in the whole sim (`Asobo PassiveAircraft Eagle`),
-  filed under `AIRCRAFT`. The ostrich is a bird too, but flightless, so it sits
-  under `ANIMAL`.
+- **Birds exist in numbers but cannot be reached.** The sim keeps them in a
+  `FLYING_ANIMAL` container that no SimConnect object type maps to. Developer
+  mode counted 50 of them overhead while `RequestDataOnSimObjectType` returned
+  nothing for every index from 0 to 20, `ALL` included, and the WASM API offers
+  no way to enumerate sim objects at all. Fauna Hunt therefore cannot see
+  birds. The ostrich is a bird but flightless, so it sits under `ANIMAL` and
+  does count.
 
 ## Building it yourself
 
