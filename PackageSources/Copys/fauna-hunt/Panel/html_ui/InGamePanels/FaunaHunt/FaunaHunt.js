@@ -37,6 +37,10 @@ const HINT_HOLD_MS = 6000;
 // How long the contact list stops reordering after you touch it. Long enough
 // to look up at the window, find the animal and tap the right row.
 const LIST_HOLD_MS = 4000;
+// The sim's stored data is not always readable the instant a panel opens.
+// Keep looking for this long before concluding that nothing is saved.
+const LOAD_RETRIES = 12;
+const LOAD_RETRY_MS = 500;
 
 // Range tiers, in metres. Tuned against the real streaming behaviour: fauna
 // appears within ~2.8 km on the deck but out to ~30 km at altitude, so the
@@ -79,12 +83,18 @@ const DEFAULT_TEXT_SIZE = "m";
 // background at all, so at low values the world behind bleeds through the
 // text -- which is what made it unreadable in VR. "Slight" is the floor
 // worth shipping; "Clear" is offered for anyone who wants the view back.
+// The sim paints no background behind the panel at all, so this value is the
+// only thing between the text and the world. 0.82 barely reads as transparent
+// -- the range has to go a lot further down to be worth having. As it does,
+// `shadow` fades a dark halo in behind the text so it stays legible over a
+// bright sky instead of dissolving into it.
 const BACKGROUNDS = {
-	solid:  { label: "Solid",  opacity: 1 },
-	slight: { label: "Slight", opacity: 0.94 },
-	clear:  { label: "Clear",  opacity: 0.82 },
+	solid:  { label: "Solid",  opacity: 1,    halo: "transparent" },
+	tinted: { label: "Tinted", opacity: 0.86, halo: "rgba(0, 0, 0, 0.4)" },
+	clear:  { label: "Clear",  opacity: 0.62, halo: "rgba(0, 0, 0, 0.75)" },
+	ghost:  { label: "Ghost",  opacity: 0.34, halo: "rgba(0, 0, 0, 0.95)" },
 };
-const DEFAULT_BACKGROUND = "slight";
+const DEFAULT_BACKGROUND = "tinted";
 
 const RARITY_POINTS = { 1: 10, 2: 25, 3: 60, 4: 150 };
 const RARITY_LABEL = { 1: "domestic", 2: "common", 3: "regional", 4: "rare" };
@@ -210,6 +220,9 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.quiz = null;
 		this.pollTimer = undefined;
 		this.resetArmed = false;
+		this.loaded = false;
+		this.loadAttempts = 0;
+		this.loadTimer = undefined;
 	}
 
 	connectedCallback() {
@@ -229,6 +242,10 @@ class IngamePanelFaunaHunt extends TemplateElement {
 	}
 
 	disconnectedCallback() {
+		if (this.loadTimer) {
+			clearTimeout(this.loadTimer);
+			this.loadTimer = undefined;
+		}
 		if (this.pollTimer) {
 			clearInterval(this.pollTimer);
 			this.pollTimer = undefined;
@@ -317,14 +334,56 @@ class IngamePanelFaunaHunt extends TemplateElement {
 
 	// ----------------------------------------------------------- storage
 
+	// An empty read is NOT proof that nothing is saved -- the sim's storage
+	// can still be coming up when a panel initialises, and it reliably is
+	// during an SDK build, which launches its own copy of the game. Treating
+	// an empty read as "first run" and then saving over it is how a lifelist
+	// gets wiped, so nothing is written until we know what was already there.
 	loadState() {
-		let raw;
-		try {
-			raw = GetStoredData(STORAGE_KEY);
-		} catch (err) {
-			raw = null;
+		const raw = this.readStored();
+		if (raw) {
+			this.adoptState(raw);
+			this.loaded = true;
+			return;
 		}
-		if (!raw) return;
+		this.loaded = false;
+		this.loadAttempts = 0;
+		this.scheduleLoadRetry();
+	}
+
+	readStored() {
+		try {
+			return GetStoredData(STORAGE_KEY);
+		} catch (err) {
+			return null;
+		}
+	}
+
+	scheduleLoadRetry() {
+		this.loadTimer = setTimeout(() => this.retryLoad(), LOAD_RETRY_MS);
+	}
+
+	retryLoad() {
+		this.loadTimer = undefined;
+		this.loadAttempts += 1;
+
+		const raw = this.readStored();
+		if (raw) {
+			this.adoptState(raw);
+			this.loaded = true;
+			this.afterLoad();
+			return;
+		}
+		if (this.loadAttempts >= LOAD_RETRIES) {
+			// Storage has had long enough. There really is nothing saved, so
+			// this is a genuine first run and writing is safe.
+			this.loaded = true;
+			return;
+		}
+		this.scheduleLoadRetry();
+	}
+
+	adoptState(raw) {
 		try {
 			const saved = JSON.parse(raw);
 			if (saved && typeof saved === "object") {
@@ -335,12 +394,32 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		}
 		if (!DIFFICULTIES[this.state.difficulty]) this.state.difficulty = "tracker";
 		if (!TEXT_SIZES[this.state.textSize]) this.state.textSize = DEFAULT_TEXT_SIZE;
+		if (this.state.background === "slight") this.state.background = "tinted";
 		if (!BACKGROUNDS[this.state.background]) this.state.background = DEFAULT_BACKGROUND;
 		if (!this.state.attempts) this.state.attempts = {};
-		this.nodes.serviceUrl.value = this.state.serviceUrl;
+		if (!this.state.lifelist) this.state.lifelist = {};
+		if (!this.state.logged) this.state.logged = {};
+		if (this.nodes && this.nodes.serviceUrl) {
+			this.nodes.serviceUrl.value = this.state.serviceUrl;
+		}
+	}
+
+	// Only reached when a retry found data after the panel had already drawn
+	// itself from defaults, so everything state-driven has to catch up.
+	afterLoad() {
+		this.renderDifficulty();
+		this.renderTextSize();
+		this.applyTextSize();
+		this.renderBackground();
+		this.applyBackground();
+		this.renderScore();
+		if (this.view === "hunt") this.renderHunt();
+		if (this.view === "lifelist") this.renderLifelist();
 	}
 
 	saveState() {
+		// Never write before the load has settled -- see loadState().
+		if (!this.loaded) return;
 		try {
 			SetStoredData(STORAGE_KEY, JSON.stringify(this.state));
 		} catch (err) {
@@ -939,6 +1018,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 	applyBackground() {
 		const choice = BACKGROUNDS[this.state.background] || BACKGROUNDS[DEFAULT_BACKGROUND];
 		this.style.setProperty("--fh-opacity", String(choice.opacity));
+		this.style.setProperty("--fh-halo", choice.halo);
 	}
 
 	renderBackground() {

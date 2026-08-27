@@ -7,7 +7,7 @@
 
 :root {
 	--fh-bg: rgba(12, 16, 20, 0.92);
-	--fh-panel: rgba(255, 255, 255, 0.04);
+	--fh-panel: rgba(255, 255, 255, 0.06);
 	--fh-panel-hi: rgba(255, 255, 255, 0.09);
 	--fh-line: rgba(255, 255, 255, 0.12);
 	--fh-text: #e8eef2;
@@ -76,7 +76,15 @@ ingame-ui#FaunaHunt .ingameUiContent {
 	/* The sim gives the panel window NO background of its own, so without
 	   this the world behind shows through every row and the text loses its
 	   ground. --fh-opacity is driven by the Background setting. */
-	background: rgba(10, 13, 17, var(--fh-opacity, 0.94));
+	background: rgba(10, 13, 17, var(--fh-opacity, 0.86));
+	/* As the panel gets clearer, a dark halo fades in behind the text so it
+	   still reads against a bright sky rather than dissolving into it.
+	   At Solid the shadow is zero and this costs nothing. */
+	/* --fh-halo carries a whole colour rather than an alpha the stylesheet
+	   has to compute, so there is nothing here that can fail silently. */
+	text-shadow:
+		0 1px 3px var(--fh-halo, transparent),
+		0 0 10px var(--fh-halo, transparent);
 }
 
 .hidden { display: none !important; }
