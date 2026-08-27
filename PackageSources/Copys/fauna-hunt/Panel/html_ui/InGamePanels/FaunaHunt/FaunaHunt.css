@@ -11,8 +11,8 @@
 	--fh-panel-hi: rgba(255, 255, 255, 0.09);
 	--fh-line: rgba(255, 255, 255, 0.12);
 	--fh-text: #e8eef2;
-	--fh-dim: #93a3ae;
-	--fh-faint: #63717b;
+	--fh-dim: #b6c3cc;
+	--fh-faint: #8b98a4;
 	--fh-accent: #6fd08c;
 	--fh-accent-dim: #3e7a52;
 	--fh-warn: #e0b341;
@@ -73,6 +73,10 @@ ingame-ui#FaunaHunt .ingameUiContent {
 	overflow: hidden;
 	/* Anchors the quiz/result overlays, which are absolutely positioned. */
 	position: relative;
+	/* The sim gives the panel window NO background of its own, so without
+	   this the world behind shows through every row and the text loses its
+	   ground. --fh-opacity is driven by the Background setting. */
+	background: rgba(10, 13, 17, var(--fh-opacity, 0.94));
 }
 
 .hidden { display: none !important; }
@@ -180,6 +184,7 @@ ingame-ui#FaunaHunt .ingameUiContent {
 .contact-where {
 	display: block;
 	font-size: 0.8em;
+	font-weight: 500;
 	color: var(--fh-dim);
 	margin-top: 0.15em;
 }
@@ -401,7 +406,7 @@ ingame-ui#FaunaHunt .ingameUiContent {
 .overlay {
 	position: absolute;
 	top: 0; left: 0; right: 0; bottom: 0;
-	background: rgba(6, 9, 12, 0.9);
+	background: rgba(8, 11, 15, 0.97);
 	display: flex;
 	/* flex-start, not center: in a tall panel a centred dialog sits far down
 	   the window, and if the height containment above ever fails again it

@@ -72,6 +72,17 @@ const TEXT_SIZES = {
 };
 const DEFAULT_TEXT_SIZE = "m";
 
+// How opaque the panel's own background is. The sim gives the window no
+// background at all, so at low values the world behind bleeds through the
+// text -- which is what made it unreadable in VR. "Slight" is the floor
+// worth shipping; "Clear" is offered for anyone who wants the view back.
+const BACKGROUNDS = {
+	solid:  { label: "Solid",  opacity: 1 },
+	slight: { label: "Slight", opacity: 0.94 },
+	clear:  { label: "Clear",  opacity: 0.82 },
+};
+const DEFAULT_BACKGROUND = "slight";
+
 const RARITY_POINTS = { 1: 10, 2: 25, 3: 60, 4: 150 };
 const RARITY_LABEL = { 1: "domestic", 2: "common", 3: "regional", 4: "rare" };
 // Identifying it first go is worth far more than grinding down the shortlist.
@@ -176,6 +187,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			score: 0,
 			difficulty: "tracker",
 			textSize: DEFAULT_TEXT_SIZE,
+			background: DEFAULT_BACKGROUND,
 			serviceUrl: DEFAULT_SERVICE_URL,
 			lifelist: {},   // species root -> { first, lat, lon, best, count }
 			logged: {},     // contact key -> true, so a herd is only worth it once
@@ -201,6 +213,8 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.renderDifficulty();
 		this.renderTextSize();
 		this.applyTextSize();
+		this.renderBackground();
+		this.applyBackground();
 		this.renderScore();
 		this.fetchSpecies();
 		this.pollTimer = setInterval(() => this.poll(), POLL_INTERVAL_MS);
@@ -236,6 +250,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			difficultyRow: pick("difficultyRow"),
 			difficultyBlurb: pick("difficultyBlurb"),
 			textSizeRow: pick("textSizeRow"),
+			backgroundRow: pick("backgroundRow"),
 			serviceUrl: pick("serviceUrl"),
 			resetBtn: pick("resetBtn"),
 			quizOverlay: pick("quizOverlay"),
@@ -299,6 +314,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		}
 		if (!DIFFICULTIES[this.state.difficulty]) this.state.difficulty = "tracker";
 		if (!TEXT_SIZES[this.state.textSize]) this.state.textSize = DEFAULT_TEXT_SIZE;
+		if (!BACKGROUNDS[this.state.background]) this.state.background = DEFAULT_BACKGROUND;
 		if (!this.state.attempts) this.state.attempts = {};
 		this.nodes.serviceUrl.value = this.state.serviceUrl;
 	}
@@ -820,6 +836,30 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		// Custom properties inherit, so setting it on the panel root reaches
 		// every rule in the stylesheet.
 		this.style.setProperty("--fh-base", String(size.base));
+	}
+
+	applyBackground() {
+		const choice = BACKGROUNDS[this.state.background] || BACKGROUNDS[DEFAULT_BACKGROUND];
+		this.style.setProperty("--fh-opacity", String(choice.opacity));
+	}
+
+	renderBackground() {
+		const row = this.nodes.backgroundRow;
+		if (!row) return;
+		row.innerHTML = "";
+		Object.keys(BACKGROUNDS).forEach((key) => {
+			const button = document.createElement("button");
+			button.type = "button";
+			button.className = "seg-btn" + (key === this.state.background ? " is-active" : "");
+			button.textContent = BACKGROUNDS[key].label;
+			button.addEventListener("click", () => {
+				this.state.background = key;
+				this.saveState();
+				this.applyBackground();
+				this.renderBackground();
+			});
+			row.appendChild(button);
+		});
 	}
 
 	renderTextSize() {

@@ -1,0 +1,301 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Barlow+Condensed:wght@500;600&family=Barlow:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #6fd08c; text-decoration: none; }
+    a:hover { color: #8fe0a8; }
+    /* Panel mockups reuse the add-on's own tokens verbatim so the poster
+       shows the real thing rather than an approximation of it. */
+    .fh { --fh-panel: rgba(255,255,255,0.04); --fh-panel-hi: rgba(255,255,255,0.09);
+          --fh-line: rgba(255,255,255,0.12); --fh-text: #e8eef2; --fh-dim: #93a3ae;
+          --fh-faint: #63717b; --fh-accent: #6fd08c; --fh-accent-dim: #3e7a52;
+          --fh-rare: #b98ce0;
+          background: rgba(12,16,20,0.96); color: var(--fh-text);
+          font-family: Barlow, system-ui, sans-serif; font-size: 15px;
+          border: 1px solid rgba(255,255,255,0.16); border-radius: 4px;
+          box-shadow: 0 26px 60px rgba(6,9,12,0.62); }
+    .fh-tabs { display: flex; align-items: center; gap: 2px;
+               padding: 6px 7px 0 7px; border-bottom: 1px solid var(--fh-line); }
+    .fh-tab { color: var(--fh-dim); padding: 6px 11px; font-size: 0.8em;
+              letter-spacing: 0.04em; text-transform: uppercase;
+              border-bottom: 2px solid transparent; }
+    .fh-tab.on { color: var(--fh-text); border-bottom-color: var(--fh-accent); }
+    .fh-chip { margin-left: auto; margin-bottom: 4px; background: var(--fh-panel);
+               border: 1px solid var(--fh-line); border-radius: 1em;
+               padding: 2px 9px; font-size: 0.85em; color: var(--fh-accent); }
+    .fh-row { display: flex; align-items: baseline; gap: 8px;
+              padding: 9px 10px; margin-bottom: 4px; background: var(--fh-panel);
+              border-left: 3px solid var(--fh-faint); border-radius: 3px; }
+    .fh-row.near { border-left-color: var(--fh-accent); background: var(--fh-panel-hi); }
+    .fh-what { display: block; font-size: 1em; }
+    .fh-where { display: block; font-size: 0.8em; color: var(--fh-dim); margin-top: 2px; }
+    .fh-range { font-size: 0.85em; color: var(--fh-dim); }
+    .fh-tag { font-size: 0.7em; text-transform: uppercase; letter-spacing: 0.06em;
+              color: var(--fh-accent); border: 1px solid var(--fh-accent-dim);
+              border-radius: 0.8em; padding: 1px 7px; white-space: nowrap; }
+    .fh-opt { background: var(--fh-panel); border: 1px solid var(--fh-line);
+              padding: 11px 12px; border-radius: 3px; font-size: 1em; }
+    .beat-h { font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+              font-weight: 600; font-size: 21px; letter-spacing: 0.09em;
+              text-transform: uppercase; color: #6fd08c; margin: 0 0 5px 0; }
+    .beat-p { font-family: Barlow, system-ui, sans-serif; font-size: 16px;
+              line-height: 1.42; color: #cbb9a2; margin: 0; text-wrap: pretty; }
+  </style>
+</helmet>
+
+<div style="position: relative; width: 1600px; height: 900px; overflow: hidden; background: #10141a;">
+
+  <!-- ============================ scene ============================ -->
+  <svg viewBox="0 0 1600 900" width="1600" height="900" style="position: absolute; inset: 0; display: block;">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#141d2b"/>
+        <stop offset="30%" stop-color="#3a3143"/>
+        <stop offset="55%" stop-color="#94492f"/>
+        <stop offset="75%" stop-color="#cf7c33"/>
+        <stop offset="100%" stop-color="#e8a244"/>
+      </linearGradient>
+      <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0%" stop-color="#ffd98a" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#ffd98a" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="shade" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#0d1118" stop-opacity="0.92"/>
+        <stop offset="55%" stop-color="#0d1118" stop-opacity="0.35"/>
+        <stop offset="100%" stop-color="#0d1118" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+
+    <rect width="1600" height="900" fill="url(#sky)"/>
+    <circle cx="1090" cy="560" r="330" fill="url(#glow)"/>
+    <circle cx="1090" cy="560" r="96" fill="#ffdd96"/>
+
+    <!-- far ridge -->
+    <path d="M0 612 L190 578 L330 606 L470 566 L640 600 L810 560 L980 596 L1150 566 L1320 600 L1450 578 L1600 606 L1600 900 L0 900 Z" fill="#7d3f26" opacity="0.72"/>
+    <!-- mid ridge -->
+    <path d="M0 662 L160 640 L300 668 L470 634 L620 664 L790 636 L960 668 L1130 640 L1300 670 L1460 646 L1600 672 L1600 900 L0 900 Z" fill="#5c2c1e"/>
+    <!-- near plain -->
+    <path d="M0 706 L1600 682 L1600 900 L0 900 Z" fill="#2e1b16"/>
+
+    <!-- acacia, left -->
+    <g fill="#120c0d">
+      <rect x="146" y="628" width="7" height="82"/>
+      <path d="M96 630 Q150 596 204 630 Q168 618 150 620 Q130 620 96 630 Z"/>
+      <path d="M108 622 Q150 600 192 622 Q150 610 108 622 Z"/>
+      <path d="M149 660 L128 646 M151 654 L176 640" stroke="#120c0d" stroke-width="4" fill="none"/>
+    </g>
+    <!-- acacia, right -->
+    <g fill="#120c0d">
+      <rect x="1452" y="606" width="9" height="102"/>
+      <path d="M1386 608 Q1456 566 1526 608 Q1480 594 1456 596 Q1430 596 1386 608 Z"/>
+      <path d="M1400 598 Q1456 572 1512 598 Q1456 584 1400 598 Z"/>
+      <path d="M1455 646 L1428 628 M1458 638 L1490 620" stroke="#120c0d" stroke-width="5" fill="none"/>
+    </g>
+
+    <!-- ---- animal silhouettes on the plain ---- -->
+    <g fill="#120c0d">
+      <!-- elephant -->
+      <g transform="translate(232 656) scale(1.18)">
+        <path d="M8 44 C4 30 10 16 26 12 C44 7 70 8 84 16 C96 23 98 34 96 44 L88 44 L86 30 L74 26 L72 44 L62 44 L60 28 L36 28 L34 44 L24 44 L22 30 L14 32 L16 44 Z"/>
+        <path d="M20 14 C8 12 2 20 4 30 C6 38 14 40 20 36 Z"/>
+        <path d="M8 26 C2 30 0 40 2 50 C3 56 9 57 11 52 C13 44 12 32 8 26 Z"/>
+        <path d="M92 20 C100 18 104 24 102 30 L96 28 Z"/>
+      </g>
+      <!-- giraffe -->
+      <g transform="translate(392 610) scale(1.1)">
+        <path d="M22 88 L26 54 C26 44 34 38 46 38 L70 38 C80 38 86 44 86 54 L88 88 L80 88 L78 60 L66 60 L64 88 L56 88 L54 60 L40 60 L38 88 L30 88 L30 62 Z"/>
+        <path d="M44 42 L38 8 C37 3 41 0 45 0 C49 0 52 3 51 8 L54 42 Z"/>
+        <path d="M40 6 L28 2 C24 0 22 4 25 7 L38 12 Z"/>
+        <path d="M42 2 L40 -8 M50 2 L52 -8" stroke="#120c0d" stroke-width="3"/>
+      </g>
+      <!-- zebra pair -->
+      <g transform="translate(560 686) scale(0.92)">
+        <path d="M4 40 L6 20 C6 12 14 8 26 8 L52 8 C62 8 68 13 68 21 L70 40 L63 40 L61 24 L50 24 L48 40 L41 40 L39 24 L26 24 L24 40 L17 40 L16 24 L11 24 L10 40 Z"/>
+        <path d="M62 12 L74 0 C77 -3 82 -1 81 3 L74 18 Z"/>
+      </g>
+      <g transform="translate(650 700) scale(0.8)">
+        <path d="M4 40 L6 20 C6 12 14 8 26 8 L52 8 C62 8 68 13 68 21 L70 40 L63 40 L61 24 L50 24 L48 40 L41 40 L39 24 L26 24 L24 40 L17 40 L16 24 L11 24 L10 40 Z"/>
+        <path d="M62 12 L74 0 C77 -3 82 -1 81 3 L74 18 Z"/>
+      </g>
+      <!-- distant herd -->
+      <g opacity="0.62">
+        <g transform="translate(830 664) scale(0.5)"><path d="M4 40 L6 20 C6 12 14 8 26 8 L52 8 C62 8 68 13 68 21 L70 40 L63 40 L61 24 L50 24 L48 40 L41 40 L39 24 L26 24 L24 40 L17 40 L16 24 L11 24 L10 40 Z"/><path d="M62 12 L74 0 C77 -3 82 -1 81 3 L74 18 Z"/></g>
+        <g transform="translate(884 670) scale(0.44)"><path d="M4 40 L6 20 C6 12 14 8 26 8 L52 8 C62 8 68 13 68 21 L70 40 L63 40 L61 24 L50 24 L48 40 L41 40 L39 24 L26 24 L24 40 L17 40 L16 24 L11 24 L10 40 Z"/><path d="M62 12 L74 0 C77 -3 82 -1 81 3 L74 18 Z"/></g>
+        <g transform="translate(930 662) scale(0.38)"><path d="M4 40 L6 20 C6 12 14 8 26 8 L52 8 C62 8 68 13 68 21 L70 40 L63 40 L61 24 L50 24 L48 40 L41 40 L39 24 L26 24 L24 40 L17 40 L16 24 L11 24 L10 40 Z"/><path d="M62 12 L74 0 C77 -3 82 -1 81 3 L74 18 Z"/></g>
+      </g>
+    </g>
+
+    <!-- ---- helicopter ---- -->
+    <g transform="translate(468 236) scale(1.24)">
+      <g fill="#0f1319">
+        <path d="M18 26 C18 14 32 6 54 6 C74 6 88 12 96 22 L124 30 L156 24 L158 32 L128 42 L96 40 C88 48 72 52 54 52 C30 52 18 42 18 26 Z"/>
+        <path d="M150 20 L176 6 L180 12 L158 30 Z"/>
+        <path d="M164 12 L182 2 L186 10 L170 20 Z"/>
+        <rect x="46" y="52" width="6" height="18"/>
+        <rect x="86" y="52" width="6" height="18"/>
+        <path d="M30 70 L110 70 L110 76 L30 76 Z"/>
+        <rect x="64" y="-8" width="6" height="16"/>
+      </g>
+      <path d="M-42 -10 L182 -10" stroke="#0f1319" stroke-width="5" stroke-linecap="round"/>
+      <path d="M-24 -18 L164 -2" stroke="#0f1319" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
+      <path d="M-24 -2 L164 -18" stroke="#0f1319" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
+    </g>
+
+    <!-- left-hand shading so the headline always has contrast -->
+    <rect width="1080" height="900" fill="url(#shade)"/>
+  </svg>
+
+  <!-- ============================ copy ============================ -->
+  <div style="position: absolute; left: 88px; top: 74px; width: 660px;">
+    <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 14px;">
+      <span style="display: block; width: 46px; height: 3px; background: #6fd08c;"></span>
+      <span style="font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 600; font-size: 20px; letter-spacing: 0.24em; text-transform: uppercase; color: #6fd08c;">For Flight Simulator 2024</span>
+    </div>
+
+    <h1 style="font-family: 'Alfa Slab One', Georgia, serif; font-size: 116px; line-height: 0.86; color: #f6ecdc; margin: 0 0 22px 0; letter-spacing: -0.01em; text-shadow: 0 8px 40px rgba(8,10,14,0.6);">FAUNA<br>HUNT</h1>
+
+    <p style="font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 500; font-size: 30px; line-height: 1.18; color: #ffd28a; margin: 0 0 20px 0; text-wrap: pretty;">There are 107 species down there.<br>The panel will not tell you where.</p>
+
+    <p style="font-family: Barlow, system-ui, sans-serif; font-size: 18px; line-height: 1.55; color: #d5c3ab; margin: 0 0 30px 0; max-width: 610px; text-wrap: pretty;">Somewhere below you there are elephants. Fauna Hunt calls the contact the way a spotter would &mdash; a compass sector at ten kilometres, an o'clock position at eight hundred metres &mdash; and then it goes quiet. Getting there is the easy part. Working out what you are actually looking at is the game.</p>
+
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px; max-width: 640px;">
+      <div>
+        <p class="beat-h">Spot it</p>
+        <p class="beat-p">Contacts sharpen as you close in. Sector, then bearing, then your two o'clock, low.</p>
+      </div>
+      <div>
+        <p class="beat-h">Name it</p>
+        <p class="beat-p">Four species, one right answer, and no help at all from the panel.</p>
+      </div>
+      <div>
+        <p class="beat-h">Collect it</p>
+        <p class="beat-p">107 species, 42 of them rare subspecies. Africa is where it gets serious.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ panels ============================ -->
+
+  <!-- contact list -->
+  <div class="fh" style="position: absolute; left: 968px; top: 62px; width: 372px; transform: rotate(-2.2deg);">
+    <div class="fh-tabs">
+      <span class="fh-tab on">Hunt</span>
+      <span class="fh-tab">Lifelist</span>
+      <span class="fh-tab">Settings</span>
+      <span class="fh-chip">99</span>
+    </div>
+    <div style="padding: 7px 8px;">
+      <div class="fh-row near">
+        <div style="flex: 1 1 auto; min-width: 0;">
+          <span class="fh-what">7 animals</span>
+          <span class="fh-where">your 5 o'clock, low</span>
+        </div>
+        <span class="fh-range">400 m</span>
+        <span class="fh-tag">Identify</span>
+      </div>
+      <div class="fh-row near">
+        <div style="flex: 1 1 auto; min-width: 0;">
+          <span class="fh-what">A single animal</span>
+          <span class="fh-where">your 2 o'clock, low</span>
+        </div>
+        <span class="fh-range">850 m</span>
+        <span class="fh-tag">Identify</span>
+      </div>
+      <div class="fh-row">
+        <div style="flex: 1 1 auto; min-width: 0;">
+          <span class="fh-what">a large animal, 4 of them</span>
+          <span class="fh-where">bearing 220&deg;</span>
+        </div>
+        <span class="fh-range">1100 m</span>
+      </div>
+      <div class="fh-row">
+        <div style="flex: 1 1 auto; min-width: 0;">
+          <span class="fh-what">something very large, 7 of them</span>
+          <span class="fh-where">bearing 010&deg;</span>
+        </div>
+        <span class="fh-range">1300 m</span>
+      </div>
+      <div class="fh-row">
+        <div style="flex: 1 1 auto; min-width: 0;">
+          <span class="fh-what">Movement</span>
+          <span class="fh-where">somewhere north-east</span>
+        </div>
+        <span class="fh-range"></span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-top: 1px solid rgba(255,255,255,0.12);">
+      <span style="background: #3e7a52; border: 1px solid #6fd08c; color: #eafff0; font-size: 15px; letter-spacing: 0.12em; padding: 8px 22px; border-radius: 3px;">SPOT</span>
+      <span style="font-size: 12px; color: #93a3ae; line-height: 1.35;">Tap a contact to identify it.</span>
+    </div>
+  </div>
+
+  <!-- quiz -->
+  <div class="fh" style="position: absolute; left: 894px; top: 452px; width: 356px; transform: rotate(1.6deg); padding: 20px 18px 16px 18px; text-align: center;">
+    <p style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: #63717b; margin: 0 0 6px 0;">You have eyes on something</p>
+    <p style="font-size: 17px; margin: 0 0 14px 0; color: #e8eef2;">There are 5 of them. What are they?</p>
+    <div style="display: flex; flex-direction: column; gap: 6px; text-align: left; margin-bottom: 12px;">
+      <span class="fh-opt">Northern Lion</span>
+      <span class="fh-opt">Spotted Hyena</span>
+      <span class="fh-opt">West African Buffalo</span>
+      <span class="fh-opt">West African Crocodile</span>
+    </div>
+    <div style="display: flex; gap: 16px; justify-content: center; font-size: 12px; color: #63717b; text-decoration: underline;">
+      <span>Back out (-5 pts)</span>
+      <span>I can't tell &mdash; show me</span>
+    </div>
+  </div>
+
+  <!-- lifelist -->
+  <div class="fh" style="position: absolute; left: 1282px; top: 566px; width: 274px; transform: rotate(-1.4deg);">
+    <div style="display: flex; gap: 16px; padding: 11px 12px; border-bottom: 1px solid rgba(255,255,255,0.12); font-size: 12px; color: #93a3ae;">
+      <div><b style="display: block; font-size: 21px; color: #e8eef2; font-weight: 400;">2 / 107</b>species</div>
+      <div><b style="display: block; font-size: 21px; color: #e8eef2; font-weight: 400;">1</b>rare</div>
+      <div><b style="display: block; font-size: 21px; color: #e8eef2; font-weight: 400;">99</b>points</div>
+    </div>
+    <div style="padding: 8px 10px;">
+      <p style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #63717b; margin: 2px 0 6px 2px;">Africa &middot; 1 of 41</p>
+      <div style="display: flex; align-items: baseline; gap: 8px; padding: 5px 4px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <span style="flex: 1 1 auto; font-size: 14px;">Hartmann's Zebra</span>
+        <span style="font-size: 11px; color: #b98ce0; letter-spacing: 0.08em;">rare</span>
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 8px; padding: 5px 4px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <span style="flex: 1 1 auto; font-size: 14px; color: #63717b;">&mdash;</span>
+        <span style="font-size: 11px; color: #63717b; letter-spacing: 0.08em;">common</span>
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 8px; padding: 5px 4px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <span style="flex: 1 1 auto; font-size: 14px; color: #63717b;">&mdash;</span>
+        <span style="font-size: 11px; color: #b98ce0; letter-spacing: 0.08em;">rare</span>
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 8px; padding: 5px 4px;">
+        <span style="flex: 1 1 auto; font-size: 14px; color: #63717b;">&mdash;</span>
+        <span style="font-size: 11px; color: #e0b341; letter-spacing: 0.08em;">regional</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ footer ============================ -->
+  <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 132px; background: #0c1015; border-top: 2px solid #6fd08c;">
+    <div style="display: flex; align-items: center; justify-content: space-between; height: 100%; padding: 0 88px;">
+      <div>
+        <p style="font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 600; font-size: 34px; letter-spacing: 0.02em; color: #f6ecdc; margin: 0 0 4px 0; text-transform: uppercase;">Free test build &mdash; link is in the channel</p>
+        <p style="font-family: Barlow, system-ui, sans-serif; font-size: 15px; color: #8c9aa5; margin: 0;">Needs MSFS 2024. Drop the folder in Community, run the helper, look out of the window.</p>
+      </div>
+      <div style="text-align: right;">
+        <p style="font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 500; font-size: 15px; letter-spacing: 0.2em; text-transform: uppercase; color: #63717b; margin: 0 0 5px 0;">Source and downloads</p>
+        <p style="font-family: Barlow, system-ui, sans-serif; font-weight: 600; font-size: 23px; color: #6fd08c; margin: 0;">github.com/WILEM35/Fauna-Hunt</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

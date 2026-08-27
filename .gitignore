@@ -19,3 +19,6 @@ probe/probe-*.json
 # Built binaries are attached to GitHub Releases, not committed
 PackageSources/Copys/fauna-hunt/Service/FaunaHuntService.exe
 PackageSources/Copys/fauna-hunt/Service/SimConnect.dll
+
+# Personal push helper, not useful to anyone cloning this
+Push to GitHub.bat
