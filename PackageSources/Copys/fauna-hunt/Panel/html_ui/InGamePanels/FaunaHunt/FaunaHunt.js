@@ -592,16 +592,32 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		// had already been identified, permanently. Rebuilding from the DOM
 		// makes the render idempotent and self-healing however they diverge.
 		this.rows = {};
+		let noteFound = null;
 		const existingNodes = Array.prototype.slice.call(list.children);
 		existingNodes.forEach((node) => {
 			const key = node.dataset && node.dataset.key;
-			if (!key) return;                       // the capped note, left alone
+			if (!key) {
+				// The capped note carries no key, so it needs the same
+				// treatment: keep the first, drop any extra. Skipping it here
+				// left one stranded at the top of the list on every render.
+				if (node.classList && node.classList.contains("capped-note")) {
+					if (noteFound) {
+						if (node.parentNode) node.parentNode.removeChild(node);
+					} else {
+						noteFound = node;
+					}
+				}
+				return;
+			}
 			if (this.rows[key]) {
 				if (node.parentNode) node.parentNode.removeChild(node);
 				return;
 			}
 			this.rows[key] = node;
 		});
+		// Adopt whatever survived, so renderCappedNote reuses it rather than
+		// building another one alongside.
+		this.cappedNote = noteFound;
 
 		if (!contacts.length) {
 			this.rows = {};
