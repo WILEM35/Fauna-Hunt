@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Fauna Hunt - test harness</title>
+<link rel="stylesheet" href="../PackageSources/Copys/fauna-hunt/Panel/html_ui/InGamePanels/FaunaHunt/FaunaHunt.css"/>
+<style>
+	/* Stand-ins for the sim's own chrome, so the panel sits in something
+	   roughly the size of a real toolbar window. Not shipped. */
+	body {
+		margin: 0; background: #1b2026; color: #e8eef2;
+		font-family: "Segoe UI", system-ui, sans-serif;
+		display: flex; gap: 16px; padding: 16px; align-items: flex-start;
+	}
+	.frame {
+		width: 520px; height: 620px; background: rgba(12,16,20,0.92);
+		border: 1px solid rgba(255,255,255,0.15); border-radius: 4px;
+		display: flex; flex-direction: column; overflow: hidden;
+	}
+	.frame-title {
+		padding: 6px 10px; font-size: 12px; letter-spacing: .1em;
+		text-transform: uppercase; color: #93a3ae;
+		border-bottom: 1px solid rgba(255,255,255,0.12);
+	}
+	/* Only what the sim itself provides: a fixed-size box for the panel.
+	   Height containment inside it is FaunaHunt.css's job -- do not help,
+	   or this harness stops reproducing the real thing. */
+	#mount { flex: 1; min-height: 0; height: 100%; }
+	ingamepanel-fauna-hunt { display: block; height: 100%; min-height: 0; }
+	.controls { font-size: 13px; max-width: 320px; }
+	.controls h3 { margin: 0 0 8px; font-size: 12px; text-transform: uppercase;
+		letter-spacing: .1em; color: #93a3ae; }
+	.controls button { display: block; width: 100%; margin-bottom: 6px;
+		background: rgba(255,255,255,.06); color: #e8eef2;
+		border: 1px solid rgba(255,255,255,.15); padding: 7px; border-radius: 3px;
+		cursor: pointer; text-align: left; }
+	.controls button:hover { background: rgba(255,255,255,.12); }
+	#log { font-family: monospace; font-size: 11px; color: #6fd08c;
+		white-space: pre-wrap; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<div class="frame">
+	<div class="frame-title">Toolbar window (simulated)</div>
+	<div id="mount"></div>
+</div>
+
+<div class="controls">
+	<h3>Scenario</h3>
+	<button id="btnFar">All contacts far (sector only)</button>
+	<button id="btnMixed">Mixed ranges (default)</button>
+	<button id="btnClose">Herd in spotting range</button>
+	<button id="btnCapped">Capped — too much wildlife</button>
+	<button id="btnEmpty">Nothing in range</button>
+	<button id="btnNosim">Service up, sim not loaded</button>
+	<button id="btnOffline">Service offline</button>
+	<div id="log"></div>
+</div>
+
+<script>
+// ---- stand-ins for the sim's globals ---------------------------------
+class TemplateElement extends HTMLElement {
+	connectedCallback() {}
+	disconnectedCallback() {}
+}
+window.TemplateElement = TemplateElement;
+window.checkAutoload = function () {};
+window.GetStoredData = (k) => window.localStorage.getItem(k);
+window.SetStoredData = (k, v) => window.localStorage.setItem(k, v);
+
+const log = (msg) => { document.getElementById("log").textContent = msg; };
+
+// ---- mock service ----------------------------------------------------
+let SPECIES = null;
+let MODE = "mixed";
+
+function contact(species, distance, bearing, count, over) {
+	const info = SPECIES[species];
+	const rel = (bearing - 90 + 360) % 360;
+	return {
+		key: species + "@" + distance,
+		species: species, common: info.common, scientific: info.scientific,
+		size: info.size, rarity: info.rarity, region: info.region,
+		count: count, sexes: { male: count },
+		lat: 53.4, lon: 7.22, alt_ft: 30,
+		distance_m: distance, bearing_deg: bearing,
+		relative_bearing_deg: rel, clock: (Math.round(rel / 30) % 12) || 12,
+		above: !!over,
+	};
+}
+
+function buildSnapshot() {
+	const user = { lat: 53.39, lon: 7.22, alt_ft: 1200, hdg: 90, gs_kt: 95 };
+	let contacts = [], capped = false;
+	if (MODE === "far") {
+		contacts = [contact("LAfricana", 14200, 40, 6),
+					contact("EQuagga", 9800, 310, 22)];
+	} else if (MODE === "mixed") {
+		contacts = [contact("BTaurusPrimigenius", 2400, 75, 38),
+					contact("OAriesAries", 5200, 130, 12),
+					contact("ECaballus", 940, 100, 4),
+					contact("GTippelskirchi", 11000, 200, 3)];
+	} else if (MODE === "close") {
+		contacts = [contact("PTigrisAltaica", 480, 95, 1, false),
+					contact("BTaurusPrimigenius", 2400, 75, 38)];
+		// Pad the list well past the panel height. If containment is broken
+		// the overlay stretches with it and the quiz vanishes off-screen --
+		// which is exactly the bug this harness previously failed to catch.
+		for (let i = 0; i < 24; i++) {
+			contacts.push(contact("OAriesAries", 3000 + i * 400, (i * 37) % 360, 3 + i));
+		}
+	} else if (MODE === "capped") {
+		contacts = [contact("BTaurusPrimigenius", 700, 88, 62),
+					contact("OAriesAries", 1500, 120, 44),
+					contact("ECaballus", 3100, 60, 51)];
+		capped = true;
+	}
+	if (MODE === "nosim") {
+		return { connected: false, status: "waiting for the simulator",
+			user: null, contacts: [], stats: {}, updated: Date.now()/1000 };
+	}
+	return {
+		connected: true, user: user, contacts: contacts,
+		stats: { contacts: contacts.length, individuals: 0, capped: capped, rejected: {} },
+		updated: Date.now() / 1000,
+	};
+}
+
+const RealXHR = window.XMLHttpRequest;
+function MockXHR() {
+	this.readyState = 0; this.status = 0; this.responseText = "";
+}
+MockXHR.prototype.open = function (m, url) { this._url = url; };
+MockXHR.prototype.send = function () {
+	const respond = (status, body) => {
+		this.readyState = 4; this.status = status; this.responseText = body;
+		if (this.onreadystatechange) this.onreadystatechange();
+	};
+	setTimeout(() => {
+		if (MODE === "offline") { if (this.onerror) this.onerror(); return; }
+		if (this._url.indexOf("/species") >= 0) {
+			respond(200, JSON.stringify({ species: SPECIES }));
+		} else {
+			respond(200, JSON.stringify(buildSnapshot()));
+		}
+	}, 5);
+};
+window.XMLHttpRequest = MockXHR;
+
+// ---- boot ------------------------------------------------------------
+const PANEL_MARKUP = `
+<ingamepanel-fauna-hunt>
+<ingame-ui id="FaunaHunt" panel-id="FAUNA_HUNT" title="Fauna Hunt">
+<div class="ingameUiWrapper">
+<div class="ingameUiContent">
+<section id="mainSection" class="main-sect">
+	<nav id="tabs" class="tabs">
+		<button type="button" class="tab is-active" data-view="hunt">Hunt</button>
+		<button type="button" class="tab" data-view="lifelist">Lifelist</button>
+		<button type="button" class="tab" data-view="settings">Settings</button>
+		<span id="scoreChip" class="score-chip">0</span>
+	</nav>
+	<div id="offline" class="offline hidden">
+		<p class="offline-title">Data service not running</p>
+		<p class="offline-body">Start it in a terminal, then this panel connects on its own.</p>
+		<code class="offline-cmd">python fauna_service.py</code>
+	</div>
+	<div id="viewHunt" class="view">
+		<div id="contactList" class="contact-list"></div>
+		<div id="huntEmpty" class="empty hidden">
+			<p>No contacts in range.</p>
+			<p class="hint">Fauna streams in closer to the ground, and further out with altitude.</p>
+		</div>
+		<div class="spot-bar">
+			<button type="button" id="spotBtn" class="spot-btn">SPOT</button>
+			<span id="spotHint" class="spot-hint"></span>
+		</div>
+	</div>
+	<div id="viewLifelist" class="view hidden">
+		<div id="lifelistStats" class="lifelist-stats"></div>
+		<div id="lifelistBody" class="lifelist-body"></div>
+	</div>
+	<div id="viewSettings" class="view hidden">
+		<div class="setting">
+			<label class="setting-label">Text size</label>
+			<div id="textSizeRow" class="seg"></div>
+			<p class="setting-blurb">Scales the whole panel.</p>
+		</div>
+		<div class="setting">
+			<label class="setting-label">Difficulty</label>
+			<div id="difficultyRow" class="seg"></div>
+			<p id="difficultyBlurb" class="setting-blurb"></p>
+		</div>
+		<div class="setting">
+			<label class="setting-label">Service address</label>
+			<input type="text" id="serviceUrl" class="text-input"/>
+			<p class="setting-blurb">Change only if you started the service on a different port.</p>
+		</div>
+		<div class="setting">
+			<label class="setting-label">Lifelist</label>
+			<button type="button" id="resetBtn" class="danger-btn">Reset all progress</button>
+		</div>
+	</div>
+	<div id="quizOverlay" class="overlay hidden">
+		<div class="quiz">
+			<p class="quiz-kicker">You have eyes on something</p>
+			<p id="quizPrompt" class="quiz-prompt">What is it?</p>
+			<div id="quizOptions" class="quiz-options"></div>
+			<div class="quiz-actions">
+			<button type="button" id="quizCancel" class="link-btn">Back out (-5 pts)</button>
+			<button type="button" id="quizGiveUp" class="link-btn">I can't tell — show me</button>
+		</div>
+		</div>
+	</div>
+	<div id="resultOverlay" class="overlay hidden">
+		<div class="result">
+			<p id="resultTitle" class="result-title"></p>
+			<p id="resultSpecies" class="result-species"></p>
+			<p id="resultDetail" class="result-detail"></p>
+			<p id="resultPoints" class="result-points"></p>
+			<button type="button" id="resultClose" class="primary-btn">Continue</button>
+		</div>
+	</div>
+</section>
+</div>
+</div>
+</ingame-ui>
+</ingamepanel-fauna-hunt>`;
+
+function mountPanel() {
+	const mount = document.getElementById("mount");
+	mount.innerHTML = PANEL_MARKUP;
+	const el = mount.querySelector("ingamepanel-fauna-hunt");
+	if (el.connectedCallback) el.connectedCallback();
+}
+
+function setMode(mode) {
+	MODE = mode;
+	log("scenario: " + mode);
+}
+
+document.getElementById("btnFar").onclick = () => setMode("far");
+document.getElementById("btnMixed").onclick = () => setMode("mixed");
+document.getElementById("btnClose").onclick = () => setMode("close");
+document.getElementById("btnCapped").onclick = () => setMode("capped");
+document.getElementById("btnEmpty").onclick = () => setMode("empty");
+document.getElementById("btnNosim").onclick = () => setMode("nosim");
+document.getElementById("btnOffline").onclick = () => setMode("offline");
+
+// Load the real species table, then start the panel for real.
+const boot = new RealXHR();
+boot.open("GET", "../PackageSources/Copys/fauna-hunt/Service/species.json", true);
+boot.onload = function () {
+	SPECIES = JSON.parse(boot.responseText).species;
+	log("species loaded: " + Object.keys(SPECIES).length);
+	const script = document.createElement("script");
+	script.src = "../PackageSources/Copys/fauna-hunt/Panel/html_ui/InGamePanels/FaunaHunt/FaunaHunt.js";
+	script.onload = mountPanel;
+	document.head.appendChild(script);
+};
+boot.send();
+</script>
+</body>
+</html>

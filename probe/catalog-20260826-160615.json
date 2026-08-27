@@ -1,0 +1,2732 @@
+{
+  "generated": "2026-08-26 16:06:15",
+  "animals": {
+    "titles": [
+      "AAlcesFemale",
+      "AAlcesFemaleVariation1",
+      "AAlcesFemaleVariation2",
+      "AAlcesJuvenile",
+      "AAlcesJuvenileVariation1",
+      "AAlcesJuvenileVariation2",
+      "AAlcesMale",
+      "AAlcesMaleVariation1",
+      "AAlcesMaleVariation2",
+      "AAmericanusFemale",
+      "AAmericanusFemaleVariation1",
+      "AAmericanusFemaleVariation2",
+      "AAmericanusJuvenile",
+      "AAmericanusJuvenileVariation1",
+      "AAmericanusJuvenileVariation2",
+      "AAmericanusMale",
+      "AAmericanusMaleVariation1",
+      "AAmericanusMaleVariation2",
+      "AJubatusHeckiFemale",
+      "AJubatusHeckiFemaleVariation1",
+      "AJubatusHeckiFemaleVariation2",
+      "AJubatusHeckiJuvenile",
+      "AJubatusHeckiJuvenileVariation1",
+      "AJubatusHeckiJuvenileVariation2",
+      "AJubatusHeckiMale",
+      "AJubatusHeckiMaleVariation1",
+      "AJubatusHeckiMaleVariation2",
+      "AJubatusJubatusFemale",
+      "AJubatusJubatusFemaleVariation1",
+      "AJubatusJubatusFemaleVariation2",
+      "AJubatusJubatusJuvenile",
+      "AJubatusJubatusJuvenileVariation1",
+      "AJubatusJubatusJuvenileVariation2",
+      "AJubatusJubatusMale",
+      "AJubatusJubatusMaleVariation1",
+      "AJubatusJubatusMaleVariation2",
+      "AJubatusSoemmeringiiFemale",
+      "AJubatusSoemmeringiiFemaleVariation1",
+      "AJubatusSoemmeringiiFemaleVariation2",
+      "AJubatusSoemmeringiiJuvenile",
+      "AJubatusSoemmeringiiJuvenileVariation1",
+      "AJubatusSoemmeringiiJuvenileVariation2",
+      "AJubatusSoemmeringiiMale",
+      "AJubatusSoemmeringiiMaleVariation1",
+      "AJubatusSoemmeringiiMaleVariation2",
+      "ALerviaFemale",
+      "ALerviaFemaleVariation1",
+      "ALerviaFemaleVariation2",
+      "ALerviaJuvenile",
+      "ALerviaJuvenileVariation1",
+      "ALerviaJuvenileVariation2",
+      "ALerviaMale",
+      "ALerviaMaleVariation1",
+      "ALerviaMaleVariation2",
+      "AMelanoleucaFemale",
+      "AMelanoleucaFemaleVariation1",
+      "AMelanoleucaFemaleVariation2",
+      "AMelanoleucaJuvenile",
+      "AMelanoleucaJuvenileVariation1",
+      "AMelanoleucaJuvenileVariation2",
+      "AMelanoleucaMale",
+      "AMelanoleucaMaleVariation1",
+      "AMelanoleucaMaleVariation2",
+      "ASOBO_Demodog",
+      "ASOBO_Demogorgon",
+      "AnimalError",
+      "BBBubalisFemale",
+      "BBBubalisFemaleVariation1",
+      "BBBubalisFemaleVariation2",
+      "BBBubalisJuvenile",
+      "BBBubalisJuvenileVariation1",
+      "BBBubalisJuvenileVariation2",
+      "BBBubalisMale",
+      "BBBubalisMaleVariation1",
+      "BBBubalisMaleVariation2",
+      "BBisonFemale",
+      "BBisonFemaleVariation1",
+      "BBisonFemaleVariation2",
+      "BBisonJuvenile",
+      "BBisonJuvenileVariation1",
+      "BBisonJuvenileVariation2",
+      "BBisonMale",
+      "BBisonMaleVariation1",
+      "BBisonMaleVariation2",
+      "BBonasusFemale",
+      "BBonasusFemaleVariation1",
+      "BBonasusFemaleVariation2",
+      "BBonasusJuvenile",
+      "BBonasusJuvenileVariation1",
+      "BBonasusJuvenileVariation2",
+      "BBonasusMale",
+      "BBonasusMaleVariation1",
+      "BBonasusMaleVariation2",
+      "BBubalisFemale",
+      "BBubalisFemaleVariation1",
+      "BBubalisFemaleVariation2",
+      "BBubalisJuvenile",
+      "BBubalisJuvenileVariation1",
+      "BBubalisJuvenileVariation2",
+      "BBubalisMale",
+      "BBubalisMaleVariation1",
+      "BBubalisMaleVariation2",
+      "BFrontalisFemale",
+      "BFrontalisFemaleVariation1",
+      "BFrontalisFemaleVariation2",
+      "BFrontalisJuvenile",
+      "BFrontalisJuvenileVariation1",
+      "BFrontalisJuvenileVariation2",
+      "BFrontalisMale",
+      "BFrontalisMaleVariation1",
+      "BFrontalisMaleVariation2",
+      "BGrunniensFemale",
+      "BGrunniensFemaleVariation1",
+      "BGrunniensFemaleVariation2",
+      "BGrunniensJuvenile",
+      "BGrunniensJuvenileVariation1",
+      "BGrunniensJuvenileVariation2",
+      "BJavanicusFemale",
+      "BJavanicusFemaleVariation1",
+      "BJavanicusFemaleVariation2",
+      "BJavanicusJuvenile",
+      "BJavanicusJuvenileVariation1",
+      "BJavanicusJuvenileVariation2",
+      "BTaurusIndicusFemale",
+      "BTaurusIndicusFemaleVariation1",
+      "BTaurusIndicusFemaleVariation2",
+      "BTaurusIndicusJuvenile",
+      "BTaurusIndicusJuvenileVariation1",
+      "BTaurusIndicusJuvenileVariation2",
+      "BTaurusPrimigeniusFemale",
+      "BTaurusPrimigeniusFemaleVariation1",
+      "BTaurusPrimigeniusFemaleVariation2",
+      "BTaurusPrimigeniusFemaleVariation3",
+      "BTaurusPrimigeniusFemaleVariation4",
+      "BTaurusPrimigeniusJuvenile",
+      "BTaurusPrimigeniusJuvenileVariation1",
+      "BlackBear",
+      "CBactrianusFemale",
+      "CBactrianusFemaleVariation1",
+      "CBactrianusFemaleVariation2",
+      "CBactrianusJuvenile",
+      "CBactrianusJuvenileVariation1",
+      "CBactrianusJuvenileVariation2",
+      "CBactrianusMale",
+      "CBactrianusMaleVariation1",
+      "CBactrianusMaleVariation2",
+      "CCanadensisNannodesFemale",
+      "CCanadensisNannodesFemaleVariation1",
+      "CCanadensisNannodesFemaleVariation2",
+      "CCanadensisNannodesJuvenile",
+      "CCanadensisNannodesJuvenileVariation1",
+      "CCanadensisNannodesJuvenileVariation2",
+      "CCanadensisNannodesMale",
+      "CCanadensisNannodesMaleVariation1",
+      "CCanadensisNannodesMaleVariation2",
+      "CCrocutaFemale",
+      "CCrocutaFemaleVariation1",
+      "CCrocutaFemaleVariation2",
+      "CCrocutaJuvenile",
+      "CCrocutaJuvenileVariation1",
+      "CCrocutaJuvenileVariation2",
+      "CCrocutaMale",
+      "CCrocutaMaleVariation1",
+      "CCrocutaMaleVariation2",
+      "CDromedariusFemale",
+      "CDromedariusFemaleVariation1",
+      "CDromedariusFemaleVariation2",
+      "CDromedariusJuvenile",
+      "CDromedariusJuvenileVariation1",
+      "CDromedariusJuvenileVariation2",
+      "CDromedariusMale",
+      "CDromedariusMaleVariation1",
+      "CDromedariusMaleVariation2",
+      "CElaphusCanadensisFemale",
+      "CElaphusCanadensisFemaleVariation1",
+      "CElaphusCanadensisFemaleVariation2",
+      "CElaphusCanadensisJuvenile",
+      "CElaphusCanadensisJuvenileVariation1",
+      "CElaphusCanadensisJuvenileVariation2",
+      "CElaphusCanadensisMale",
+      "CElaphusCanadensisMaleVariation1",
+      "CElaphusCanadensisMaleVariation2",
+      "CHircusHircusFemale",
+      "CHircusHircusFemaleVariation1",
+      "CHircusHircusFemaleVariation2",
+      "CHircusHircusJuvenile",
+      "CHircusHircusJuvenileVariation1",
+      "CHircusHircusJuvenileVariation2",
+      "CHircusHircusMale",
+      "CHircusHircusMaleVariation1",
+      "CHircusHircusMaleVariation2",
+      "CIbexFemale",
+      "CIbexFemaleVariation1",
+      "CIbexFemaleVariation2",
+      "CIbexJuvenile",
+      "CIbexJuvenileVariation1",
+      "CIbexJuvenileVariation2",
+      "CIbexMale",
+      "CIbexMaleVariation1",
+      "CIbexMaleVariation2",
+      "CLupusAlbusFemale",
+      "CLupusAlbusFemaleVariation1",
+      "CLupusAlbusFemaleVariation2",
+      "CLupusAlbusJuvenile",
+      "CLupusAlbusJuvenileVariation1",
+      "CLupusAlbusJuvenileVariation2",
+      "CLupusAlbusMale",
+      "CLupusAlbusMaleVariation1",
+      "CLupusAlbusMaleVariation2",
+      "CLupusArctosFemale",
+      "CLupusArctosFemaleVariation1",
+      "CLupusArctosFemaleVariation2",
+      "CLupusArctosJuvenile",
+      "CLupusArctosJuvenileVariation1",
+      "CLupusArctosJuvenileVariation2",
+      "CLupusArctosMale",
+      "CLupusArctosMaleVariation1",
+      "CLupusArctosMaleVariation2",
+      "CLupusLupusFemale",
+      "CLupusLupusFemaleVariation1",
+      "CLupusLupusFemaleVariation2",
+      "CLupusLupusJuvenile",
+      "CLupusLupusJuvenileVariation1",
+      "CLupusLupusJuvenileVariation2",
+      "CLupusLupusMale",
+      "CLupusLupusMaleVariation1",
+      "CLupusLupusMaleVariation2",
+      "CNipponFemale",
+      "CNipponFemaleVariation1",
+      "CNipponFemaleVariation2",
+      "CNipponJuvenile",
+      "CNipponJuvenileVariation1",
+      "CNipponJuvenileVariation2",
+      "CNipponMale",
+      "CNipponMaleVariation1",
+      "CNipponMaleVariation2",
+      "CPalustrisFemale",
+      "CPalustrisFemaleVariation1",
+      "CPalustrisFemaleVariation2",
+      "CPalustrisJuvenile",
+      "CPalustrisJuvenileVariation1",
+      "CPalustrisJuvenileVariation2",
+      "CPalustrisMale",
+      "CPalustrisMaleVariation1",
+      "CPalustrisMaleVariation2",
+      "CPorosusFemale",
+      "CPorosusFemaleVariation1",
+      "CPorosusFemaleVariation2",
+      "CPorosusJuvenile",
+      "CPorosusJuvenileVariation1",
+      "CPorosusJuvenileVariation2",
+      "CPorosusMale",
+      "CPorosusMaleVariation1",
+      "CPorosusMaleVariation2",
+      "CSimumFemale",
+      "CSimumFemaleVariation1",
+      "CSimumFemaleVariation2",
+      "CSimumJuvenile",
+      "CSimumJuvenileVariation1",
+      "CSimumJuvenileVariation2",
+      "CSimumMale",
+      "CSimumMaleVariation1",
+      "CSimumMaleVariation2",
+      "CSuchusFemale",
+      "CSuchusFemaleVariation1",
+      "CSuchusFemaleVariation2",
+      "CSuchusJuvenile",
+      "CSuchusJuvenileVariation1",
+      "CSuchusJuvenileVariation2",
+      "CSuchusMale",
+      "CSuchusMaleVariation1",
+      "CSuchusMaleVariation2",
+      "CTaurinusAlbojubatusFemale",
+      "CTaurinusAlbojubatusFemaleVariation1",
+      "CTaurinusAlbojubatusFemaleVariation2",
+      "CTaurinusAlbojubatusJuvenile",
+      "CTaurinusAlbojubatusJuvenileVariation1",
+      "CTaurinusAlbojubatusJuvenileVariation2",
+      "CTaurinusAlbojubatusMale",
+      "CTaurinusAlbojubatusMaleVariation1",
+      "CTaurinusAlbojubatusMaleVariation2",
+      "CTaurinusGnouFemale",
+      "CTaurinusGnouFemaleVariation1",
+      "CTaurinusGnouJuvenile",
+      "CTaurinusGnouJuvenileVariation1",
+      "CTaurinusGnouMale",
+      "CTaurinusGnouMaleVariation1",
+      "CTaurinusJohnstoniFemale",
+      "CTaurinusJohnstoniFemaleVariation1",
+      "CTaurinusJohnstoniFemaleVariation2",
+      "CTaurinusJohnstoniJuvenile",
+      "CTaurinusJohnstoniJuvenileVariation1",
+      "CTaurinusJohnstoniJuvenileVariation2",
+      "CTaurinusJohnstoniMale",
+      "CTaurinusJohnstoniMaleVariation1",
+      "CTaurinusJohnstoniMaleVariation2",
+      "CTaurinusMearnsiFemale",
+      "CTaurinusMearnsiFemaleVariation1",
+      "CTaurinusMearnsiFemaleVariation2",
+      "CTaurinusMearnsiJuvenile",
+      "CTaurinusMearnsiJuvenileVariation1",
+      "CTaurinusMearnsiJuvenileVariation2",
+      "CTaurinusMearnsiMale",
+      "CTaurinusMearnsiMaleVariation1",
+      "CTaurinusMearnsiMaleVariation2",
+      "CTaurinusTaurinusFemale",
+      "CTaurinusTaurinusFemaleVariation1",
+      "CTaurinusTaurinusFemaleVariation2",
+      "CTaurinusTaurinusJuvenile",
+      "CTaurinusTaurinusJuvenileVariation1",
+      "CTaurinusTaurinusJuvenileVariation2",
+      "CTaurinusTaurinusMale",
+      "CTaurinusTaurinusMaleVariation1",
+      "CTaurinusTaurinusMaleVariation2",
+      "ECaballusFemale",
+      "ECaballusFemaleVariation1",
+      "ECaballusFemaleVariation2",
+      "ECaballusFemaleVariation3",
+      "ECaballusFemaleVariation4",
+      "ECaballusJuvenile",
+      "ECaballusJuvenileVariation1",
+      "ECaballusJuvenileVariation2",
+      "ECaballusJuvenileVariation3",
+      "ECaballusJuvenileVariation4",
+      "ECaballusMale",
+      "ECaballusMaleVariation1",
+      "ECaballusMaleVariation2",
+      "ECaballusMaleVariation3",
+      "ECaballusMaleVariation4",
+      "EGH2_Horse_Brown",
+      "EGH2_Horse_White",
+      "EGrevyiFemale",
+      "EGrevyiFemaleVariation1",
+      "EGrevyiFemaleVariation2",
+      "EGrevyiJuvenile",
+      "EGrevyiJuvenileVariation1",
+      "EGrevyiJuvenileVariation2",
+      "EGrevyiMale",
+      "EGrevyiMaleVariation1",
+      "EGrevyiMaleVariation2",
+      "EHartmannaeFemale",
+      "EHartmannaeFemaleVariation1",
+      "EHartmannaeFemaleVariation2",
+      "EHartmannaeJuvenile",
+      "EHartmannaeJuvenileVariation1",
+      "EHartmannaeJuvenileVariation2",
+      "EHartmannaeMale",
+      "EHartmannaeMaleVariation1",
+      "EHartmannaeMaleVariation2",
+      "EMaximusFemale",
+      "EMaximusFemaleVariation1",
+      "EMaximusFemaleVariation2",
+      "EMaximusJuvenile",
+      "EMaximusJuvenileVariation1",
+      "EMaximusJuvenileVariation2",
+      "EMaximusMale",
+      "EMaximusMaleVariation1",
+      "EMaximusMaleVariation2",
+      "EPrzewalskiiFemale",
+      "EPrzewalskiiFemaleVariation1",
+      "EPrzewalskiiFemaleVariation2",
+      "EPrzewalskiiJuvenile",
+      "EPrzewalskiiJuvenileVariation1",
+      "EPrzewalskiiJuvenileVariation2",
+      "EPrzewalskiiMale",
+      "EPrzewalskiiMaleVariation1",
+      "EPrzewalskiiMaleVariation2",
+      "EQuaggaFemale",
+      "EQuaggaFemaleVariation1",
+      "EQuaggaFemaleVariation2",
+      "EQuaggaJuvenile",
+      "EQuaggaJuvenileVariation1",
+      "EQuaggaJuvenileVariation2",
+      "EQuaggaMale",
+      "EQuaggaMaleVariation1",
+      "EQuaggaMaleVariation2",
+      "ESD_Anm_BlackBear",
+      "ESD_Anm_Boar",
+      "ESD_Anm_Fox",
+      "ESD_Anm_GrizzlyBear",
+      "ESD_Anm_Horse_Brown",
+      "ESD_Anm_Horse_White",
+      "ESD_Anm_Moose_Bull",
+      "ESD_Anm_Wolf",
+      "EThomsoniiFemale",
+      "EThomsoniiFemaleVariation1",
+      "EThomsoniiFemaleVariation2",
+      "EThomsoniiJuvenile",
+      "EThomsoniiJuvenileVariation1",
+      "EThomsoniiJuvenileVariation2",
+      "EThomsoniiMale",
+      "EThomsoniiMaleVariation1",
+      "EThomsoniiMaleVariation2",
+      "GALLIMIMUS",
+      "GALLIMIMUS_Dark",
+      "GAngolanFemale",
+      "GAngolanFemaleVariation1",
+      "GAngolanFemaleVariation2",
+      "GAngolanJuvenile",
+      "GAngolanJuvenileVariation1",
+      "GAngolanJuvenileVariation2",
+      "GAngolanMale",
+      "GAngolanMaleVariation1",
+      "GAngolanMaleVariation2",
+      "GAntiquorumFemale",
+      "GAntiquorumFemaleVariation1",
+      "GAntiquorumFemaleVariation2",
+      "GAntiquorumJuvenile",
+      "GAntiquorumJuvenileVariation1",
+      "GAntiquorumJuvenileVariation2",
+      "GAntiquorumMale",
+      "GAntiquorumMaleVariation1",
+      "GAntiquorumMaleVariation2",
+      "GCamelopardalisFemale",
+      "GCamelopardalisFemaleVariation1",
+      "GCamelopardalisFemaleVariation2",
+      "GCamelopardalisJuvenile",
+      "GCamelopardalisJuvenileVariation1",
+      "GCamelopardalisJuvenileVariation2",
+      "GCamelopardalisMale",
+      "GCamelopardalisMaleVariation1",
+      "GCamelopardalisMaleVariation2",
+      "GCamelopardalisPeraltaFemale",
+      "GCamelopardalisPeraltaFemaleVariation1",
+      "GCamelopardalisPeraltaFemaleVariation2",
+      "GCamelopardalisPeraltaJuvenile",
+      "GCamelopardalisPeraltaJuvenileVariation1",
+      "GCamelopardalisPeraltaJuvenileVariation2",
+      "GCamelopardalisPeraltaMale",
+      "GCamelopardalisPeraltaMaleVariation1",
+      "GCamelopardalisPeraltaMaleVariation2",
+      "GGiraffaFemale",
+      "GGiraffaFemaleVariation1",
+      "GGiraffaFemaleVariation2",
+      "GGiraffaJuvenile",
+      "GGiraffaJuvenileVariation1",
+      "GGiraffaJuvenileVariation2",
+      "GGiraffaMale",
+      "GGiraffaMaleVariation1",
+      "GGiraffaMaleVariation2",
+      "GPeraltaFemale",
+      "GPeraltaFemaleVariation1",
+      "GPeraltaFemaleVariation2",
+      "GPeraltaJuvenile",
+      "GPeraltaJuvenileVariation1",
+      "GPeraltaJuvenileVariation2",
+      "GPeraltaMale",
+      "GPeraltaMaleVariation1",
+      "GPeraltaMaleVariation2",
+      "GReticulataFemale",
+      "GReticulataFemaleVariation1",
+      "GReticulataFemaleVariation2",
+      "GReticulataJuvenile",
+      "GReticulataJuvenileVariation1",
+      "GReticulataJuvenileVariation2",
+      "GReticulataMale",
+      "GReticulataMaleVariation1",
+      "GReticulataMaleVariation2",
+      "GTippelskirchiFemale",
+      "GTippelskirchiFemaleVariation1",
+      "GTippelskirchiFemaleVariation2",
+      "GTippelskirchiJuvenile",
+      "GTippelskirchiJuvenileVariation1",
+      "GTippelskirchiJuvenileVariation2",
+      "GTippelskirchiMale",
+      "GTippelskirchiMaleVariation1",
+      "GTippelskirchiMaleVariation2",
+      "GrizzlyBear",
+      "GuernseyFemaleVariation1_Cow",
+      "GuernseyFemaleVariation2_Cow",
+      "GuernseyFemale_Cow",
+      "HAmphibiusFemale",
+      "HAmphibiusFemaleVariation1Variation1",
+      "HAmphibiusFemaleVariation2",
+      "HAmphibiusJuvenile",
+      "HAmphibiusJuvenileVariation1",
+      "HAmphibiusJuvenileVariation2",
+      "HAmphibiusMale",
+      "HAmphibiusMaleVariation1",
+      "HAmphibiusMaleVariation2",
+      "HHydrochaerisFemale",
+      "HHydrochaerisFemaleVariation1",
+      "HHydrochaerisFemaleVariation2",
+      "HHydrochaerisJuvenile",
+      "HHydrochaerisJuvenileVariation1",
+      "HHydrochaerisJuvenileVariation2",
+      "HHydrochaerisMale",
+      "HHydrochaerisMaleVariation1",
+      "HHydrochaerisMaleVariation2",
+      "HIsthmiusFemale",
+      "HIsthmiusFemaleVariation1",
+      "HIsthmiusFemaleVariation2",
+      "HIsthmiusJuvenile",
+      "HIsthmiusJuvenileVariation1",
+      "HIsthmiusJuvenileVariation2",
+      "HIsthmiusMale",
+      "HIsthmiusMaleVariation1",
+      "HIsthmiusMaleVariation2",
+      "HMalayanusFemale",
+      "HMalayanusFemaleVariation1",
+      "HMalayanusFemaleVariation2",
+      "HMalayanusJuvenile",
+      "HMalayanusJuvenileVariation1",
+      "HMalayanusJuvenileVariation2",
+      "HMalayanusMale",
+      "HMalayanusMaleVariation1",
+      "HMalayanusMaleVariation2",
+      "HNigerFemale",
+      "HNigerFemaleVariation1",
+      "HNigerFemaleVariation2",
+      "HNigerJuvenile",
+      "HNigerJuvenileVariation1",
+      "HNigerJuvenileVariation2",
+      "HNigerMale",
+      "HNigerMaleVariation1",
+      "HNigerMaleVariation2",
+      "HumpbackWhale",
+      "JW_MOSASAURUS",
+      "JW_STEGOSAURUS",
+      "JW_Velociraptor",
+      "JW_Velociraptor_Blue",
+      "JerseyFemaleVariation1_Cow",
+      "JerseyFemaleVariation2_Cow",
+      "JerseyFemale_Cow",
+      "LAfricanaFemale",
+      "LAfricanaFemaleVariation1",
+      "LAfricanaFemaleVariation2",
+      "LAfricanaJuvenile",
+      "LAfricanaJuvenileVariation1",
+      "LAfricanaJuvenileVariation2",
+      "LAfricanaMale",
+      "LAfricanaMaleVariation1",
+      "LAfricanaMaleVariation2",
+      "LCyclotisFemale",
+      "LCyclotisFemaleVariation1",
+      "LCyclotisFemaleVariation2",
+      "LCyclotisJuvenile",
+      "LCyclotisJuvenileVariation1",
+      "LCyclotisJuvenileVariation2",
+      "LCyclotisMale",
+      "LCyclotisMaleVariation1",
+      "LCyclotisMaleVariation2",
+      "LGlamaFemale",
+      "LGlamaFemaleVariation1",
+      "LGlamaFemaleVariation2",
+      "LGlamaJuvenile",
+      "LGlamaJuvenileVariation1",
+      "LGlamaJuvenileVariation2",
+      "LGlamaMale",
+      "LGlamaMaleVariation1",
+      "LGlamaMaleVariation2",
+      "MRufusFemale",
+      "MRufusFemaleVariation1",
+      "MRufusFemaleVariation2",
+      "MRufusJuvenile",
+      "MRufusJuvenileVariation1",
+      "MRufusJuvenileVariation2",
+      "MRufusMale",
+      "MRufusMaleVariation1",
+      "MRufusMaleVariation2",
+      "MTridactylaFemale",
+      "MTridactylaFemaleVariation1",
+      "MTridactylaFemaleVariation2",
+      "MTridactylaJuvenile",
+      "MTridactylaJuvenileVariation1",
+      "MTridactylaJuvenileVariation2",
+      "MTridactylaMale",
+      "MTridactylaMaleVariation1",
+      "MTridactylaMaleVariation2",
+      "NLarvatusFemale",
+      "NLarvatusFemaleVariation1",
+      "NLarvatusFemaleVariation2",
+      "NLarvatusJuvenile",
+      "NLarvatusJuvenileVariation1",
+      "NLarvatusJuvenileVariation2",
+      "NLarvatusMale",
+      "NLarvatusMaleVariation1",
+      "NLarvatusMaleVariation2",
+      "OAferFemale",
+      "OAferFemaleVariation1",
+      "OAferFemaleVariation2",
+      "OAferJuvenile",
+      "OAferJuvenileVariation1",
+      "OAferJuvenileVariation2",
+      "OAferMale",
+      "OAferMaleVariation1",
+      "OAferMaleVariation2",
+      "OAmericanusFemale",
+      "OAmericanusFemaleVariation1",
+      "OAmericanusFemaleVariation2",
+      "OAmericanusJuvenile",
+      "OAmericanusJuvenileVariation1",
+      "OAmericanusJuvenileVariation2",
+      "OAmericanusMale",
+      "OAmericanusMaleVariation1",
+      "OAmericanusMaleVariation2",
+      "OAriesAriesFemale",
+      "OAriesAriesFemaleVariation1",
+      "OAriesAriesFemaleVariation2",
+      "OAriesAriesFemaleVariation3",
+      "OAriesAriesJuvenile",
+      "OAriesAriesJuvenileVariation1",
+      "OAriesAriesJuvenileVariation2",
+      "OAriesAriesJuvenileVariation3",
+      "OAriesAriesMale",
+      "OAriesAriesMaleVariation1",
+      "OAriesAriesMaleVariation2",
+      "OAriesAriesMaleVariation3",
+      "OAriesMusimonFemale",
+      "OAriesMusimonFemaleVariation1",
+      "OAriesMusimonFemaleVariation2",
+      "OAriesMusimonJuvenile",
+      "OAriesMusimonJuvenileVariation1",
+      "OAriesMusimonJuvenileVariation2",
+      "OAriesMusimonMale",
+      "OAriesMusimonMaleVariation1",
+      "OAriesMusimonMaleVariation2",
+      "OCanadensisFemale",
+      "OCanadensisFemaleVariation1",
+      "OCanadensisFemaleVariation2",
+      "OCanadensisJuvenile",
+      "OCanadensisJuvenileVariation1",
+      "OCanadensisJuvenileVariation2",
+      "OCanadensisMale",
+      "OCanadensisMaleVariation1",
+      "OCanadensisMaleVariation2",
+      "OCanadensisNelsoniFemale",
+      "OCanadensisNelsoniFemaleVariation1",
+      "OCanadensisNelsoniFemaleVariation2",
+      "OCanadensisNelsoniJuvenile",
+      "OCanadensisNelsoniJuvenileVariation1",
+      "OCanadensisNelsoniJuvenileVariation2",
+      "OCanadensisNelsoniMale",
+      "OCanadensisNelsoniMaleVariation1",
+      "OCanadensisNelsoniMaleVariation2",
+      "ODalliDalliFemale",
+      "ODalliDalliFemaleVariation1",
+      "ODalliDalliFemaleVariation2",
+      "ODalliDalliJuvenile",
+      "ODalliDalliJuvenileVariation1",
+      "ODalliDalliJuvenileVariation2",
+      "ODalliDalliMale",
+      "ODalliDalliMaleVariation1",
+      "ODalliDalliMaleVariation2",
+      "ODalliStoneiFemale",
+      "ODalliStoneiFemaleVariation1",
+      "ODalliStoneiFemaleVariation2",
+      "ODalliStoneiJuvenile",
+      "ODalliStoneiJuvenileVariation1",
+      "ODalliStoneiJuvenileVariation2",
+      "ODalliStoneiMale",
+      "ODalliStoneiMaleVariation1",
+      "ODalliStoneiMaleVariation2",
+      "OHemionusFemale",
+      "OHemionusFemaleVariation1",
+      "OHemionusFemaleVariation2",
+      "OHemionusJuvenile",
+      "OHemionusJuvenileVariation1",
+      "OHemionusJuvenileVariation2",
+      "OHemionusMale",
+      "OHemionusMaleVariation1",
+      "OHemionusMaleVariation2",
+      "Orca",
+      "PAethiopicusFemale",
+      "PAethiopicusFemaleVariation1",
+      "PAethiopicusFemaleVariation2",
+      "PAethiopicusJuvenile",
+      "PAethiopicusJuvenileVariation1",
+      "PAethiopicusJuvenileVariation2",
+      "PAethiopicusMale",
+      "PAethiopicusMaleVariation1",
+      "PAethiopicusMaleVariation2",
+      "PAfricanusFemale",
+      "PAfricanusFemaleVariation1",
+      "PAfricanusFemaleVariation2",
+      "PAfricanusJuvenile",
+      "PAfricanusJuvenileVariation1",
+      "PAfricanusJuvenileVariation2",
+      "PAfricanusMale",
+      "PAfricanusMaleVariation1",
+      "PAfricanusMaleVariation2",
+      "PLeoLeoFemale",
+      "PLeoLeoFemaleVariation1",
+      "PLeoLeoFemaleVariation2",
+      "PLeoLeoJuvenile",
+      "PLeoLeoJuvenileVariation1",
+      "PLeoLeoJuvenileVariation2",
+      "PLeoLeoMale",
+      "PLeoLeoMaleVariation1",
+      "PLeoLeoMaleVariation2",
+      "PLeoMelanochaitaFemale",
+      "PLeoMelanochaitaFemaleVariation1",
+      "PLeoMelanochaitaFemaleVariation2",
+      "PLeoMelanochaitaJuvenile",
+      "PLeoMelanochaitaJuvenileVariation1",
+      "PLeoMelanochaitaJuvenileVariation2",
+      "PLeoMelanochaitaMale",
+      "PLeoMelanochaitaMaleVariation1",
+      "PLeoMelanochaitaMaleVariation2",
+      "PLeoPersicaFemale",
+      "PLeoPersicaFemaleVariation1",
+      "PLeoPersicaFemaleVariation2",
+      "PLeoPersicaJuvenile",
+      "PLeoPersicaJuvenileVariation1",
+      "PLeoPersicaJuvenileVariation2",
+      "PLeoPersicaMale",
+      "PLeoPersicaMaleVariation1",
+      "PLeoPersicaMaleVariation2",
+      "PPaniscusFemale",
+      "PPaniscusFemaleVariation1",
+      "PPaniscusFemaleVariation2",
+      "PPaniscusJuvenile",
+      "PPaniscusJuvenileVariation1",
+      "PPaniscusJuvenileVariation2",
+      "PPaniscusMale",
+      "PPaniscusMaleVariation1",
+      "PPaniscusMaleVariation2",
+      "PTigrisAltaicaFemale",
+      "PTigrisAltaicaFemaleVariation1",
+      "PTigrisAltaicaFemaleVariation2",
+      "PTigrisAltaicaJuvenile",
+      "PTigrisAltaicaJuvenileVariation1",
+      "PTigrisAltaicaJuvenileVariation2",
+      "PTigrisAltaicaMale",
+      "PTigrisAltaicaMaleVariation1",
+      "PTigrisAltaicaMaleVariation2",
+      "PTigrisFemale",
+      "PTigrisFemaleVariation1",
+      "PTigrisFemaleVariation2",
+      "PTigrisJuvenile",
+      "PTigrisJuvenileVariation1",
+      "PTigrisJuvenileVariation2",
+      "PTigrisMale",
+      "PTigrisMaleVariation1",
+      "PTigrisMaleVariation2",
+      "PTigrisSondaicaFemale",
+      "PTigrisSondaicaFemaleVariation1",
+      "PTigrisSondaicaFemaleVariation2",
+      "PTigrisSondaicaJuvenile",
+      "PTigrisSondaicaJuvenileVariation1",
+      "PTigrisSondaicaJuvenileVariation2",
+      "PTigrisSondaicaMale",
+      "PTigrisSondaicaMaleVariation1",
+      "PTigrisSondaicaMaleVariation2",
+      "PTigrisTigrisFemale",
+      "PTigrisTigrisFemaleVariation1",
+      "PTigrisTigrisFemaleVariation2",
+      "PTigrisTigrisJuvenile",
+      "PTigrisTigrisJuvenileVariation1",
+      "PTigrisTigrisJuvenileVariation2",
+      "PTigrisTigrisMale",
+      "PTigrisTigrisMaleVariation1",
+      "PTigrisTigrisMaleVariation2",
+      "PTroglodytesVerusFemale",
+      "PTroglodytesVerusFemaleVariation1",
+      "PTroglodytesVerusFemaleVariation2",
+      "PTroglodytesVerusJuvenile",
+      "PTroglodytesVerusJuvenileVariation1",
+      "PTroglodytesVerusJuvenileVariation2",
+      "PTroglodytesVerusMale",
+      "PTroglodytesVerusMaleVariation1",
+      "PTroglodytesVerusMaleVariation2",
+      "PUnciaFemale",
+      "PUnciaFemaleVariation1",
+      "PUnciaFemaleVariation2",
+      "PUnciaJuvenile",
+      "PUnciaJuvenileVariation1",
+      "PUnciaJuvenileVariation2",
+      "PUnciaMale",
+      "PUnciaMaleVariation1",
+      "PUnciaMaleVariation2",
+      "RTarandusGroenlandicusFemale",
+      "RTarandusGroenlandicusFemaleVariation1",
+      "RTarandusGroenlandicusFemaleVariation2",
+      "RTarandusGroenlandicusJuvenile",
+      "RTarandusGroenlandicusJuvenileVariation1",
+      "RTarandusGroenlandicusJuvenileVariation2",
+      "RTarandusGroenlandicusMale",
+      "RTarandusGroenlandicusMaleVariation1",
+      "RTarandusGroenlandicusMaleVariation2",
+      "SCafferBrachycerosFemale",
+      "SCafferBrachycerosFemaleVariation1",
+      "SCafferBrachycerosFemaleVariation2",
+      "SCafferBrachycerosJuvenile",
+      "SCafferBrachycerosJuvenileVariation1",
+      "SCafferBrachycerosJuvenileVariation2",
+      "SCafferBrachycerosMale",
+      "SCafferBrachycerosMaleVariation1",
+      "SCafferBrachycerosMaleVariation2",
+      "SCafferFemale",
+      "SCafferFemaleVariation1",
+      "SCafferFemaleVariation2",
+      "SCafferJuvenile",
+      "SCafferJuvenileVariation1",
+      "SCafferJuvenileVariation2",
+      "SCafferMale",
+      "SCafferMaleVariation1",
+      "SCafferMaleVariation2",
+      "SCafferNanusFemale",
+      "SCafferNanusFemaleVariation1",
+      "SCafferNanusFemaleVariation2",
+      "SCafferNanusJuvenile",
+      "SCafferNanusJuvenileVariation1",
+      "SCafferNanusJuvenileVariation2",
+      "SCafferNanusMale",
+      "SCafferNanusMaleVariation1",
+      "SCafferNanusMaleVariation2",
+      "SCamelusFemale",
+      "SCamelusFemaleVariation1",
+      "SCamelusFemaleVariation2",
+      "SCamelusJuvenile",
+      "SCamelusJuvenileVariation1",
+      "SCamelusJuvenileVariation2",
+      "SCamelusMale",
+      "SCamelusMaleVariation1",
+      "SCamelusMaleVariation2",
+      "SyrianBear",
+      "TEurycerusFemale",
+      "TEurycerusFemaleVariation1",
+      "TEurycerusFemaleVariation2",
+      "TEurycerusJuvenile",
+      "TEurycerusJuvenileVariation1",
+      "TEurycerusJuvenileVariation2",
+      "TEurycerusMale",
+      "TEurycerusMaleVariation1",
+      "TEurycerusMaleVariation2",
+      "UAmericanusFemale",
+      "UAmericanusFemaleVariation1",
+      "UAmericanusFemaleVariation2",
+      "UAmericanusJuvenile",
+      "UAmericanusJuvenileVariation1",
+      "UAmericanusJuvenileVariation2",
+      "UAmericanusMale",
+      "UAmericanusMaleVariation1",
+      "UAmericanusMaleVariation2",
+      "UArctosArctosFemale",
+      "UArctosArctosFemaleVariation1",
+      "UArctosArctosFemaleVariation2",
+      "UArctosArctosJuvenile",
+      "UArctosArctosJuvenileVariation1",
+      "UArctosArctosJuvenileVariation2",
+      "UArctosArctosMale",
+      "UArctosArctosMaleVariation1",
+      "UArctosArctosMaleVariation2",
+      "UArctosCollarisFemale",
+      "UArctosCollarisFemaleVariation1",
+      "UArctosCollarisFemaleVariation2",
+      "UArctosCollarisJuvenile",
+      "UArctosCollarisJuvenileVariation1",
+      "UArctosCollarisJuvenileVariation2",
+      "UArctosCollarisMale",
+      "UArctosCollarisMaleVariation1",
+      "UArctosCollarisMaleVariation2",
+      "UArctosHorribilisFemale",
+      "UArctosHorribilisFemaleVariation1",
+      "UArctosHorribilisFemaleVariation2",
+      "UArctosHorribilisJuvenile",
+      "UArctosHorribilisJuvenileVariation1",
+      "UArctosHorribilisJuvenileVariation2",
+      "UArctosHorribilisMale",
+      "UArctosHorribilisMaleVariation1",
+      "UArctosHorribilisMaleVariation2",
+      "UArctosIsabellinusFemale",
+      "UArctosIsabellinusFemaleVariation1",
+      "UArctosIsabellinusFemaleVariation2",
+      "UArctosIsabellinusJuvenile",
+      "UArctosIsabellinusJuvenileVariation1",
+      "UArctosIsabellinusJuvenileVariation2",
+      "UArctosIsabellinusMale",
+      "UArctosIsabellinusMaleVariation1",
+      "UArctosIsabellinusMaleVariation2",
+      "UArctosLasiotusFemale",
+      "UArctosLasiotusFemaleVariation1",
+      "UArctosLasiotusFemaleVariation2",
+      "UArctosLasiotusJuvenile",
+      "UArctosLasiotusJuvenileVariation1",
+      "UArctosLasiotusJuvenileVariation2",
+      "UArctosLasiotusMale",
+      "UArctosLasiotusMaleVariation1",
+      "UArctosLasiotusMaleVariation2",
+      "UMaritimusFemale",
+      "UMaritimusFemaleVariation1",
+      "UMaritimusFemaleVariation2",
+      "UMaritimusJuvenile",
+      "UMaritimusJuvenileVariation1",
+      "UMaritimusJuvenileVariation2",
+      "UMaritimusMale",
+      "UMaritimusMaleVariation1",
+      "UMaritimusMaleVariation2",
+      "UThibetanusFemale",
+      "UThibetanusFemaleVariation1",
+      "UThibetanusFemaleVariation2",
+      "UThibetanusJuvenile",
+      "UThibetanusJuvenileVariation1",
+      "UThibetanusJuvenileVariation2",
+      "UThibetanusMale",
+      "UThibetanusMaleVariation1",
+      "UThibetanusMaleVariation2",
+      "VLagopusBeringensisFemale",
+      "VLagopusBeringensisFemaleVariation1",
+      "VLagopusBeringensisFemaleVariation2",
+      "VLagopusBeringensisJuvenile",
+      "VLagopusBeringensisJuvenileVariation1",
+      "VLagopusBeringensisJuvenileVariation2",
+      "VLagopusBeringensisMale",
+      "VLagopusBeringensisMaleVariation1",
+      "VLagopusBeringensisMaleVariation2",
+      "VLagopusFemale",
+      "VLagopusFemaleVariation1",
+      "VLagopusFemaleVariation2",
+      "VLagopusFuliginosusFemale",
+      "VLagopusFuliginosusFemaleVariation1",
+      "VLagopusFuliginosusFemaleVariation2",
+      "VLagopusFuliginosusJuvenile",
+      "VLagopusFuliginosusJuvenileVariation1",
+      "VLagopusFuliginosusJuvenileVariation2",
+      "VLagopusFuliginosusMale",
+      "VLagopusFuliginosusMaleVariation1",
+      "VLagopusFuliginosusMaleVariation2",
+      "VLagopusJuvenile",
+      "VLagopusJuvenileVariation1",
+      "VLagopusJuvenileVariation2",
+      "VLagopusMale",
+      "VLagopusMaleVariation1",
+      "VLagopusMaleVariation2",
+      "VLagopusPribilofensisFemale",
+      "VLagopusPribilofensisFemaleVariation1",
+      "VLagopusPribilofensisFemaleVariation2",
+      "VLagopusPribilofensisJuvenile",
+      "VLagopusPribilofensisJuvenileVariation1",
+      "VLagopusPribilofensisJuvenileVariation2",
+      "VLagopusPribilofensisMale",
+      "VLagopusPribilofensisMaleVariation1",
+      "VLagopusPribilofensisMaleVariation2",
+      "VPacosFemale",
+      "VPacosFemaleVariation1",
+      "VPacosFemaleVariation2",
+      "VPacosJuvenile",
+      "VPacosJuvenileVariation1",
+      "VPacosJuvenileVariation2",
+      "VPacosMale",
+      "VPacosMaleVariation1",
+      "VPacosMaleVariation2",
+      "VicunaFemaleVariation1_Llama",
+      "VicunaFemaleVariation2_Llama",
+      "VicunaFemale_Llama",
+      "VicunaJuvenileVariation1_Llama",
+      "VicunaJuvenileVariation2_Llama",
+      "VicunaJuvenile_Llama",
+      "VicunaMaleVariation1_Llama",
+      "VicunaMaleVariation2_Llama",
+      "VicunaMale_Llama",
+      "ahqm horse and rider black",
+      "ahqm horse and rider brown",
+      "ahqm horse and rider grey",
+      "ahqm horse and rider white",
+      "ahqm wheelchair user female green",
+      "ahqm wheelchair user female red",
+      "ahqm wheelchair user male old",
+      "ahqw Gal 1 Walk",
+      "ahqw Gal 2 Walk",
+      "ahqw Gal 3 Walk",
+      "ahqw Gal 4 Walk",
+      "ahqw Gal 5 Walk",
+      "ahqw Gal 6 Walk",
+      "ahqw Gal 7 Walk",
+      "ahqw Gal Beach 1 Walk",
+      "ahqw Gal Beach 2 Walk",
+      "ahqw Gal Beach 3 Walk",
+      "ahqw Gal Hiker Walk",
+      "ahqw Gal Running 1",
+      "ahqw Gal Running 2",
+      "ahqw Gal Running 3",
+      "ahqw Guy 1 Walk",
+      "ahqw Guy 2 Walk",
+      "ahqw Guy 3 Walk",
+      "ahqw Guy 4 Walk",
+      "ahqw Guy 5 Walk",
+      "ahqw Guy 6 Walk",
+      "ahqw Guy 7 Walk",
+      "ahqw Guy Beach 1 Walk",
+      "ahqw Guy Beach 2 Walk",
+      "ahqw Guy Beach 3 Walk",
+      "ahqw Guy Business 1 Walk with Briefcase",
+      "ahqw Guy Hiker Walk",
+      "ahqw Guy Running 1",
+      "ahqw Guy Running 2",
+      "ahqw Guy Running 3",
+      "ahqw Hospital Patient with IV Walk",
+      "ahqw Mil Gcrew 1 Walk",
+      "ahqw Mil Gcrew 2 Walk",
+      "ahqw Mil Gcrew USA 1 Walk",
+      "ahqw Mil Gcrew USA 2 Walk",
+      "ahqw Mil Pilot Jet Walk",
+      "ahqw Mil Soldier 2 Armed Walk",
+      "ahqw Mil Soldier Walk",
+      "ahqw Overalls 1 Walk",
+      "ahqw Overalls 2 Walk",
+      "ahqw Overalls 3 Pushing Wheelbarrow",
+      "ahqw Overalls 4 Carrying Pipe Walk",
+      "ahqw Pilot Air Ambulance Walk",
+      "ahqw Pilot Airline 1 Walk",
+      "ahqw Pilot Airline 2 Walk",
+      "ahqw Skydiver Walk",
+      "ahqw Workman"
+    ],
+    "grouped": {
+      "AAlces": [
+        "AAlcesFemale",
+        "AAlcesFemaleVariation1",
+        "AAlcesFemaleVariation2",
+        "AAlcesMale",
+        "AAlcesMaleVariation1",
+        "AAlcesMaleVariation2"
+      ],
+      "AAlcesJuvenile": [
+        "AAlcesJuvenile",
+        "AAlcesJuvenileVariation1",
+        "AAlcesJuvenileVariation2"
+      ],
+      "AAmericanus": [
+        "AAmericanusFemale",
+        "AAmericanusFemaleVariation1",
+        "AAmericanusFemaleVariation2",
+        "AAmericanusMale",
+        "AAmericanusMaleVariation1",
+        "AAmericanusMaleVariation2"
+      ],
+      "AAmericanusJuvenile": [
+        "AAmericanusJuvenile",
+        "AAmericanusJuvenileVariation1",
+        "AAmericanusJuvenileVariation2"
+      ],
+      "AJubatusHecki": [
+        "AJubatusHeckiFemale",
+        "AJubatusHeckiFemaleVariation1",
+        "AJubatusHeckiFemaleVariation2",
+        "AJubatusHeckiMale",
+        "AJubatusHeckiMaleVariation1",
+        "AJubatusHeckiMaleVariation2"
+      ],
+      "AJubatusHeckiJuvenile": [
+        "AJubatusHeckiJuvenile",
+        "AJubatusHeckiJuvenileVariation1",
+        "AJubatusHeckiJuvenileVariation2"
+      ],
+      "AJubatusJubatus": [
+        "AJubatusJubatusFemale",
+        "AJubatusJubatusFemaleVariation1",
+        "AJubatusJubatusFemaleVariation2",
+        "AJubatusJubatusMale",
+        "AJubatusJubatusMaleVariation1",
+        "AJubatusJubatusMaleVariation2"
+      ],
+      "AJubatusJubatusJuvenile": [
+        "AJubatusJubatusJuvenile",
+        "AJubatusJubatusJuvenileVariation1",
+        "AJubatusJubatusJuvenileVariation2"
+      ],
+      "AJubatusSoemmeringii": [
+        "AJubatusSoemmeringiiFemale",
+        "AJubatusSoemmeringiiFemaleVariation1",
+        "AJubatusSoemmeringiiFemaleVariation2",
+        "AJubatusSoemmeringiiMale",
+        "AJubatusSoemmeringiiMaleVariation1",
+        "AJubatusSoemmeringiiMaleVariation2"
+      ],
+      "AJubatusSoemmeringiiJuvenile": [
+        "AJubatusSoemmeringiiJuvenile",
+        "AJubatusSoemmeringiiJuvenileVariation1",
+        "AJubatusSoemmeringiiJuvenileVariation2"
+      ],
+      "ALervia": [
+        "ALerviaFemale",
+        "ALerviaFemaleVariation1",
+        "ALerviaFemaleVariation2",
+        "ALerviaMale",
+        "ALerviaMaleVariation1",
+        "ALerviaMaleVariation2"
+      ],
+      "ALerviaJuvenile": [
+        "ALerviaJuvenile",
+        "ALerviaJuvenileVariation1",
+        "ALerviaJuvenileVariation2"
+      ],
+      "AMelanoleuca": [
+        "AMelanoleucaFemale",
+        "AMelanoleucaFemaleVariation1",
+        "AMelanoleucaFemaleVariation2",
+        "AMelanoleucaMale",
+        "AMelanoleucaMaleVariation1",
+        "AMelanoleucaMaleVariation2"
+      ],
+      "AMelanoleucaJuvenile": [
+        "AMelanoleucaJuvenile",
+        "AMelanoleucaJuvenileVariation1",
+        "AMelanoleucaJuvenileVariation2"
+      ],
+      "ASOBO_Demodog": [
+        "ASOBO_Demodog"
+      ],
+      "ASOBO_Demogorgon": [
+        "ASOBO_Demogorgon"
+      ],
+      "AnimalError": [
+        "AnimalError"
+      ],
+      "BBBubalis": [
+        "BBBubalisFemale",
+        "BBBubalisFemaleVariation1",
+        "BBBubalisFemaleVariation2",
+        "BBBubalisMale",
+        "BBBubalisMaleVariation1",
+        "BBBubalisMaleVariation2"
+      ],
+      "BBBubalisJuvenile": [
+        "BBBubalisJuvenile",
+        "BBBubalisJuvenileVariation1",
+        "BBBubalisJuvenileVariation2"
+      ],
+      "BBison": [
+        "BBisonFemale",
+        "BBisonFemaleVariation1",
+        "BBisonFemaleVariation2",
+        "BBisonMale",
+        "BBisonMaleVariation1",
+        "BBisonMaleVariation2"
+      ],
+      "BBisonJuvenile": [
+        "BBisonJuvenile",
+        "BBisonJuvenileVariation1",
+        "BBisonJuvenileVariation2"
+      ],
+      "BBonasus": [
+        "BBonasusFemale",
+        "BBonasusFemaleVariation1",
+        "BBonasusFemaleVariation2",
+        "BBonasusMale",
+        "BBonasusMaleVariation1",
+        "BBonasusMaleVariation2"
+      ],
+      "BBonasusJuvenile": [
+        "BBonasusJuvenile",
+        "BBonasusJuvenileVariation1",
+        "BBonasusJuvenileVariation2"
+      ],
+      "BBubalis": [
+        "BBubalisFemale",
+        "BBubalisFemaleVariation1",
+        "BBubalisFemaleVariation2",
+        "BBubalisMale",
+        "BBubalisMaleVariation1",
+        "BBubalisMaleVariation2"
+      ],
+      "BBubalisJuvenile": [
+        "BBubalisJuvenile",
+        "BBubalisJuvenileVariation1",
+        "BBubalisJuvenileVariation2"
+      ],
+      "BFrontalis": [
+        "BFrontalisFemale",
+        "BFrontalisFemaleVariation1",
+        "BFrontalisFemaleVariation2",
+        "BFrontalisMale",
+        "BFrontalisMaleVariation1",
+        "BFrontalisMaleVariation2"
+      ],
+      "BFrontalisJuvenile": [
+        "BFrontalisJuvenile",
+        "BFrontalisJuvenileVariation1",
+        "BFrontalisJuvenileVariation2"
+      ],
+      "BGrunniens": [
+        "BGrunniensFemale",
+        "BGrunniensFemaleVariation1",
+        "BGrunniensFemaleVariation2"
+      ],
+      "BGrunniensJuvenile": [
+        "BGrunniensJuvenile",
+        "BGrunniensJuvenileVariation1",
+        "BGrunniensJuvenileVariation2"
+      ],
+      "BJavanicus": [
+        "BJavanicusFemale",
+        "BJavanicusFemaleVariation1",
+        "BJavanicusFemaleVariation2"
+      ],
+      "BJavanicusJuvenile": [
+        "BJavanicusJuvenile",
+        "BJavanicusJuvenileVariation1",
+        "BJavanicusJuvenileVariation2"
+      ],
+      "BTaurusIndicus": [
+        "BTaurusIndicusFemale",
+        "BTaurusIndicusFemaleVariation1",
+        "BTaurusIndicusFemaleVariation2"
+      ],
+      "BTaurusIndicusJuvenile": [
+        "BTaurusIndicusJuvenile",
+        "BTaurusIndicusJuvenileVariation1",
+        "BTaurusIndicusJuvenileVariation2"
+      ],
+      "BTaurusPrimigenius": [
+        "BTaurusPrimigeniusFemale",
+        "BTaurusPrimigeniusFemaleVariation1",
+        "BTaurusPrimigeniusFemaleVariation2",
+        "BTaurusPrimigeniusFemaleVariation3",
+        "BTaurusPrimigeniusFemaleVariation4"
+      ],
+      "BTaurusPrimigeniusJuvenile": [
+        "BTaurusPrimigeniusJuvenile",
+        "BTaurusPrimigeniusJuvenileVariation1"
+      ],
+      "BlackBear": [
+        "BlackBear"
+      ],
+      "CBactrianus": [
+        "CBactrianusFemale",
+        "CBactrianusFemaleVariation1",
+        "CBactrianusFemaleVariation2",
+        "CBactrianusMale",
+        "CBactrianusMaleVariation1",
+        "CBactrianusMaleVariation2"
+      ],
+      "CBactrianusJuvenile": [
+        "CBactrianusJuvenile",
+        "CBactrianusJuvenileVariation1",
+        "CBactrianusJuvenileVariation2"
+      ],
+      "CCanadensisNannodes": [
+        "CCanadensisNannodesFemale",
+        "CCanadensisNannodesFemaleVariation1",
+        "CCanadensisNannodesFemaleVariation2",
+        "CCanadensisNannodesMale",
+        "CCanadensisNannodesMaleVariation1",
+        "CCanadensisNannodesMaleVariation2"
+      ],
+      "CCanadensisNannodesJuvenile": [
+        "CCanadensisNannodesJuvenile",
+        "CCanadensisNannodesJuvenileVariation1",
+        "CCanadensisNannodesJuvenileVariation2"
+      ],
+      "CCrocuta": [
+        "CCrocutaFemale",
+        "CCrocutaFemaleVariation1",
+        "CCrocutaFemaleVariation2",
+        "CCrocutaMale",
+        "CCrocutaMaleVariation1",
+        "CCrocutaMaleVariation2"
+      ],
+      "CCrocutaJuvenile": [
+        "CCrocutaJuvenile",
+        "CCrocutaJuvenileVariation1",
+        "CCrocutaJuvenileVariation2"
+      ],
+      "CDromedarius": [
+        "CDromedariusFemale",
+        "CDromedariusFemaleVariation1",
+        "CDromedariusFemaleVariation2",
+        "CDromedariusMale",
+        "CDromedariusMaleVariation1",
+        "CDromedariusMaleVariation2"
+      ],
+      "CDromedariusJuvenile": [
+        "CDromedariusJuvenile",
+        "CDromedariusJuvenileVariation1",
+        "CDromedariusJuvenileVariation2"
+      ],
+      "CElaphusCanadensis": [
+        "CElaphusCanadensisFemale",
+        "CElaphusCanadensisFemaleVariation1",
+        "CElaphusCanadensisFemaleVariation2",
+        "CElaphusCanadensisMale",
+        "CElaphusCanadensisMaleVariation1",
+        "CElaphusCanadensisMaleVariation2"
+      ],
+      "CElaphusCanadensisJuvenile": [
+        "CElaphusCanadensisJuvenile",
+        "CElaphusCanadensisJuvenileVariation1",
+        "CElaphusCanadensisJuvenileVariation2"
+      ],
+      "CHircusHircus": [
+        "CHircusHircusFemale",
+        "CHircusHircusFemaleVariation1",
+        "CHircusHircusFemaleVariation2",
+        "CHircusHircusMale",
+        "CHircusHircusMaleVariation1",
+        "CHircusHircusMaleVariation2"
+      ],
+      "CHircusHircusJuvenile": [
+        "CHircusHircusJuvenile",
+        "CHircusHircusJuvenileVariation1",
+        "CHircusHircusJuvenileVariation2"
+      ],
+      "CIbex": [
+        "CIbexFemale",
+        "CIbexFemaleVariation1",
+        "CIbexFemaleVariation2",
+        "CIbexMale",
+        "CIbexMaleVariation1",
+        "CIbexMaleVariation2"
+      ],
+      "CIbexJuvenile": [
+        "CIbexJuvenile",
+        "CIbexJuvenileVariation1",
+        "CIbexJuvenileVariation2"
+      ],
+      "CLupusAlbus": [
+        "CLupusAlbusFemale",
+        "CLupusAlbusFemaleVariation1",
+        "CLupusAlbusFemaleVariation2",
+        "CLupusAlbusMale",
+        "CLupusAlbusMaleVariation1",
+        "CLupusAlbusMaleVariation2"
+      ],
+      "CLupusAlbusJuvenile": [
+        "CLupusAlbusJuvenile",
+        "CLupusAlbusJuvenileVariation1",
+        "CLupusAlbusJuvenileVariation2"
+      ],
+      "CLupusArctos": [
+        "CLupusArctosFemale",
+        "CLupusArctosFemaleVariation1",
+        "CLupusArctosFemaleVariation2",
+        "CLupusArctosMale",
+        "CLupusArctosMaleVariation1",
+        "CLupusArctosMaleVariation2"
+      ],
+      "CLupusArctosJuvenile": [
+        "CLupusArctosJuvenile",
+        "CLupusArctosJuvenileVariation1",
+        "CLupusArctosJuvenileVariation2"
+      ],
+      "CLupusLupus": [
+        "CLupusLupusFemale",
+        "CLupusLupusFemaleVariation1",
+        "CLupusLupusFemaleVariation2",
+        "CLupusLupusMale",
+        "CLupusLupusMaleVariation1",
+        "CLupusLupusMaleVariation2"
+      ],
+      "CLupusLupusJuvenile": [
+        "CLupusLupusJuvenile",
+        "CLupusLupusJuvenileVariation1",
+        "CLupusLupusJuvenileVariation2"
+      ],
+      "CNippon": [
+        "CNipponFemale",
+        "CNipponFemaleVariation1",
+        "CNipponFemaleVariation2",
+        "CNipponMale",
+        "CNipponMaleVariation1",
+        "CNipponMaleVariation2"
+      ],
+      "CNipponJuvenile": [
+        "CNipponJuvenile",
+        "CNipponJuvenileVariation1",
+        "CNipponJuvenileVariation2"
+      ],
+      "CPalustris": [
+        "CPalustrisFemale",
+        "CPalustrisFemaleVariation1",
+        "CPalustrisFemaleVariation2",
+        "CPalustrisMale",
+        "CPalustrisMaleVariation1",
+        "CPalustrisMaleVariation2"
+      ],
+      "CPalustrisJuvenile": [
+        "CPalustrisJuvenile",
+        "CPalustrisJuvenileVariation1",
+        "CPalustrisJuvenileVariation2"
+      ],
+      "CPorosus": [
+        "CPorosusFemale",
+        "CPorosusFemaleVariation1",
+        "CPorosusFemaleVariation2",
+        "CPorosusMale",
+        "CPorosusMaleVariation1",
+        "CPorosusMaleVariation2"
+      ],
+      "CPorosusJuvenile": [
+        "CPorosusJuvenile",
+        "CPorosusJuvenileVariation1",
+        "CPorosusJuvenileVariation2"
+      ],
+      "CSimum": [
+        "CSimumFemale",
+        "CSimumFemaleVariation1",
+        "CSimumFemaleVariation2",
+        "CSimumMale",
+        "CSimumMaleVariation1",
+        "CSimumMaleVariation2"
+      ],
+      "CSimumJuvenile": [
+        "CSimumJuvenile",
+        "CSimumJuvenileVariation1",
+        "CSimumJuvenileVariation2"
+      ],
+      "CSuchus": [
+        "CSuchusFemale",
+        "CSuchusFemaleVariation1",
+        "CSuchusFemaleVariation2",
+        "CSuchusMale",
+        "CSuchusMaleVariation1",
+        "CSuchusMaleVariation2"
+      ],
+      "CSuchusJuvenile": [
+        "CSuchusJuvenile",
+        "CSuchusJuvenileVariation1",
+        "CSuchusJuvenileVariation2"
+      ],
+      "CTaurinusAlbojubatus": [
+        "CTaurinusAlbojubatusFemale",
+        "CTaurinusAlbojubatusFemaleVariation1",
+        "CTaurinusAlbojubatusFemaleVariation2",
+        "CTaurinusAlbojubatusMale",
+        "CTaurinusAlbojubatusMaleVariation1",
+        "CTaurinusAlbojubatusMaleVariation2"
+      ],
+      "CTaurinusAlbojubatusJuvenile": [
+        "CTaurinusAlbojubatusJuvenile",
+        "CTaurinusAlbojubatusJuvenileVariation1",
+        "CTaurinusAlbojubatusJuvenileVariation2"
+      ],
+      "CTaurinusGnou": [
+        "CTaurinusGnouFemale",
+        "CTaurinusGnouFemaleVariation1",
+        "CTaurinusGnouMale",
+        "CTaurinusGnouMaleVariation1"
+      ],
+      "CTaurinusGnouJuvenile": [
+        "CTaurinusGnouJuvenile",
+        "CTaurinusGnouJuvenileVariation1"
+      ],
+      "CTaurinusJohnstoni": [
+        "CTaurinusJohnstoniFemale",
+        "CTaurinusJohnstoniFemaleVariation1",
+        "CTaurinusJohnstoniFemaleVariation2",
+        "CTaurinusJohnstoniMale",
+        "CTaurinusJohnstoniMaleVariation1",
+        "CTaurinusJohnstoniMaleVariation2"
+      ],
+      "CTaurinusJohnstoniJuvenile": [
+        "CTaurinusJohnstoniJuvenile",
+        "CTaurinusJohnstoniJuvenileVariation1",
+        "CTaurinusJohnstoniJuvenileVariation2"
+      ],
+      "CTaurinusMearnsi": [
+        "CTaurinusMearnsiFemale",
+        "CTaurinusMearnsiFemaleVariation1",
+        "CTaurinusMearnsiFemaleVariation2",
+        "CTaurinusMearnsiMale",
+        "CTaurinusMearnsiMaleVariation1",
+        "CTaurinusMearnsiMaleVariation2"
+      ],
+      "CTaurinusMearnsiJuvenile": [
+        "CTaurinusMearnsiJuvenile",
+        "CTaurinusMearnsiJuvenileVariation1",
+        "CTaurinusMearnsiJuvenileVariation2"
+      ],
+      "CTaurinusTaurinus": [
+        "CTaurinusTaurinusFemale",
+        "CTaurinusTaurinusFemaleVariation1",
+        "CTaurinusTaurinusFemaleVariation2",
+        "CTaurinusTaurinusMale",
+        "CTaurinusTaurinusMaleVariation1",
+        "CTaurinusTaurinusMaleVariation2"
+      ],
+      "CTaurinusTaurinusJuvenile": [
+        "CTaurinusTaurinusJuvenile",
+        "CTaurinusTaurinusJuvenileVariation1",
+        "CTaurinusTaurinusJuvenileVariation2"
+      ],
+      "ECaballus": [
+        "ECaballusFemale",
+        "ECaballusFemaleVariation1",
+        "ECaballusFemaleVariation2",
+        "ECaballusFemaleVariation3",
+        "ECaballusFemaleVariation4",
+        "ECaballusMale",
+        "ECaballusMaleVariation1",
+        "ECaballusMaleVariation2",
+        "ECaballusMaleVariation3",
+        "ECaballusMaleVariation4"
+      ],
+      "ECaballusJuvenile": [
+        "ECaballusJuvenile",
+        "ECaballusJuvenileVariation1",
+        "ECaballusJuvenileVariation2",
+        "ECaballusJuvenileVariation3",
+        "ECaballusJuvenileVariation4"
+      ],
+      "EGH2_Horse_Brown": [
+        "EGH2_Horse_Brown"
+      ],
+      "EGH2_Horse_White": [
+        "EGH2_Horse_White"
+      ],
+      "EGrevyi": [
+        "EGrevyiFemale",
+        "EGrevyiFemaleVariation1",
+        "EGrevyiFemaleVariation2",
+        "EGrevyiMale",
+        "EGrevyiMaleVariation1",
+        "EGrevyiMaleVariation2"
+      ],
+      "EGrevyiJuvenile": [
+        "EGrevyiJuvenile",
+        "EGrevyiJuvenileVariation1",
+        "EGrevyiJuvenileVariation2"
+      ],
+      "EHartmannae": [
+        "EHartmannaeFemale",
+        "EHartmannaeFemaleVariation1",
+        "EHartmannaeFemaleVariation2",
+        "EHartmannaeMale",
+        "EHartmannaeMaleVariation1",
+        "EHartmannaeMaleVariation2"
+      ],
+      "EHartmannaeJuvenile": [
+        "EHartmannaeJuvenile",
+        "EHartmannaeJuvenileVariation1",
+        "EHartmannaeJuvenileVariation2"
+      ],
+      "EMaximus": [
+        "EMaximusFemale",
+        "EMaximusFemaleVariation1",
+        "EMaximusFemaleVariation2",
+        "EMaximusMale",
+        "EMaximusMaleVariation1",
+        "EMaximusMaleVariation2"
+      ],
+      "EMaximusJuvenile": [
+        "EMaximusJuvenile",
+        "EMaximusJuvenileVariation1",
+        "EMaximusJuvenileVariation2"
+      ],
+      "EPrzewalskii": [
+        "EPrzewalskiiFemale",
+        "EPrzewalskiiFemaleVariation1",
+        "EPrzewalskiiFemaleVariation2",
+        "EPrzewalskiiMale",
+        "EPrzewalskiiMaleVariation1",
+        "EPrzewalskiiMaleVariation2"
+      ],
+      "EPrzewalskiiJuvenile": [
+        "EPrzewalskiiJuvenile",
+        "EPrzewalskiiJuvenileVariation1",
+        "EPrzewalskiiJuvenileVariation2"
+      ],
+      "EQuagga": [
+        "EQuaggaFemale",
+        "EQuaggaFemaleVariation1",
+        "EQuaggaFemaleVariation2",
+        "EQuaggaMale",
+        "EQuaggaMaleVariation1",
+        "EQuaggaMaleVariation2"
+      ],
+      "EQuaggaJuvenile": [
+        "EQuaggaJuvenile",
+        "EQuaggaJuvenileVariation1",
+        "EQuaggaJuvenileVariation2"
+      ],
+      "ESD_Anm_BlackBear": [
+        "ESD_Anm_BlackBear"
+      ],
+      "ESD_Anm_Boar": [
+        "ESD_Anm_Boar"
+      ],
+      "ESD_Anm_Fox": [
+        "ESD_Anm_Fox"
+      ],
+      "ESD_Anm_GrizzlyBear": [
+        "ESD_Anm_GrizzlyBear"
+      ],
+      "ESD_Anm_Horse_Brown": [
+        "ESD_Anm_Horse_Brown"
+      ],
+      "ESD_Anm_Horse_White": [
+        "ESD_Anm_Horse_White"
+      ],
+      "ESD_Anm_Moose_Bull": [
+        "ESD_Anm_Moose_Bull"
+      ],
+      "ESD_Anm_Wolf": [
+        "ESD_Anm_Wolf"
+      ],
+      "EThomsonii": [
+        "EThomsoniiFemale",
+        "EThomsoniiFemaleVariation1",
+        "EThomsoniiFemaleVariation2",
+        "EThomsoniiMale",
+        "EThomsoniiMaleVariation1",
+        "EThomsoniiMaleVariation2"
+      ],
+      "EThomsoniiJuvenile": [
+        "EThomsoniiJuvenile",
+        "EThomsoniiJuvenileVariation1",
+        "EThomsoniiJuvenileVariation2"
+      ],
+      "GALLIMIMUS": [
+        "GALLIMIMUS"
+      ],
+      "GALLIMIMUS_Dark": [
+        "GALLIMIMUS_Dark"
+      ],
+      "GAngolan": [
+        "GAngolanFemale",
+        "GAngolanFemaleVariation1",
+        "GAngolanFemaleVariation2",
+        "GAngolanMale",
+        "GAngolanMaleVariation1",
+        "GAngolanMaleVariation2"
+      ],
+      "GAngolanJuvenile": [
+        "GAngolanJuvenile",
+        "GAngolanJuvenileVariation1",
+        "GAngolanJuvenileVariation2"
+      ],
+      "GAntiquorum": [
+        "GAntiquorumFemale",
+        "GAntiquorumFemaleVariation1",
+        "GAntiquorumFemaleVariation2",
+        "GAntiquorumMale",
+        "GAntiquorumMaleVariation1",
+        "GAntiquorumMaleVariation2"
+      ],
+      "GAntiquorumJuvenile": [
+        "GAntiquorumJuvenile",
+        "GAntiquorumJuvenileVariation1",
+        "GAntiquorumJuvenileVariation2"
+      ],
+      "GCamelopardalis": [
+        "GCamelopardalisFemale",
+        "GCamelopardalisFemaleVariation1",
+        "GCamelopardalisFemaleVariation2",
+        "GCamelopardalisMale",
+        "GCamelopardalisMaleVariation1",
+        "GCamelopardalisMaleVariation2"
+      ],
+      "GCamelopardalisJuvenile": [
+        "GCamelopardalisJuvenile",
+        "GCamelopardalisJuvenileVariation1",
+        "GCamelopardalisJuvenileVariation2"
+      ],
+      "GCamelopardalisPeralta": [
+        "GCamelopardalisPeraltaFemale",
+        "GCamelopardalisPeraltaFemaleVariation1",
+        "GCamelopardalisPeraltaFemaleVariation2",
+        "GCamelopardalisPeraltaMale",
+        "GCamelopardalisPeraltaMaleVariation1",
+        "GCamelopardalisPeraltaMaleVariation2"
+      ],
+      "GCamelopardalisPeraltaJuvenile": [
+        "GCamelopardalisPeraltaJuvenile",
+        "GCamelopardalisPeraltaJuvenileVariation1",
+        "GCamelopardalisPeraltaJuvenileVariation2"
+      ],
+      "GGiraffa": [
+        "GGiraffaFemale",
+        "GGiraffaFemaleVariation1",
+        "GGiraffaFemaleVariation2",
+        "GGiraffaMale",
+        "GGiraffaMaleVariation1",
+        "GGiraffaMaleVariation2"
+      ],
+      "GGiraffaJuvenile": [
+        "GGiraffaJuvenile",
+        "GGiraffaJuvenileVariation1",
+        "GGiraffaJuvenileVariation2"
+      ],
+      "GPeralta": [
+        "GPeraltaFemale",
+        "GPeraltaFemaleVariation1",
+        "GPeraltaFemaleVariation2",
+        "GPeraltaMale",
+        "GPeraltaMaleVariation1",
+        "GPeraltaMaleVariation2"
+      ],
+      "GPeraltaJuvenile": [
+        "GPeraltaJuvenile",
+        "GPeraltaJuvenileVariation1",
+        "GPeraltaJuvenileVariation2"
+      ],
+      "GReticulata": [
+        "GReticulataFemale",
+        "GReticulataFemaleVariation1",
+        "GReticulataFemaleVariation2",
+        "GReticulataMale",
+        "GReticulataMaleVariation1",
+        "GReticulataMaleVariation2"
+      ],
+      "GReticulataJuvenile": [
+        "GReticulataJuvenile",
+        "GReticulataJuvenileVariation1",
+        "GReticulataJuvenileVariation2"
+      ],
+      "GTippelskirchi": [
+        "GTippelskirchiFemale",
+        "GTippelskirchiFemaleVariation1",
+        "GTippelskirchiFemaleVariation2",
+        "GTippelskirchiMale",
+        "GTippelskirchiMaleVariation1",
+        "GTippelskirchiMaleVariation2"
+      ],
+      "GTippelskirchiJuvenile": [
+        "GTippelskirchiJuvenile",
+        "GTippelskirchiJuvenileVariation1",
+        "GTippelskirchiJuvenileVariation2"
+      ],
+      "GrizzlyBear": [
+        "GrizzlyBear"
+      ],
+      "GuernseyFemaleVariation1_Cow": [
+        "GuernseyFemaleVariation1_Cow"
+      ],
+      "GuernseyFemaleVariation2_Cow": [
+        "GuernseyFemaleVariation2_Cow"
+      ],
+      "GuernseyFemale_Cow": [
+        "GuernseyFemale_Cow"
+      ],
+      "HAmphibius": [
+        "HAmphibiusFemale",
+        "HAmphibiusFemaleVariation2",
+        "HAmphibiusMale",
+        "HAmphibiusMaleVariation1",
+        "HAmphibiusMaleVariation2"
+      ],
+      "HAmphibiusFemaleVariation1": [
+        "HAmphibiusFemaleVariation1Variation1"
+      ],
+      "HAmphibiusJuvenile": [
+        "HAmphibiusJuvenile",
+        "HAmphibiusJuvenileVariation1",
+        "HAmphibiusJuvenileVariation2"
+      ],
+      "HHydrochaeris": [
+        "HHydrochaerisFemale",
+        "HHydrochaerisFemaleVariation1",
+        "HHydrochaerisFemaleVariation2",
+        "HHydrochaerisMale",
+        "HHydrochaerisMaleVariation1",
+        "HHydrochaerisMaleVariation2"
+      ],
+      "HHydrochaerisJuvenile": [
+        "HHydrochaerisJuvenile",
+        "HHydrochaerisJuvenileVariation1",
+        "HHydrochaerisJuvenileVariation2"
+      ],
+      "HIsthmius": [
+        "HIsthmiusFemale",
+        "HIsthmiusFemaleVariation1",
+        "HIsthmiusFemaleVariation2",
+        "HIsthmiusMale",
+        "HIsthmiusMaleVariation1",
+        "HIsthmiusMaleVariation2"
+      ],
+      "HIsthmiusJuvenile": [
+        "HIsthmiusJuvenile",
+        "HIsthmiusJuvenileVariation1",
+        "HIsthmiusJuvenileVariation2"
+      ],
+      "HMalayanus": [
+        "HMalayanusFemale",
+        "HMalayanusFemaleVariation1",
+        "HMalayanusFemaleVariation2",
+        "HMalayanusMale",
+        "HMalayanusMaleVariation1",
+        "HMalayanusMaleVariation2"
+      ],
+      "HMalayanusJuvenile": [
+        "HMalayanusJuvenile",
+        "HMalayanusJuvenileVariation1",
+        "HMalayanusJuvenileVariation2"
+      ],
+      "HNiger": [
+        "HNigerFemale",
+        "HNigerFemaleVariation1",
+        "HNigerFemaleVariation2",
+        "HNigerMale",
+        "HNigerMaleVariation1",
+        "HNigerMaleVariation2"
+      ],
+      "HNigerJuvenile": [
+        "HNigerJuvenile",
+        "HNigerJuvenileVariation1",
+        "HNigerJuvenileVariation2"
+      ],
+      "HumpbackWhale": [
+        "HumpbackWhale"
+      ],
+      "JW_MOSASAURUS": [
+        "JW_MOSASAURUS"
+      ],
+      "JW_STEGOSAURUS": [
+        "JW_STEGOSAURUS"
+      ],
+      "JW_Velociraptor": [
+        "JW_Velociraptor"
+      ],
+      "JW_Velociraptor_Blue": [
+        "JW_Velociraptor_Blue"
+      ],
+      "JerseyFemaleVariation1_Cow": [
+        "JerseyFemaleVariation1_Cow"
+      ],
+      "JerseyFemaleVariation2_Cow": [
+        "JerseyFemaleVariation2_Cow"
+      ],
+      "JerseyFemale_Cow": [
+        "JerseyFemale_Cow"
+      ],
+      "LAfricana": [
+        "LAfricanaFemale",
+        "LAfricanaFemaleVariation1",
+        "LAfricanaFemaleVariation2",
+        "LAfricanaMale",
+        "LAfricanaMaleVariation1",
+        "LAfricanaMaleVariation2"
+      ],
+      "LAfricanaJuvenile": [
+        "LAfricanaJuvenile",
+        "LAfricanaJuvenileVariation1",
+        "LAfricanaJuvenileVariation2"
+      ],
+      "LCyclotis": [
+        "LCyclotisFemale",
+        "LCyclotisFemaleVariation1",
+        "LCyclotisFemaleVariation2",
+        "LCyclotisMale",
+        "LCyclotisMaleVariation1",
+        "LCyclotisMaleVariation2"
+      ],
+      "LCyclotisJuvenile": [
+        "LCyclotisJuvenile",
+        "LCyclotisJuvenileVariation1",
+        "LCyclotisJuvenileVariation2"
+      ],
+      "LGlama": [
+        "LGlamaFemale",
+        "LGlamaFemaleVariation1",
+        "LGlamaFemaleVariation2",
+        "LGlamaMale",
+        "LGlamaMaleVariation1",
+        "LGlamaMaleVariation2"
+      ],
+      "LGlamaJuvenile": [
+        "LGlamaJuvenile",
+        "LGlamaJuvenileVariation1",
+        "LGlamaJuvenileVariation2"
+      ],
+      "MRufus": [
+        "MRufusFemale",
+        "MRufusFemaleVariation1",
+        "MRufusFemaleVariation2",
+        "MRufusMale",
+        "MRufusMaleVariation1",
+        "MRufusMaleVariation2"
+      ],
+      "MRufusJuvenile": [
+        "MRufusJuvenile",
+        "MRufusJuvenileVariation1",
+        "MRufusJuvenileVariation2"
+      ],
+      "MTridactyla": [
+        "MTridactylaFemale",
+        "MTridactylaFemaleVariation1",
+        "MTridactylaFemaleVariation2",
+        "MTridactylaMale",
+        "MTridactylaMaleVariation1",
+        "MTridactylaMaleVariation2"
+      ],
+      "MTridactylaJuvenile": [
+        "MTridactylaJuvenile",
+        "MTridactylaJuvenileVariation1",
+        "MTridactylaJuvenileVariation2"
+      ],
+      "NLarvatus": [
+        "NLarvatusFemale",
+        "NLarvatusFemaleVariation1",
+        "NLarvatusFemaleVariation2",
+        "NLarvatusMale",
+        "NLarvatusMaleVariation1",
+        "NLarvatusMaleVariation2"
+      ],
+      "NLarvatusJuvenile": [
+        "NLarvatusJuvenile",
+        "NLarvatusJuvenileVariation1",
+        "NLarvatusJuvenileVariation2"
+      ],
+      "OAfer": [
+        "OAferFemale",
+        "OAferFemaleVariation1",
+        "OAferFemaleVariation2",
+        "OAferMale",
+        "OAferMaleVariation1",
+        "OAferMaleVariation2"
+      ],
+      "OAferJuvenile": [
+        "OAferJuvenile",
+        "OAferJuvenileVariation1",
+        "OAferJuvenileVariation2"
+      ],
+      "OAmericanus": [
+        "OAmericanusFemale",
+        "OAmericanusFemaleVariation1",
+        "OAmericanusFemaleVariation2",
+        "OAmericanusMale",
+        "OAmericanusMaleVariation1",
+        "OAmericanusMaleVariation2"
+      ],
+      "OAmericanusJuvenile": [
+        "OAmericanusJuvenile",
+        "OAmericanusJuvenileVariation1",
+        "OAmericanusJuvenileVariation2"
+      ],
+      "OAriesAries": [
+        "OAriesAriesFemale",
+        "OAriesAriesFemaleVariation1",
+        "OAriesAriesFemaleVariation2",
+        "OAriesAriesFemaleVariation3",
+        "OAriesAriesMale",
+        "OAriesAriesMaleVariation1",
+        "OAriesAriesMaleVariation2",
+        "OAriesAriesMaleVariation3"
+      ],
+      "OAriesAriesJuvenile": [
+        "OAriesAriesJuvenile",
+        "OAriesAriesJuvenileVariation1",
+        "OAriesAriesJuvenileVariation2",
+        "OAriesAriesJuvenileVariation3"
+      ],
+      "OAriesMusimon": [
+        "OAriesMusimonFemale",
+        "OAriesMusimonFemaleVariation1",
+        "OAriesMusimonFemaleVariation2",
+        "OAriesMusimonMale",
+        "OAriesMusimonMaleVariation1",
+        "OAriesMusimonMaleVariation2"
+      ],
+      "OAriesMusimonJuvenile": [
+        "OAriesMusimonJuvenile",
+        "OAriesMusimonJuvenileVariation1",
+        "OAriesMusimonJuvenileVariation2"
+      ],
+      "OCanadensis": [
+        "OCanadensisFemale",
+        "OCanadensisFemaleVariation1",
+        "OCanadensisFemaleVariation2",
+        "OCanadensisMale",
+        "OCanadensisMaleVariation1",
+        "OCanadensisMaleVariation2"
+      ],
+      "OCanadensisJuvenile": [
+        "OCanadensisJuvenile",
+        "OCanadensisJuvenileVariation1",
+        "OCanadensisJuvenileVariation2"
+      ],
+      "OCanadensisNelsoni": [
+        "OCanadensisNelsoniFemale",
+        "OCanadensisNelsoniFemaleVariation1",
+        "OCanadensisNelsoniFemaleVariation2",
+        "OCanadensisNelsoniMale",
+        "OCanadensisNelsoniMaleVariation1",
+        "OCanadensisNelsoniMaleVariation2"
+      ],
+      "OCanadensisNelsoniJuvenile": [
+        "OCanadensisNelsoniJuvenile",
+        "OCanadensisNelsoniJuvenileVariation1",
+        "OCanadensisNelsoniJuvenileVariation2"
+      ],
+      "ODalliDalli": [
+        "ODalliDalliFemale",
+        "ODalliDalliFemaleVariation1",
+        "ODalliDalliFemaleVariation2",
+        "ODalliDalliMale",
+        "ODalliDalliMaleVariation1",
+        "ODalliDalliMaleVariation2"
+      ],
+      "ODalliDalliJuvenile": [
+        "ODalliDalliJuvenile",
+        "ODalliDalliJuvenileVariation1",
+        "ODalliDalliJuvenileVariation2"
+      ],
+      "ODalliStonei": [
+        "ODalliStoneiFemale",
+        "ODalliStoneiFemaleVariation1",
+        "ODalliStoneiFemaleVariation2",
+        "ODalliStoneiMale",
+        "ODalliStoneiMaleVariation1",
+        "ODalliStoneiMaleVariation2"
+      ],
+      "ODalliStoneiJuvenile": [
+        "ODalliStoneiJuvenile",
+        "ODalliStoneiJuvenileVariation1",
+        "ODalliStoneiJuvenileVariation2"
+      ],
+      "OHemionus": [
+        "OHemionusFemale",
+        "OHemionusFemaleVariation1",
+        "OHemionusFemaleVariation2",
+        "OHemionusMale",
+        "OHemionusMaleVariation1",
+        "OHemionusMaleVariation2"
+      ],
+      "OHemionusJuvenile": [
+        "OHemionusJuvenile",
+        "OHemionusJuvenileVariation1",
+        "OHemionusJuvenileVariation2"
+      ],
+      "Orca": [
+        "Orca"
+      ],
+      "PAethiopicus": [
+        "PAethiopicusFemale",
+        "PAethiopicusFemaleVariation1",
+        "PAethiopicusFemaleVariation2",
+        "PAethiopicusMale",
+        "PAethiopicusMaleVariation1",
+        "PAethiopicusMaleVariation2"
+      ],
+      "PAethiopicusJuvenile": [
+        "PAethiopicusJuvenile",
+        "PAethiopicusJuvenileVariation1",
+        "PAethiopicusJuvenileVariation2"
+      ],
+      "PAfricanus": [
+        "PAfricanusFemale",
+        "PAfricanusFemaleVariation1",
+        "PAfricanusFemaleVariation2",
+        "PAfricanusMale",
+        "PAfricanusMaleVariation1",
+        "PAfricanusMaleVariation2"
+      ],
+      "PAfricanusJuvenile": [
+        "PAfricanusJuvenile",
+        "PAfricanusJuvenileVariation1",
+        "PAfricanusJuvenileVariation2"
+      ],
+      "PLeoLeo": [
+        "PLeoLeoFemale",
+        "PLeoLeoFemaleVariation1",
+        "PLeoLeoFemaleVariation2",
+        "PLeoLeoMale",
+        "PLeoLeoMaleVariation1",
+        "PLeoLeoMaleVariation2"
+      ],
+      "PLeoLeoJuvenile": [
+        "PLeoLeoJuvenile",
+        "PLeoLeoJuvenileVariation1",
+        "PLeoLeoJuvenileVariation2"
+      ],
+      "PLeoMelanochaita": [
+        "PLeoMelanochaitaFemale",
+        "PLeoMelanochaitaFemaleVariation1",
+        "PLeoMelanochaitaFemaleVariation2",
+        "PLeoMelanochaitaMale",
+        "PLeoMelanochaitaMaleVariation1",
+        "PLeoMelanochaitaMaleVariation2"
+      ],
+      "PLeoMelanochaitaJuvenile": [
+        "PLeoMelanochaitaJuvenile",
+        "PLeoMelanochaitaJuvenileVariation1",
+        "PLeoMelanochaitaJuvenileVariation2"
+      ],
+      "PLeoPersica": [
+        "PLeoPersicaFemale",
+        "PLeoPersicaFemaleVariation1",
+        "PLeoPersicaFemaleVariation2",
+        "PLeoPersicaMale",
+        "PLeoPersicaMaleVariation1",
+        "PLeoPersicaMaleVariation2"
+      ],
+      "PLeoPersicaJuvenile": [
+        "PLeoPersicaJuvenile",
+        "PLeoPersicaJuvenileVariation1",
+        "PLeoPersicaJuvenileVariation2"
+      ],
+      "PPaniscus": [
+        "PPaniscusFemale",
+        "PPaniscusFemaleVariation1",
+        "PPaniscusFemaleVariation2",
+        "PPaniscusMale",
+        "PPaniscusMaleVariation1",
+        "PPaniscusMaleVariation2"
+      ],
+      "PPaniscusJuvenile": [
+        "PPaniscusJuvenile",
+        "PPaniscusJuvenileVariation1",
+        "PPaniscusJuvenileVariation2"
+      ],
+      "PTigrisAltaica": [
+        "PTigrisAltaicaFemale",
+        "PTigrisAltaicaFemaleVariation1",
+        "PTigrisAltaicaFemaleVariation2",
+        "PTigrisAltaicaMale",
+        "PTigrisAltaicaMaleVariation1",
+        "PTigrisAltaicaMaleVariation2"
+      ],
+      "PTigrisAltaicaJuvenile": [
+        "PTigrisAltaicaJuvenile",
+        "PTigrisAltaicaJuvenileVariation1",
+        "PTigrisAltaicaJuvenileVariation2"
+      ],
+      "PTigris": [
+        "PTigrisFemale",
+        "PTigrisFemaleVariation1",
+        "PTigrisFemaleVariation2",
+        "PTigrisMale",
+        "PTigrisMaleVariation1",
+        "PTigrisMaleVariation2"
+      ],
+      "PTigrisJuvenile": [
+        "PTigrisJuvenile",
+        "PTigrisJuvenileVariation1",
+        "PTigrisJuvenileVariation2"
+      ],
+      "PTigrisSondaica": [
+        "PTigrisSondaicaFemale",
+        "PTigrisSondaicaFemaleVariation1",
+        "PTigrisSondaicaFemaleVariation2",
+        "PTigrisSondaicaMale",
+        "PTigrisSondaicaMaleVariation1",
+        "PTigrisSondaicaMaleVariation2"
+      ],
+      "PTigrisSondaicaJuvenile": [
+        "PTigrisSondaicaJuvenile",
+        "PTigrisSondaicaJuvenileVariation1",
+        "PTigrisSondaicaJuvenileVariation2"
+      ],
+      "PTigrisTigris": [
+        "PTigrisTigrisFemale",
+        "PTigrisTigrisFemaleVariation1",
+        "PTigrisTigrisFemaleVariation2",
+        "PTigrisTigrisMale",
+        "PTigrisTigrisMaleVariation1",
+        "PTigrisTigrisMaleVariation2"
+      ],
+      "PTigrisTigrisJuvenile": [
+        "PTigrisTigrisJuvenile",
+        "PTigrisTigrisJuvenileVariation1",
+        "PTigrisTigrisJuvenileVariation2"
+      ],
+      "PTroglodytesVerus": [
+        "PTroglodytesVerusFemale",
+        "PTroglodytesVerusFemaleVariation1",
+        "PTroglodytesVerusFemaleVariation2",
+        "PTroglodytesVerusMale",
+        "PTroglodytesVerusMaleVariation1",
+        "PTroglodytesVerusMaleVariation2"
+      ],
+      "PTroglodytesVerusJuvenile": [
+        "PTroglodytesVerusJuvenile",
+        "PTroglodytesVerusJuvenileVariation1",
+        "PTroglodytesVerusJuvenileVariation2"
+      ],
+      "PUncia": [
+        "PUnciaFemale",
+        "PUnciaFemaleVariation1",
+        "PUnciaFemaleVariation2",
+        "PUnciaMale",
+        "PUnciaMaleVariation1",
+        "PUnciaMaleVariation2"
+      ],
+      "PUnciaJuvenile": [
+        "PUnciaJuvenile",
+        "PUnciaJuvenileVariation1",
+        "PUnciaJuvenileVariation2"
+      ],
+      "RTarandusGroenlandicus": [
+        "RTarandusGroenlandicusFemale",
+        "RTarandusGroenlandicusFemaleVariation1",
+        "RTarandusGroenlandicusFemaleVariation2",
+        "RTarandusGroenlandicusMale",
+        "RTarandusGroenlandicusMaleVariation1",
+        "RTarandusGroenlandicusMaleVariation2"
+      ],
+      "RTarandusGroenlandicusJuvenile": [
+        "RTarandusGroenlandicusJuvenile",
+        "RTarandusGroenlandicusJuvenileVariation1",
+        "RTarandusGroenlandicusJuvenileVariation2"
+      ],
+      "SCafferBrachyceros": [
+        "SCafferBrachycerosFemale",
+        "SCafferBrachycerosFemaleVariation1",
+        "SCafferBrachycerosFemaleVariation2",
+        "SCafferBrachycerosMale",
+        "SCafferBrachycerosMaleVariation1",
+        "SCafferBrachycerosMaleVariation2"
+      ],
+      "SCafferBrachycerosJuvenile": [
+        "SCafferBrachycerosJuvenile",
+        "SCafferBrachycerosJuvenileVariation1",
+        "SCafferBrachycerosJuvenileVariation2"
+      ],
+      "SCaffer": [
+        "SCafferFemale",
+        "SCafferFemaleVariation1",
+        "SCafferFemaleVariation2",
+        "SCafferMale",
+        "SCafferMaleVariation1",
+        "SCafferMaleVariation2"
+      ],
+      "SCafferJuvenile": [
+        "SCafferJuvenile",
+        "SCafferJuvenileVariation1",
+        "SCafferJuvenileVariation2"
+      ],
+      "SCafferNanus": [
+        "SCafferNanusFemale",
+        "SCafferNanusFemaleVariation1",
+        "SCafferNanusFemaleVariation2",
+        "SCafferNanusMale",
+        "SCafferNanusMaleVariation1",
+        "SCafferNanusMaleVariation2"
+      ],
+      "SCafferNanusJuvenile": [
+        "SCafferNanusJuvenile",
+        "SCafferNanusJuvenileVariation1",
+        "SCafferNanusJuvenileVariation2"
+      ],
+      "SCamelus": [
+        "SCamelusFemale",
+        "SCamelusFemaleVariation1",
+        "SCamelusFemaleVariation2",
+        "SCamelusMale",
+        "SCamelusMaleVariation1",
+        "SCamelusMaleVariation2"
+      ],
+      "SCamelusJuvenile": [
+        "SCamelusJuvenile",
+        "SCamelusJuvenileVariation1",
+        "SCamelusJuvenileVariation2"
+      ],
+      "SyrianBear": [
+        "SyrianBear"
+      ],
+      "TEurycerus": [
+        "TEurycerusFemale",
+        "TEurycerusFemaleVariation1",
+        "TEurycerusFemaleVariation2",
+        "TEurycerusMale",
+        "TEurycerusMaleVariation1",
+        "TEurycerusMaleVariation2"
+      ],
+      "TEurycerusJuvenile": [
+        "TEurycerusJuvenile",
+        "TEurycerusJuvenileVariation1",
+        "TEurycerusJuvenileVariation2"
+      ],
+      "UAmericanus": [
+        "UAmericanusFemale",
+        "UAmericanusFemaleVariation1",
+        "UAmericanusFemaleVariation2",
+        "UAmericanusMale",
+        "UAmericanusMaleVariation1",
+        "UAmericanusMaleVariation2"
+      ],
+      "UAmericanusJuvenile": [
+        "UAmericanusJuvenile",
+        "UAmericanusJuvenileVariation1",
+        "UAmericanusJuvenileVariation2"
+      ],
+      "UArctosArctos": [
+        "UArctosArctosFemale",
+        "UArctosArctosFemaleVariation1",
+        "UArctosArctosFemaleVariation2",
+        "UArctosArctosMale",
+        "UArctosArctosMaleVariation1",
+        "UArctosArctosMaleVariation2"
+      ],
+      "UArctosArctosJuvenile": [
+        "UArctosArctosJuvenile",
+        "UArctosArctosJuvenileVariation1",
+        "UArctosArctosJuvenileVariation2"
+      ],
+      "UArctosCollaris": [
+        "UArctosCollarisFemale",
+        "UArctosCollarisFemaleVariation1",
+        "UArctosCollarisFemaleVariation2",
+        "UArctosCollarisMale",
+        "UArctosCollarisMaleVariation1",
+        "UArctosCollarisMaleVariation2"
+      ],
+      "UArctosCollarisJuvenile": [
+        "UArctosCollarisJuvenile",
+        "UArctosCollarisJuvenileVariation1",
+        "UArctosCollarisJuvenileVariation2"
+      ],
+      "UArctosHorribilis": [
+        "UArctosHorribilisFemale",
+        "UArctosHorribilisFemaleVariation1",
+        "UArctosHorribilisFemaleVariation2",
+        "UArctosHorribilisMale",
+        "UArctosHorribilisMaleVariation1",
+        "UArctosHorribilisMaleVariation2"
+      ],
+      "UArctosHorribilisJuvenile": [
+        "UArctosHorribilisJuvenile",
+        "UArctosHorribilisJuvenileVariation1",
+        "UArctosHorribilisJuvenileVariation2"
+      ],
+      "UArctosIsabellinus": [
+        "UArctosIsabellinusFemale",
+        "UArctosIsabellinusFemaleVariation1",
+        "UArctosIsabellinusFemaleVariation2",
+        "UArctosIsabellinusMale",
+        "UArctosIsabellinusMaleVariation1",
+        "UArctosIsabellinusMaleVariation2"
+      ],
+      "UArctosIsabellinusJuvenile": [
+        "UArctosIsabellinusJuvenile",
+        "UArctosIsabellinusJuvenileVariation1",
+        "UArctosIsabellinusJuvenileVariation2"
+      ],
+      "UArctosLasiotus": [
+        "UArctosLasiotusFemale",
+        "UArctosLasiotusFemaleVariation1",
+        "UArctosLasiotusFemaleVariation2",
+        "UArctosLasiotusMale",
+        "UArctosLasiotusMaleVariation1",
+        "UArctosLasiotusMaleVariation2"
+      ],
+      "UArctosLasiotusJuvenile": [
+        "UArctosLasiotusJuvenile",
+        "UArctosLasiotusJuvenileVariation1",
+        "UArctosLasiotusJuvenileVariation2"
+      ],
+      "UMaritimus": [
+        "UMaritimusFemale",
+        "UMaritimusFemaleVariation1",
+        "UMaritimusFemaleVariation2",
+        "UMaritimusMale",
+        "UMaritimusMaleVariation1",
+        "UMaritimusMaleVariation2"
+      ],
+      "UMaritimusJuvenile": [
+        "UMaritimusJuvenile",
+        "UMaritimusJuvenileVariation1",
+        "UMaritimusJuvenileVariation2"
+      ],
+      "UThibetanus": [
+        "UThibetanusFemale",
+        "UThibetanusFemaleVariation1",
+        "UThibetanusFemaleVariation2",
+        "UThibetanusMale",
+        "UThibetanusMaleVariation1",
+        "UThibetanusMaleVariation2"
+      ],
+      "UThibetanusJuvenile": [
+        "UThibetanusJuvenile",
+        "UThibetanusJuvenileVariation1",
+        "UThibetanusJuvenileVariation2"
+      ],
+      "VLagopusBeringensis": [
+        "VLagopusBeringensisFemale",
+        "VLagopusBeringensisFemaleVariation1",
+        "VLagopusBeringensisFemaleVariation2",
+        "VLagopusBeringensisMale",
+        "VLagopusBeringensisMaleVariation1",
+        "VLagopusBeringensisMaleVariation2"
+      ],
+      "VLagopusBeringensisJuvenile": [
+        "VLagopusBeringensisJuvenile",
+        "VLagopusBeringensisJuvenileVariation1",
+        "VLagopusBeringensisJuvenileVariation2"
+      ],
+      "VLagopus": [
+        "VLagopusFemale",
+        "VLagopusFemaleVariation1",
+        "VLagopusFemaleVariation2",
+        "VLagopusMale",
+        "VLagopusMaleVariation1",
+        "VLagopusMaleVariation2"
+      ],
+      "VLagopusFuliginosus": [
+        "VLagopusFuliginosusFemale",
+        "VLagopusFuliginosusFemaleVariation1",
+        "VLagopusFuliginosusFemaleVariation2",
+        "VLagopusFuliginosusMale",
+        "VLagopusFuliginosusMaleVariation1",
+        "VLagopusFuliginosusMaleVariation2"
+      ],
+      "VLagopusFuliginosusJuvenile": [
+        "VLagopusFuliginosusJuvenile",
+        "VLagopusFuliginosusJuvenileVariation1",
+        "VLagopusFuliginosusJuvenileVariation2"
+      ],
+      "VLagopusJuvenile": [
+        "VLagopusJuvenile",
+        "VLagopusJuvenileVariation1",
+        "VLagopusJuvenileVariation2"
+      ],
+      "VLagopusPribilofensis": [
+        "VLagopusPribilofensisFemale",
+        "VLagopusPribilofensisFemaleVariation1",
+        "VLagopusPribilofensisFemaleVariation2",
+        "VLagopusPribilofensisMale",
+        "VLagopusPribilofensisMaleVariation1",
+        "VLagopusPribilofensisMaleVariation2"
+      ],
+      "VLagopusPribilofensisJuvenile": [
+        "VLagopusPribilofensisJuvenile",
+        "VLagopusPribilofensisJuvenileVariation1",
+        "VLagopusPribilofensisJuvenileVariation2"
+      ],
+      "VPacos": [
+        "VPacosFemale",
+        "VPacosFemaleVariation1",
+        "VPacosFemaleVariation2",
+        "VPacosMale",
+        "VPacosMaleVariation1",
+        "VPacosMaleVariation2"
+      ],
+      "VPacosJuvenile": [
+        "VPacosJuvenile",
+        "VPacosJuvenileVariation1",
+        "VPacosJuvenileVariation2"
+      ],
+      "VicunaFemaleVariation1_Llama": [
+        "VicunaFemaleVariation1_Llama"
+      ],
+      "VicunaFemaleVariation2_Llama": [
+        "VicunaFemaleVariation2_Llama"
+      ],
+      "VicunaFemale_Llama": [
+        "VicunaFemale_Llama"
+      ],
+      "VicunaJuvenileVariation1_Llama": [
+        "VicunaJuvenileVariation1_Llama"
+      ],
+      "VicunaJuvenileVariation2_Llama": [
+        "VicunaJuvenileVariation2_Llama"
+      ],
+      "VicunaJuvenile_Llama": [
+        "VicunaJuvenile_Llama"
+      ],
+      "VicunaMaleVariation1_Llama": [
+        "VicunaMaleVariation1_Llama"
+      ],
+      "VicunaMaleVariation2_Llama": [
+        "VicunaMaleVariation2_Llama"
+      ],
+      "VicunaMale_Llama": [
+        "VicunaMale_Llama"
+      ],
+      "ahqm horse and rider black": [
+        "ahqm horse and rider black"
+      ],
+      "ahqm horse and rider brown": [
+        "ahqm horse and rider brown"
+      ],
+      "ahqm horse and rider grey": [
+        "ahqm horse and rider grey"
+      ],
+      "ahqm horse and rider white": [
+        "ahqm horse and rider white"
+      ],
+      "ahqm wheelchair user female green": [
+        "ahqm wheelchair user female green"
+      ],
+      "ahqm wheelchair user female red": [
+        "ahqm wheelchair user female red"
+      ],
+      "ahqm wheelchair user male old": [
+        "ahqm wheelchair user male old"
+      ],
+      "ahqw Gal 1 Walk": [
+        "ahqw Gal 1 Walk"
+      ],
+      "ahqw Gal 2 Walk": [
+        "ahqw Gal 2 Walk"
+      ],
+      "ahqw Gal 3 Walk": [
+        "ahqw Gal 3 Walk"
+      ],
+      "ahqw Gal 4 Walk": [
+        "ahqw Gal 4 Walk"
+      ],
+      "ahqw Gal 5 Walk": [
+        "ahqw Gal 5 Walk"
+      ],
+      "ahqw Gal 6 Walk": [
+        "ahqw Gal 6 Walk"
+      ],
+      "ahqw Gal 7 Walk": [
+        "ahqw Gal 7 Walk"
+      ],
+      "ahqw Gal Beach 1 Walk": [
+        "ahqw Gal Beach 1 Walk"
+      ],
+      "ahqw Gal Beach 2 Walk": [
+        "ahqw Gal Beach 2 Walk"
+      ],
+      "ahqw Gal Beach 3 Walk": [
+        "ahqw Gal Beach 3 Walk"
+      ],
+      "ahqw Gal Hiker Walk": [
+        "ahqw Gal Hiker Walk"
+      ],
+      "ahqw Gal Running 1": [
+        "ahqw Gal Running 1"
+      ],
+      "ahqw Gal Running 2": [
+        "ahqw Gal Running 2"
+      ],
+      "ahqw Gal Running 3": [
+        "ahqw Gal Running 3"
+      ],
+      "ahqw Guy 1 Walk": [
+        "ahqw Guy 1 Walk"
+      ],
+      "ahqw Guy 2 Walk": [
+        "ahqw Guy 2 Walk"
+      ],
+      "ahqw Guy 3 Walk": [
+        "ahqw Guy 3 Walk"
+      ],
+      "ahqw Guy 4 Walk": [
+        "ahqw Guy 4 Walk"
+      ],
+      "ahqw Guy 5 Walk": [
+        "ahqw Guy 5 Walk"
+      ],
+      "ahqw Guy 6 Walk": [
+        "ahqw Guy 6 Walk"
+      ],
+      "ahqw Guy 7 Walk": [
+        "ahqw Guy 7 Walk"
+      ],
+      "ahqw Guy Beach 1 Walk": [
+        "ahqw Guy Beach 1 Walk"
+      ],
+      "ahqw Guy Beach 2 Walk": [
+        "ahqw Guy Beach 2 Walk"
+      ],
+      "ahqw Guy Beach 3 Walk": [
+        "ahqw Guy Beach 3 Walk"
+      ],
+      "ahqw Guy Business 1 Walk with Briefcase": [
+        "ahqw Guy Business 1 Walk with Briefcase"
+      ],
+      "ahqw Guy Hiker Walk": [
+        "ahqw Guy Hiker Walk"
+      ],
+      "ahqw Guy Running 1": [
+        "ahqw Guy Running 1"
+      ],
+      "ahqw Guy Running 2": [
+        "ahqw Guy Running 2"
+      ],
+      "ahqw Guy Running 3": [
+        "ahqw Guy Running 3"
+      ],
+      "ahqw Hospital Patient with IV Walk": [
+        "ahqw Hospital Patient with IV Walk"
+      ],
+      "ahqw Mil Gcrew 1 Walk": [
+        "ahqw Mil Gcrew 1 Walk"
+      ],
+      "ahqw Mil Gcrew 2 Walk": [
+        "ahqw Mil Gcrew 2 Walk"
+      ],
+      "ahqw Mil Gcrew USA 1 Walk": [
+        "ahqw Mil Gcrew USA 1 Walk"
+      ],
+      "ahqw Mil Gcrew USA 2 Walk": [
+        "ahqw Mil Gcrew USA 2 Walk"
+      ],
+      "ahqw Mil Pilot Jet Walk": [
+        "ahqw Mil Pilot Jet Walk"
+      ],
+      "ahqw Mil Soldier 2 Armed Walk": [
+        "ahqw Mil Soldier 2 Armed Walk"
+      ],
+      "ahqw Mil Soldier Walk": [
+        "ahqw Mil Soldier Walk"
+      ],
+      "ahqw Overalls 1 Walk": [
+        "ahqw Overalls 1 Walk"
+      ],
+      "ahqw Overalls 2 Walk": [
+        "ahqw Overalls 2 Walk"
+      ],
+      "ahqw Overalls 3 Pushing Wheelbarrow": [
+        "ahqw Overalls 3 Pushing Wheelbarrow"
+      ],
+      "ahqw Overalls 4 Carrying Pipe Walk": [
+        "ahqw Overalls 4 Carrying Pipe Walk"
+      ],
+      "ahqw Pilot Air Ambulance Walk": [
+        "ahqw Pilot Air Ambulance Walk"
+      ],
+      "ahqw Pilot Airline 1 Walk": [
+        "ahqw Pilot Airline 1 Walk"
+      ],
+      "ahqw Pilot Airline 2 Walk": [
+        "ahqw Pilot Airline 2 Walk"
+      ],
+      "ahqw Skydiver Walk": [
+        "ahqw Skydiver Walk"
+      ],
+      "ahqw Workman": [
+        "ahqw Workman"
+      ]
+    },
+    "exceptions": []
+  },
+  "aircraft": {
+    "unique_count": 5221,
+    "wildlife_titles": [
+      "Asobo PassiveAircraft C152 Aerobat",
+      "Asobo PassiveAircraft Eagle",
+      "Astro ONE: Dragon",
+      "CGS Hawk Arrow II",
+      "Cessna C152 Aerobat",
+      "Cessna C152 Aerobat Aerial Advertising",
+      "DC Designs Stearman Old Crow",
+      "FSLTL A20N BVX Osprey_Fictional",
+      "FSLTL A319 BVX Osprey_Fictional",
+      "FSLTL A320 BVX Osprey_Fictional",
+      "FSLTL A321 BVX Osprey_Fictional",
+      "FSLTL_A320_CWN_Crown-Airlines-STUB",
+      "FSLTL_A321_SWT_Swiftair-STUB",
+      "FSLTL_A359_Eagle_Air_Fictional",
+      "FSLTL_A388_BAW-Speedbird",
+      "FSLTL_AT46_ATX_AirSWIFT-STUB",
+      "FSLTL_AT76_SWT_Swiftair-STUB",
+      "FSLTL_B733F_EPE_Air-Eagle-STUB",
+      "FSLTL_B733_XLE_NG-Eagle-STUB",
+      "FSLTL_B734_SWT_Swiftair-STUB",
+      "FSLTL_B737_XLE_NG-Eagle-STUB",
+      "FSLTL_B738_BBG_Bluebird-Airways-STUB",
+      "FSLTL_B738_XLE_NG-Eagle-STUB",
+      "FSLTL_B789_RR_Osprey Airways_Fictional",
+      "FSLTL_DH8D_BBZ_Bluebird-Aviation-STUB",
+      "FSLTL_DH8D_FVS_Falcon-Aviation-Services-STUB",
+      "FSLTL_E170_BOT_Air-Botswana-STUB",
+      "FSLTL_E170_ENY_AmericanEagle",
+      "FSLTL_E170_RPA_AmericanEagle",
+      "FSLTL_E170_SKW_AmericanEagle",
+      "FSLTL_E190_Osprey_Fictional",
+      "FSLTL_FAIB_A20N_Condor_Passion",
+      "FSLTL_FAIB_A20N_Virtual-Crane-Airways_Fictional",
+      "FSLTL_FAIB_A21N_BVX Osprey_Fictional",
+      "FSLTL_FAIB_A21N_Condor_Island",
+      "FSLTL_FAIB_A21N_Condor_Sunshine",
+      "FSLTL_FAIB_A21N_Virtual-Crane-Airways_Fictional",
+      "FSLTL_FAIB_A319_Virtual-Crane-Airways_Fictional",
+      "FSLTL_FAIB_A320_CFG-Condor",
+      "FSLTL_FAIB_A320_CFG-Condor_FBB",
+      "FSLTL_FAIB_A320_CFG-Condor_FBY",
+      "FSLTL_FAIB_A320_CFG-Condor_HN",
+      "FSLTL_FAIB_A320_Freebird",
+      "FSLTL_FAIB_A320_Freebird_Air_FHG",
+      "FSLTL_FAIB_A320_Freebird_Air_FHI",
+      "FSLTL_FAIB_A320_Freebird_Air_FHM",
+      "FSLTL_FAIB_A320_Smartbird",
+      "FSLTL_FAIB_A320_United_Eagle",
+      "FSLTL_FAIB_A320_Virtual-Crane-Airways_Fictional",
+      "FSLTL_FAIB_A321_CFG-Condor D-AIAC",
+      "FSLTL_FAIB_A321_CFG-Condor D-AIAD",
+      "FSLTL_FAIB_A321_CFG-Condor D-ATCF",
+      "FSLTL_FAIB_A321_CFG-Condor D-ATCG",
+      "FSLTL_FAIB_A321_CFG-Condor_OC",
+      "FSLTL_FAIB_A321_Virtual-Crane-Airways_Fictional",
+      "FSLTL_FAIB_B733F_Swift_Cargo_Historical",
+      "FSLTL_FAIB_B737_Osprey_Fictional",
+      "FSLTL_FAIB_B737_Skyhawk_Fictional",
+      "FSLTL_FAIB_B738F_Swiftair_Cargo",
+      "FSLTL_FAIB_B738F_Swiftflight_Cargo",
+      "FSLTL_FAIB_B738_Osprey_Airways_Fictional",
+      "FSLTL_FAIB_B738_Osprey_World_Cargo_Fictional",
+      "FSLTL_FAIB_B738_Southwest_Triple_Crown_One",
+      "FSLTL_FAIB_B738_Virtual-Crane-Airways_Fictional",
+      "FSLTL_FAIB_B739_Osprey_Airways_Fictional",
+      "FSLTL_FAIB_B748_Osprey_Airways_Fictional",
+      "FSLTL_FAIB_B748_Osprey_World_Cargo_Fictional",
+      "FSLTL_FAIB_B748_Speedbird_Fictional",
+      "FSLTL_FAIB_B763_CFG-Condor",
+      "FSLTL_FAIB_B763_Speedbird_Fictional",
+      "FSLTL_FSPXAI_A359_Osprey_Airways_Fictional",
+      "FSLTL_FSPXAI_A359_Virtual-Crane-Airways_Fictional",
+      "FSLTL_FSPXAI_B788_Osprey Airways_Fictional",
+      "FSLTL_FSPXAI_B788_Speedbird",
+      "FSLTL_FSPXAI_MD11_EAG-Eagle-Airlines_Fictional",
+      "FSLTL_OSP_AT45_Green_Bird",
+      "FSLTL_OSP_AT45_Swift",
+      "FSLTL_OSP_AT46_Osprey_Fictional",
+      "FSLTL_OSP_AT75_Swift_Cargo",
+      "FSLTL_OSP_AT76_Airswift",
+      "FSLTL_OSP_AT76_Botswana",
+      "FSLTL_OSP_AT76_Green_Bird",
+      "FSLTL_OSP_AT76_Osprey_Fictional",
+      "FSLTL_TFS_A332_CFG-Condor_B",
+      "FSLTL_TFS_A332_CFG-Condor_G",
+      "FSLTL_TFS_A332_CFG-Condor_S",
+      "FSLTL_TFS_A332_GBG-GullivAir",
+      "FSLTL_TFS_A332_Osprey_Fictional",
+      "FSLTL_TFS_A332_Virtual-Crane-Airways_Fictional",
+      "FSLTL_TFS_A333_Blackbird-Air_Fictional",
+      "FSLTL_TFS_A333_Condor",
+      "FSLTL_TFS_A333_Skyhawk_Fictional",
+      "FSLTL_TFS_B77L_Osprey_World_Cargo_Fictional",
+      "FSLTL_TFS_B77W_BVX-Osprey Airways_Fictional",
+      "FSLTL_TFS_B77W_Skyhawk_Fictional",
+      "FSLTL_TFS_B77W_Virtual-Crane-Airways_Fictional",
+      "Fokker DR.I: White Raven",
+      "Fox2 ElectricProwl (912 iS - Low n' Slow Analog)",
+      "Fox2 ElectricProwl (912 iS - Low n' Slow)",
+      "Fox2 ElectricProwl (915 iS - Analog)",
+      "Fox2 ElectricProwl (915 iS - Competition)",
+      "Fox2 ElectricProwl (915 iS - Stage 1 Analog)",
+      "Fox2 ElectricProwl (915 iS - Stage 1)",
+      "Fox2 ElectricProwl (915 iS - Stage 2 Analog)",
+      "Fox2 ElectricProwl (915 iS - Stage 2)",
+      "Fox2 ElectricProwl (915 iS)",
+      "G-111 Albatross",
+      "G-111 Albatross G3X",
+      "Grumman Goose G21A",
+      "HU16 Albatross Passengers",
+      "M500 by FSReborn - ArrowLime",
+      "M500 by FSReborn - ArrowLime Lite"
+    ],
+    "exceptions": []
+  }
+}

@@ -1,0 +1,21 @@
+# fspackagetool build output and caches
+Packages/
+PackagesMetadata/
+_PackageInt/
+
+# PyInstaller intermediates
+build_exe/
+dist_exe/
+*.spec
+__pycache__/
+*.pyc
+
+# Local packaging staging
+dist/stage/
+
+# Probe captures from live sessions -- large, and specific to one flight
+probe/probe-*.json
+
+# Built binaries are attached to GitHub Releases, not committed
+PackageSources/Copys/fauna-hunt/Service/FaunaHuntService.exe
+PackageSources/Copys/fauna-hunt/Service/SimConnect.dll

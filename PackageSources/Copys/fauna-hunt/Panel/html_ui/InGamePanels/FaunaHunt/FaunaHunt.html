@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fauna Hunt</title>
+		<meta charset="utf-8"/>
+		<link rel="stylesheet" href="/SCSS/common.css"/>
+		<link rel="stylesheet" href="FaunaHunt.css"/>
+		<script type="text/javascript" src="/JS/coherent.js"></script>
+		<script type="text/javascript" src="/JS/common.js"></script>
+		<script type="text/javascript" src="/JS/buttons.js"></script>
+		<script type="text/javascript" src="/JS/dataStorage.js"></script>
+		<script type="text/javascript" src="/JS/simvar.js"></script>
+		<script type="text/javascript" src="/JS/Services/ToolBarPanels.js"></script>
+		<script type="text/javascript" src="/Pages/VCockpit/Instruments/Shared/BaseInstrument.js"></script>
+		<link rel="import" href="/templates/ingameUi/ingameUi.html"/>
+		<link rel="import" href="/templates/ingameUiHeader/ingameUiHeader.html"/>
+		<script type="text/javascript" src="FaunaHunt.js"></script>
+	</head>
+	<body class="border-box">
+		<ingamepanel-fauna-hunt>
+			<ingame-ui id="FaunaHunt" panel-id="FAUNA_HUNT" title="Fauna Hunt" content-fit="false" min-width="420" min-height="300">
+				<section id="mainSection" class="main-sect">
+
+					<nav id="tabs" class="tabs">
+						<button type="button" class="tab is-active" data-view="hunt">Hunt</button>
+						<button type="button" class="tab" data-view="lifelist">Lifelist</button>
+						<button type="button" class="tab" data-view="settings">Settings</button>
+						<span id="scoreChip" class="score-chip">0</span>
+					</nav>
+
+					<div id="offline" class="offline hidden">
+						<p class="offline-title">Data service not running</p>
+						<p class="offline-body">Start it in a terminal, then this panel connects on its own.</p>
+						<code class="offline-cmd">python fauna_service.py</code>
+					</div>
+
+					<!-- ---------------------------------------------------- hunt -->
+					<div id="viewHunt" class="view">
+						<div id="contactList" class="contact-list"></div>
+						<div id="huntEmpty" class="empty hidden">
+							<p>No contacts in range.</p>
+							<p class="hint">Fauna streams in closer to the ground, and further out with altitude. Try farmland, or climb to search wider.</p>
+						</div>
+						<div class="spot-bar">
+							<button type="button" id="spotBtn" class="spot-btn">SPOT</button>
+							<span id="spotHint" class="spot-hint"></span>
+						</div>
+					</div>
+
+					<!-- ------------------------------------------------ lifelist -->
+					<div id="viewLifelist" class="view hidden">
+						<div id="lifelistStats" class="lifelist-stats"></div>
+						<div id="lifelistBody" class="lifelist-body"></div>
+					</div>
+
+					<!-- ------------------------------------------------ settings -->
+					<div id="viewSettings" class="view hidden">
+						<div class="setting">
+							<label class="setting-label">Text size</label>
+							<div id="textSizeRow" class="seg"></div>
+							<p class="setting-blurb">Scales the whole panel. Medium matches a comfortable size in both 2D and VR.</p>
+						</div>
+						<div class="setting">
+							<label class="setting-label">Difficulty</label>
+							<div id="difficultyRow" class="seg"></div>
+							<p id="difficultyBlurb" class="setting-blurb"></p>
+						</div>
+						<div class="setting">
+							<label class="setting-label">Service address</label>
+							<input type="text" id="serviceUrl" class="text-input" spellcheck="false"/>
+							<p class="setting-blurb">Change only if you started the service on a different port.</p>
+						</div>
+						<div class="setting">
+							<label class="setting-label">Lifelist</label>
+							<button type="button" id="resetBtn" class="danger-btn">Reset all progress</button>
+							<p class="setting-blurb">Clears every sighting and your score. Cannot be undone.</p>
+						</div>
+					</div>
+
+					<!-- --------------------------------------------------- quiz -->
+					<div id="quizOverlay" class="overlay hidden">
+						<div class="quiz">
+							<p class="quiz-kicker">You have eyes on something</p>
+							<p id="quizPrompt" class="quiz-prompt">What is it?</p>
+							<div id="quizOptions" class="quiz-options"></div>
+							<div class="quiz-actions">
+								<button type="button" id="quizCancel" class="link-btn">Back out (-5 pts)</button>
+								<button type="button" id="quizGiveUp" class="link-btn">I can't tell — show me</button>
+							</div>
+						</div>
+					</div>
+
+					<div id="resultOverlay" class="overlay hidden">
+						<div class="result">
+							<p id="resultTitle" class="result-title"></p>
+							<p id="resultSpecies" class="result-species"></p>
+							<p id="resultDetail" class="result-detail"></p>
+							<p id="resultPoints" class="result-points"></p>
+							<button type="button" id="resultClose" class="primary-btn">Continue</button>
+						</div>
+					</div>
+
+				</section>
+			</ingame-ui>
+		</ingamepanel-fauna-hunt>
+	</body>
+</html>
