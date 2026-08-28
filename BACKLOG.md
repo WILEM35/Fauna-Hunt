@@ -267,3 +267,21 @@ The consequence is the good part: **view direction needs neither the helper app
 nor the WASM camera call.** The panel reads it directly. That removes the last
 unknown from the in-sim plan, and it is why the probe module now drops
 fsCameraGet entirely.
+
+### The module was failing to load because it exported no allocator
+
+The sim's console said it outright:
+
+    WASM: Compiled module faunaprobe.wasm in 0 seconds
+    WASM: Error get malloc function pointer in module faunaprobe.wasm
+
+It compiled fine, then the sim looked for `malloc` inside it and gave up. The
+sim allocates inside a module's own memory to hand it strings, so every module
+must export `malloc` and `free`. MobiFlight's exports both; mine exported
+neither, because nothing in the code called them and the linker had no reason
+to include them. `-u malloc -u free` forces them in, `--export=` publishes them.
+
+Worth remembering how long this took by comparing files: three rounds of
+plausible-but-wrong guesses (the version handshake, symlinked folders, the
+camera call), against about a minute once the console was open. The console is
+the first stop for a module that will not load, not the last.
