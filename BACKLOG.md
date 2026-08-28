@@ -223,3 +223,18 @@ suspicion:
 * Whether the two contacts even account for all 42, or the rest vanished.
 
 The lesson from the last few of these: reproduce it before changing anything.
+
+## View direction may not need the camera call at all (2026-08-28)
+
+`CAMERA GAMEPLAY PITCH YAW` (index 0 = pitch, 1 = yaw) is an ordinary
+simulation variable. The F/A-18's helmet-mounted display reads exactly those
+two to know where the pilot is looking, in VR included -- the same problem
+Fauna Hunt solves today with SimConnect's camera call, which only an external
+program can make.
+
+If it holds up, the panel reads its own view direction with one line and the
+WASM module never touches the camera. `probe/camera_simvar_probe.py` tests it
+against a running sim; it needs the sim up, so it has not been run yet.
+
+This matters because `fsCameraGet` is the last unexplained import in the probe
+module, and the likeliest reason the sim refuses to load it.
