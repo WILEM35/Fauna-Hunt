@@ -238,3 +238,32 @@ against a running sim; it needs the sim up, so it has not been run yet.
 
 This matters because `fsCameraGet` is the last unexplained import in the probe
 module, and the likeliest reason the sim refuses to load it.
+
+### Result: the variables DO track the view (tested 2026-08-28, live)
+
+Run side by side against the camera call we already trust:
+
+| | moved over 16s |
+|---|---|
+| variable yaw | 67.0 deg |
+| camera call heading | 68.2 deg |
+| aircraft heading | 24.1 deg |
+
+Two things to get right when using it:
+
+1. **It is measured from the aircraft nose, not from north, and the sign is
+   inverted.** World direction = aircraft heading MINUS the yaw variable.
+   Checked against the camera call on several samples: aircraft 60.3 with yaw
+   67.0 gave a camera heading of -6.45, and 60.3 - 67.0 = -6.7. Matches.
+
+2. **It only reads in the cockpit.** Camera mode 2 gave live numbers; modes 3
+   and 5 (external and drone views) both sat at exactly 0.00. So outside the
+   cockpit the panel would think the player is looking straight ahead. That is
+   tolerable -- the game is played from the cockpit and in VR -- but the panel
+   should read CAMERA STATE too and simply not gate on view direction when the
+   player is in an outside view, rather than gating on a wrong answer.
+
+The consequence is the good part: **view direction needs neither the helper app
+nor the WASM camera call.** The panel reads it directly. That removes the last
+unknown from the in-sim plan, and it is why the probe module now drops
+fsCameraGet entirely.
