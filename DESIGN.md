@@ -227,8 +227,32 @@ Run `probe/fauna_probe.py` in a flight over wildlife country.
    point describing contacts at 8 km if the sim only spawns them at 3.
 3. **Do the animals move, and how fast?** A herd that drifts while you fly a
    20 km intercept changes how stale a contact can be before it is re-fuzzed.
-4. **Are birds really under `AIRCRAFT`?** And can they be told apart from real
-   traffic by title alone.
+4. **Are birds really under `AIRCRAFT`?** Partly answered, 2026-08-28, and the
+   answer does NOT unlock birds.
+
+   Asking the running sim to list every simobject title it knows returns
+   `Asobo PassiveAircraft Eagle` under `AIRCRAFT`, and nothing bird-like under
+   `ANIMAL` (1005 titles, zero). The sim's content folders agree: the eagle
+   ships as `fs24-asobo-passiveaircraft-eagle`, filed with the airliners, while
+   the flightless ostrich sits with the animals. `probe/bird_hunt.py` reproduces
+   this against a running sim.
+
+   But that is a list of what CAN exist, not what is flying past the window.
+   The birds actually in the world live in the `FLYING_ANIMAL` container --
+   Developer Mode counted 50 of them near CYYZ while a sweep of every type
+   index 0-20, `ALL` included, returned not one. See
+   `docs/sdk-request-flying-animal.md`.
+
+   So there are two separate things wearing the word "bird", and only the
+   uninteresting one is reachable. Still unknown: whether the eagle is ever
+   spawned into the world as a live `AIRCRAFT` object. If it is, it is one
+   species, and the query is expensive -- `AIRCRAFT` carries 5221 titles
+   against `ANIMAL`'s 1005, so with live traffic a nearby-object request could
+   spend its 250-object budget on airliners before reaching a bird.
+
+   The SDK request stands. It is about `FLYING_ANIMAL`, which this does not
+   touch.
+
 5. **Is `ANIMAL` a subset of `GROUND`?** If so, one query may cover more.
 6. **Does `dwObjectID` match WASM's `FsSimObjId`?** The linchpin of the VFX
    reveal. Not answerable from the probe alone — needs a WASM test.
