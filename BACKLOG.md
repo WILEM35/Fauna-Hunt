@@ -203,3 +203,23 @@ that differs between the desktop and WebAssembly builds of SimConnect. Polling
 with `GetNextDispatch` sidesteps that; a shipping add-on here already imports it.
 
 Delete the package once the question is settled.
+
+## Herd counts collapse when you land inside one (reported 2026-08-28)
+
+Landed in the middle of roughly 42 sheep. Before they could be identified the
+display changed to two contacts -- 14 and 8 -- lying about 180 degrees apart,
+while sheep were plainly visible on the ground in every direction. The counts
+and the directions both disagreed with what was out the window.
+
+NOT investigated yet; reported for watching. Worth checking, in rough order of
+suspicion:
+
+* Grouping is proximity-based. Standing INSIDE a herd is the one case the
+  clustering was never designed for -- animals surround you rather than sitting
+  in a clump ahead, so a split into two opposed groups is exactly what a naive
+  cluster would produce.
+* Whether animals closer than some threshold fall out of the list entirely.
+* Whether the 250-object cap or the request radius is trimming the herd.
+* Whether the two contacts even account for all 42, or the rest vanished.
+
+The lesson from the last few of these: reproduce it before changing anything.
