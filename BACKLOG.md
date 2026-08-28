@@ -171,3 +171,21 @@ only the line that fetches contacts (`DEFAULT_SERVICE_URL`) is replaced.
 Still unproven: that ANIMAL specifically returns data through the WASM path,
 and that `fsCameraGet` resolves at load. Both need a build with the sim closed.
 
+
+## Lifelist columns run together (found in 1.2.1, fixed in source)
+
+"1 of 5CAPTUREDregional" -- no space between the variant count, the state and
+the rarity. The rows asked for spacing with flex `gap`, and in the sim that had
+no effect whatsoever.
+
+Not a blanket lack of support: the sim's own menus and several cockpit
+instruments use flex gap in em units and render fine. But no in-game toolbar
+panel anywhere in the sim uses it. Cause unconfirmed; rather than keep guessing,
+all `gap` declarations are gone and margins do the job -- which also removes the
+risk of the two stacking into a double space later.
+
+Affected ten rows of the panel, not just the lifelist: tabs, contacts, the
+status bar, the stats strip, quiz buttons and the pills.
+
+**The harness cannot catch this.** It runs in a real browser where gap works.
+Spacing has to be judged in the sim.

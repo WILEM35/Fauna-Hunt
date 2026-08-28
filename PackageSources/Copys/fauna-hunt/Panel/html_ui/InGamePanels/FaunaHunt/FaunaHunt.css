@@ -104,7 +104,6 @@ ingame-ui#FaunaHunt .ingameUiContent {
 	font-size: var(--fh-chrome);
 	display: flex;
 	align-items: center;
-	gap: 0.15em;
 	padding: 0.35em 0.45em 0 0.45em;
 	border-bottom: 1px solid var(--fh-line);
 	flex: 0 0 auto;
@@ -165,7 +164,6 @@ ingame-ui#FaunaHunt .ingameUiContent {
 .contact {
 	display: flex;
 	align-items: baseline;
-	gap: 0.5em;
 	/* Generous vertical padding: this is the tap target in VR, where a
 	   thin row is very hard to hit. */
 	padding: 0.55em 0.6em;
@@ -237,7 +235,6 @@ ingame-ui#FaunaHunt .ingameUiContent {
 	background: rgba(255, 255, 255, 0.05);
 	display: inline-flex;
 	align-items: center;
-	gap: 0.3em;
 }
 
 .contact-tag.is-logged svg {
@@ -265,7 +262,6 @@ ingame-ui#FaunaHunt .ingameUiContent {
 	flex: 0 0 auto;
 	display: flex;
 	align-items: center;
-	gap: 0.6em;
 	padding: 0.5em;
 	/* Sits above the list now: the closest animal is at the top, so the
 	   message about it belongs there rather than at the far end. */
@@ -300,7 +296,6 @@ ingame-ui#FaunaHunt .ingameUiContent {
 .lifelist-stats {
 	flex: 0 0 auto;
 	display: flex;
-	gap: 0.9em;
 	padding: 0.5em 0.6em;
 	border-bottom: 1px solid var(--fh-line);
 	font-size: 0.8em;
@@ -335,7 +330,6 @@ ingame-ui#FaunaHunt .ingameUiContent {
 .life-row {
 	display: flex;
 	align-items: baseline;
-	gap: 0.5em;
 	padding: 0.3em 0.4em;
 	border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -394,7 +388,7 @@ ingame-ui#FaunaHunt .ingameUiContent {
 	line-height: 1.45;
 }
 
-.seg { display: flex; gap: 0.25em; flex-wrap: wrap; }
+.seg { display: flex; flex-wrap: wrap; }
 
 .seg-btn {
 	background: var(--fh-panel);
@@ -462,7 +456,6 @@ ingame-ui#FaunaHunt .ingameUiContent {
 	background: rgba(111, 208, 140, 0.16);
 	display: inline-flex;
 	align-items: center;
-	gap: 0.3em;
 }
 
 .life-state {
@@ -525,7 +518,6 @@ ingame-ui#FaunaHunt .ingameUiContent {
 .quiz-options {
 	display: flex;
 	flex-direction: column;
-	gap: 0.35em;
 	margin-bottom: 0.7em;
 }
 
@@ -557,7 +549,6 @@ ingame-ui#FaunaHunt .ingameUiContent {
 
 .quiz-actions {
 	display: flex;
-	gap: 1em;
 	justify-content: center;
 	flex-wrap: wrap;
 }
@@ -644,3 +635,45 @@ ingame-ui#FaunaHunt .ingameUiContent {
 
 .empty p { margin: 0 0 0.4em 0; }
 .empty .hint { font-size: 0.8em; color: var(--fh-faint); max-width: 24em; line-height: 1.5; }
+
+/* ---------------------------------------------------- row spacing */
+
+/* Spacing between items in a row comes from these margins, NOT from flex
+   `gap`. In the sim, a `gap` on the lifelist rows had no effect at all --
+   "1 of 5CAPTUREDregional" ran together with no space, which is what shipped
+   in 1.2.1.
+
+   Why gap did not apply is NOT established. It is not a blanket lack of
+   support: the sim's own menus and several cockpit instruments use flex gap,
+   in em units, and they render correctly. What is true is that no in-game
+   toolbar panel anywhere in the sim uses it -- Fauna Hunt was the only one.
+
+   Rather than keep guessing, the gap declarations were removed entirely and
+   margins do the whole job. Margins are ancient, universally supported, and
+   -- importantly -- cannot stack with a gap that might quietly start working
+   later and double every space.
+
+   The dev harness cannot catch this class of bug: it runs in a real browser
+   where gap works perfectly. Spacing has to be judged in the sim.
+
+   Keep these in em so they scale with the XS-XL text setting. */
+
+.tabs           > * + * { margin-left: 0.15em; }
+.contact        > * + * { margin-left: 0.5em; }
+.spot-bar       > * + * { margin-left: 0.6em; }
+.lifelist-stats > * + * { margin-left: 0.9em; }
+.life-row       > * + * { margin-left: 0.5em; }
+.quiz-actions   > * + * { margin-left: 1em; }
+
+/* Column, so the space goes above rather than beside. */
+.quiz-options   > * + * { margin-top: 0.35em; }
+
+/* These wrap. A left margin on the first item of a wrapped line would indent
+   it, so space to the RIGHT instead -- the trailing gap at the end of a line
+   is invisible. */
+.seg > * { margin-right: 0.25em; margin-bottom: 0.25em; }
+
+/* Icon and its label inside a pill: these sit inline, so the tick does not
+   collide with the word next to it. */
+.contact-tag.is-logged   > * + *,
+.contact-tag.is-captured > * + * { margin-left: 0.3em; }
