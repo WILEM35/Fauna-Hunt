@@ -268,6 +268,10 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.loaded = false;
 		this.loadAttempts = 0;
 		this.loadTimer = undefined;
+		// The in-sim data source. Null until started, and ignored until it has
+		// answered once -- so a sim without the module keeps playing on the
+		// helper exactly as before.
+		this.inSim = null;
 	}
 
 	connectedCallback() {
@@ -282,6 +286,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.applyBackground();
 		this.renderRecognition();
 		this.renderScore();
+		this.startInSim();
 		this.fetchSpecies();
 		this.pollTimer = setInterval(() => this.poll(), POLL_INTERVAL_MS);
 		this.poll();
@@ -480,7 +485,26 @@ class IngamePanelFaunaHunt extends TemplateElement {
 
 	// ------------------------------------------------------------ network
 
+	// The module inside the sim, if this install has one. Everything here is
+	// optional: if the module is missing, or the sim is too old to have the
+	// message service, this quietly does nothing and the helper runs the game.
+	startInSim() {
+		if (typeof FaunaInSimSource !== "function") return;
+		const table = (typeof FAUNA_SPECIES_DATA !== "undefined") ? FAUNA_SPECIES_DATA : null;
+		if (!table) return;
+		this.inSim = new FaunaInSimSource(table);
+		if (!this.inSim.start()) this.inSim = null;
+	}
+
 	fetchSpecies() {
+		// The table ships with the panel now. Reading it locally means the
+		// lifelist works before any data source has answered -- and the fetch
+		// below is only still here for installs running the old helper.
+		if (typeof FAUNA_SPECIES_DATA !== "undefined" && FAUNA_SPECIES_DATA) {
+			this.species = FAUNA_SPECIES_DATA.species || {};
+			if (this.view === "lifelist") this.renderLifelist();
+			return;
+		}
 		httpGetJson(this.state.serviceUrl + "/species",
 			(data) => {
 				this.species = data.species || {};
@@ -490,25 +514,36 @@ class IngamePanelFaunaHunt extends TemplateElement {
 	}
 
 	poll() {
+		// Ask the in-sim module first. It only takes over once it has actually
+		// answered, so a broken or missing module costs nothing.
+		if (this.inSim) {
+			this.inSim.poll();
+			if (this.inSim.available && this.inSim.snapshot) {
+				this.applySnapshot(this.inSim.snapshot);
+				return;
+			}
+		}
 		httpGetJson(this.state.serviceUrl + "/contacts",
-			(data) => {
-				this.snapshot = data;
-				// The service runs happily without the sim, so "reachable" and
-				// "has data" are two different things and must read differently.
-				this.setStatus(data.connected === false ? "nosim" : "ok");
-				if (!this.species) this.fetchSpecies();
-				const contacts = (data && data.contacts) || [];
-				this.trackLogged(contacts);
-				this.checkCaptures(contacts);
-				this.renderAlert(contacts);
-				if (this.view === "hunt") this.renderHunt();
-				this.updateStatusLine();
-			},
+			(data) => this.applySnapshot(data),
 			() => {
 				this.snapshot = null;
 				this.setStatus("noservice");
 				this.updateStatusLine();
 			});
+	}
+
+	applySnapshot(data) {
+		this.snapshot = data;
+		// The service runs happily without the sim, so "reachable" and
+		// "has data" are two different things and must read differently.
+		this.setStatus(data.connected === false ? "nosim" : "ok");
+		if (!this.species) this.fetchSpecies();
+		const contacts = (data && data.contacts) || [];
+		this.trackLogged(contacts);
+		this.checkCaptures(contacts);
+		this.renderAlert(contacts);
+		if (this.view === "hunt") this.renderHunt();
+		this.updateStatusLine();
 	}
 
 	setStatus(status) {

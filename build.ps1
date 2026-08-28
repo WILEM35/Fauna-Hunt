@@ -62,6 +62,23 @@ if ($newestSource -and (-not (Test-Path $exe) -or
     }
 }
 
+# The panel carries its own copy of the species table now, so it works without
+# the helper program. Regenerated every build so the two can never drift.
+Write-Host "Generating the panel's species table..." -ForegroundColor Cyan
+& python "$ProjectDir\probe\make_species_js.py"
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Could not generate the species table." -ForegroundColor Red
+    exit 1
+}
+
+# The in-sim module. This is what replaces the helper program.
+Write-Host "Building the in-sim module..." -ForegroundColor Cyan
+& "$ProjectDir\wasmuild-wasm.ps1"
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Module build failed." -ForegroundColor Red
+    exit 1
+}
+
 Write-Host "Clearing build caches..." -ForegroundColor Cyan
 foreach ($dir in @("Packages", "PackagesMetadata", "_PackageInt")) {
     $path = Join-Path $ProjectDir $dir
@@ -102,7 +119,9 @@ if (Test-Path $spb) {
 # The exe, the DLL and the species table are what a tester actually needs --
 # none of them have Python or the MSFS SDK installed.
 foreach ($needed in @("Service\FaunaHuntService.exe", "Service\SimConnect.dll",
-                      "Service\species.json")) {
+                      "Service\species.json", "modules\FaunaHunt.wasm",
+                      "html_ui\InGamePanels\FaunaHunt\FaunaSpeciesData.js",
+                      "html_ui\InGamePanels\FaunaHunt\FaunaInSim.js")) {
     if (Test-Path (Join-Path $BuiltPkg $needed)) {
         Write-Host "Included: $needed" -ForegroundColor Green
     } else {

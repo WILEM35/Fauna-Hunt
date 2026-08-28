@@ -40,6 +40,18 @@
 			<AssetDir>PackageSources\Copys\fauna-hunt\Service\</AssetDir>
 			<OutputDir>Service\</OutputDir>
 		</AssetGroup>
+		<!-- The in-sim module. A .wasm dropped in modules\ is loaded by the sim
+		     on its own; no registration file is needed. This is what replaces the
+		     helper program: it finds the animals from inside the sim and hands
+		     them to the panel. -->
+		<AssetGroup Name="Modules">
+			<Type Version="0">Copy</Type>
+			<Flags>
+				<FSXCompatibility>false</FSXCompatibility>
+			</Flags>
+			<AssetDir>PackageSources\Copysauna-hunt\Modules\</AssetDir>
+			<OutputDir>modules\</OutputDir>
+		</AssetGroup>
 		<AssetGroup Name="InGamePanels_SPB">
 			<Type Version="0">SPB</Type>
 			<Flags>
