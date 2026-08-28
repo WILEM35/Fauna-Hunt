@@ -143,3 +143,31 @@ mechanic; the bar it sat in stays for the status line and the "list held"
 badge.
 
 Nothing yet — 1.0.0 through 1.0.3 predate this file.
+
+## Replace the helper app with an in-sim module (investigated 2026-08-28)
+
+**Verdict: feasible.** Everything the game reads can be read from inside the
+sim by a WebAssembly module, which would remove the external helper entirely
+-- no window to leave open, no antivirus warnings, no exe to distribute.
+
+Evidence, all gathered locally:
+
+| need | how | status |
+|---|---|---|
+| find the animals | `SimConnect_RequestDataOnSimObjectType` | **proven** -- an installed add-on (`bkiel-efb-lnm-vr.wasm`) already imports it |
+| where the player looks | `fsCameraGet` (`MSFS_Camera.h`) | native WASM call, no SimConnect needed -- gives pitch/bank/heading + FOV |
+| talk to the panel | `fsCommBusCall` / `fsCommBusRegister` | **proven** -- the base sim's own `FCR_Embedded_System.wasm` imports both |
+| write files | `fsIOWrite` (`MSFS_IO.h`) | available if the module ever needs to persist anything itself |
+
+A module calling all three compiles and links today with the SDK's own clang --
+no Visual Studio. See `wasm/build-wasm.ps1`; the two flags that are easy to get
+wrong are documented in it.
+
+**Player saves are not at risk.** The lifelist and score go through
+`GetStoredData`/`SetStoredData`, which is the sim's own save system and has
+nothing to do with the helper. The panel keeps them across this change --
+only the line that fetches contacts (`DEFAULT_SERVICE_URL`) is replaced.
+
+Still unproven: that ANIMAL specifically returns data through the WASM path,
+and that `fsCameraGet` resolves at load. Both need a build with the sim closed.
+

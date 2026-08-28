@@ -22,3 +22,5 @@ PackageSources/Copys/fauna-hunt/Service/SimConnect.dll
 
 # Personal push helper, not useful to anyone cloning this
 Push to GitHub.bat
+wasm/*.wasm
+wasm/*.o
