@@ -324,3 +324,36 @@ Open questions to settle before starting:
 
 Nothing here threatens saves: the lifelist and score go through the sim's own
 save system and do not touch the helper.
+
+## 1.3.0 -- the in-sim path, built and tested on the bench
+
+Delivered and ready for a flight. The panel asks the in-sim module first and
+falls back to the helper if it does not answer, so this cannot make things
+worse than 1.2.2.
+
+`dev/run-insim-test.ps1` runs 28 checks against the translator with a made-up
+reply from the module -- herd grouping, junk rejection, distances, bearings,
+the response cap, torn replies, and the view rule. All pass. There is no
+JavaScript runtime on this machine, so they run in headless Chrome.
+
+Two things worth writing down, both found by those tests:
+
+* **Two of my first three "failures" were the test being wrong, not the code.**
+  With the aircraft at 1500 ft and animals 200 m away, they sit 59 degrees
+  below the horizon -- so staring at the horizon really is ~58 degrees off.
+* **Looking steeply down widens the yaw tolerance a lot.** At 59 degrees
+  nose-down, 90 degrees of yaw separates the two directions by only ~43, which
+  is inside the cone. Correct 3D geometry, and identical to what the helper has
+  always done, so not a regression -- but if view gating ever feels too
+  generous when flying low over a herd, this is why.
+
+### Also fixed: three paths in build.ps1 had eaten backslashes
+
+`Copys\fauna-hunt` had become `Copys` + a formfeed, and two script paths had
+lost theirs to a backspace -- damage from earlier edits where a backslash was
+read as an escape. They were invisible in the file and in most greps.
+
+Two had been broken for several releases, and one of them is why the service
+exe was never rebuilt automatically -- which is how a crashing service reached
+a release. Worth checking for control characters after any scripted edit of a
+Windows path.

@@ -48,14 +48,14 @@ Get-ChildItem -Path "$ProjectDir\PackageSources" -Filter "__pycache__" -Recurse 
 # The service ships as a compiled exe. Nothing here used to rebuild it, so a
 # change to fauna_service.py shipped as source only and the exe silently stayed
 # behind -- which is how a crash on the very first animal reached a release.
-$serviceDir = "$ProjectDir\PackageSources\Copysauna-hunt\Service"
+$serviceDir = "$ProjectDir\PackageSources\Copys\fauna-hunt\Service"
 $exe = "$serviceDir\FaunaHuntService.exe"
 $newestSource = Get-ChildItem "$serviceDir\*.py", "$serviceDir\species.json" -ErrorAction SilentlyContinue |
     Sort-Object LastWriteTime -Descending | Select-Object -First 1
 if ($newestSource -and (-not (Test-Path $exe) -or
         $newestSource.LastWriteTime -gt (Get-Item $exe).LastWriteTime)) {
     Write-Host "Service source is newer than the exe - rebuilding it first..." -ForegroundColor Yellow
-    & "$ProjectDiruild-service-exe.ps1"
+    & "$ProjectDir\build-service-exe.ps1"
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Service exe rebuild failed." -ForegroundColor Red
         exit 1
@@ -73,7 +73,7 @@ if ($LASTEXITCODE -ne 0) {
 
 # The in-sim module. This is what replaces the helper program.
 Write-Host "Building the in-sim module..." -ForegroundColor Cyan
-& "$ProjectDir\wasmuild-wasm.ps1"
+& "$ProjectDir\wasm\build-wasm.ps1"
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Module build failed." -ForegroundColor Red
     exit 1

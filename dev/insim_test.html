@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<!--
+  Tests for the in-sim translator, run with: dev/run-insim-test.ps1
+
+  There is no JavaScript runtime on this machine, so these run in headless
+  Chrome and report by writing into the page, which Chrome then dumps.
+
+  Feeds the translator a made-up reply from the module and checks what comes
+  out: herds grouped, junk rejected, distances, and the view rule. Cheap to
+  run and it catches the mistakes that are otherwise only visible mid-flight.
+-->
+<html>
+<head>
+<meta charset="utf-8"/>
+<script src="../PackageSources/Copys/fauna-hunt/Panel/html_ui/InGamePanels/FaunaHunt/FaunaSpeciesData.js"></script>
+<script src="../PackageSources/Copys/fauna-hunt/Panel/html_ui/InGamePanels/FaunaHunt/FaunaInSim.js"></script>
+</head>
+<body>
+<pre id="out">did not run</pre>
+<script>
+// Exercises the in-sim translator with a made-up reply from the module, so its
+// behaviour can be checked without the sim. Results are written into the page;
+// headless Chrome dumps the DOM and the harness reads them from there.
+
+var lines = [];
+var failures = 0;
+function check(name, got, want) {
+	var ok = JSON.stringify(got) === JSON.stringify(want);
+	if (!ok) failures++;
+	lines.push((ok ? "PASS  " : "FAIL  ") + name +
+		(ok ? "  = " + JSON.stringify(got)
+			: "  got " + JSON.stringify(got) + "  want " + JSON.stringify(want)));
+}
+function near(name, got, want, tol) {
+	var ok = typeof got === "number" && Math.abs(got - want) <= tol;
+	if (!ok) failures++;
+	lines.push((ok ? "PASS  " : "FAIL  ") + name + "  = " + got +
+		(ok ? "" : "  want ~" + want));
+}
+
+// The sim's variables, faked. Cockpit view, looking 30 degrees left of the nose.
+var CAMERA = { state: 2, pitch: 0, yaw: 30 };
+window.SimVar = {
+	GetSimVarValue: function (name) {
+		if (name === "CAMERA STATE") return CAMERA.state;
+		if (name === "CAMERA GAMEPLAY PITCH YAW:0") return CAMERA.pitch;
+		if (name === "CAMERA GAMEPLAY PITCH YAW:1") return CAMERA.yaw;
+		return 0;
+	}
+};
+// The translator leans on the panel's own haversine; the panel is not loaded
+// here, so provide the identical one.
+var EARTH_RADIUS_M = 6371000;
+function haversineM(lat1, lon1, lat2, lon2) {
+	var toRad = Math.PI / 180;
+	var p1 = lat1 * toRad, p2 = lat2 * toRad;
+	var dp = p2 - p1, dl = (lon2 - lon1) * toRad;
+	var a = Math.sin(dp / 2) * Math.sin(dp / 2)
+		+ Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) * Math.sin(dl / 2);
+	return 2 * EARTH_RADIUS_M * Math.asin(Math.min(1, Math.sqrt(a)));
+}
+
+var USER = { lat: -1.4000, lon: 35.0000, alt_ft: 1500, hdg: 0, gs_kt: 90 };
+
+// Three wildebeest within a few tens of metres -- one herd. Two zebra about
+// 3 km north -- a second, further one. Plus two rows that must be thrown away.
+var HERD = [
+	["CTaurinusAlbojubatusFemale", -1.3980, 35.0000, 400],
+	["CTaurinusAlbojubatusFemale", -1.3981, 35.0001, 400],
+	["CTaurinusAlbojubatusMale",   -1.3979, 34.9999, 400]
+];
+var ZEBRA = [
+	["EGrevyiFemale", -1.3730, 35.0000, 400],
+	["EGrevyiMale",   -1.3731, 35.0002, 400]
+];
+var JUNK = [
+	["SomeRandomWalkingPerson", -1.3985, 35.0000, 400],   // not huntable
+	["CTaurinusAlbojubatusFemale", 0, 0, 0]               // still streaming in
+];
+
+function reply(source, chunks) {
+	// Deliberately delivered in pieces, the way the module sends it.
+	for (var i = 0; i < chunks.length; i++) {
+		source.onData(JSON.stringify({
+			seq: i,
+			last: i === chunks.length - 1,
+			haveUser: true,
+			user: USER,
+			returned: HERD.length + ZEBRA.length + JUNK.length,
+			rows: chunks[i]
+		}));
+	}
+}
+
+try {
+	var src = new FaunaInSimSource(FAUNA_SPECIES_DATA);
+	check("nothing available before a reply", src.available, false);
+
+	reply(src, [HERD, ZEBRA.concat(JUNK)]);
+
+	var snap = src.snapshot;
+	check("available after a complete reply", src.available, true);
+	check("source is labelled", snap.source, "insim");
+	check("contacts found", snap.contacts.length, 2);
+	check("junk rejected", snap.stats.rejected,
+		{ streaming_in: 1, not_huntable: 1 });
+	check("individuals counted", snap.stats.individuals, 5);
+	check("not reported as capped", snap.stats.capped, false);
+
+	var a = snap.contacts[0], b = snap.contacts[1];
+	check("nearest contact first", [a.count, b.count], [3, 2]);
+	check("herd species", a.species, "CTaurinusAlbojubatus");
+	check("herd common name", a.common, "E. White-bearded Wildebeest");
+	check("rarity carried through", [a.tier, b.tier], ["regional", "rare"]);
+	var sexKeys = Object.keys(a.sexes).sort();
+	check("sexes counted", sexKeys.map(function (k) { return k + ":" + a.sexes[k]; }),
+		["female:2", "male:1"]);
+	check("key is species plus grid", a.key, "CTaurinusAlbojubatus@-1.400,35.000");
+	check("both contacts share no key", a.key === b.key, false);
+
+	near("herd distance (m)", a.distance_m, 222, 25);
+	near("zebra distance (m)", b.distance_m, 3000, 200);
+	check("herd is due north", Math.round(a.bearing_deg), 0);
+	check("clock position ahead", a.clock, 12);
+	check("herd below the aircraft", a.above, false);
+	check("nearest is closer than centre", a.nearest_m <= a.distance_m, true);
+
+	// Looking 30 degrees left of the nose, with the herd dead ahead and below.
+	// So it should be off-view by roughly 30 degrees plus the look-down angle.
+	near("off view: looking level, 30 deg left", a.off_view_deg, 62, 6);
+
+	// Outside the cockpit the variables read zero, which is indistinguishable
+	// from looking straight ahead -- so the rule must switch off instead.
+	CAMERA.state = 3;
+	reply(src, [HERD]);
+	check("view rule disabled outside the cockpit",
+		src.snapshot.contacts[0].off_view_deg, null);
+
+	// Level and straight ahead: still steeply off, because the animal is far
+	// below. This is the point of measuring in 3D rather than on the compass.
+	CAMERA.state = 2; CAMERA.yaw = 0;
+	reply(src, [HERD]);
+	near("off view: looking level, straight ahead", src.snapshot.contacts[0].off_view_deg, 58, 6);
+
+	// Now actually look DOWN at it, which is what a player does. This is the
+	// case that has to come out near zero, or the game is unplayable.
+	CAMERA.pitch = -59; CAMERA.yaw = 0;
+	reply(src, [HERD]);
+	near("off view: looking down at it", src.snapshot.contacts[0].off_view_deg, 0, 6);
+	check("looking down counts as in view",
+		src.snapshot.contacts[0].off_view_deg < src.snapshot.view_cone_deg, true);
+
+	// Looking at the sky must NOT count.
+	CAMERA.pitch = 30; CAMERA.yaw = 0;
+	reply(src, [HERD]);
+	check("looking up is out of view",
+		src.snapshot.contacts[0].off_view_deg > src.snapshot.view_cone_deg, true);
+
+	// Worth knowing rather than fixing: when you are already looking steeply
+	// DOWN, yaw separates the two directions far less than it does on the
+	// level -- 90 degrees of yaw at 59 degrees nose-down is only about 43
+	// degrees apart, which is inside the cone. That is correct 3D geometry and
+	// it is what the helper has always done; recorded so it is not mistaken
+	// for a bug later.
+	CAMERA.pitch = -59; CAMERA.yaw = 90;
+	reply(src, [HERD]);
+	near("steep look-down widens the yaw tolerance",
+		src.snapshot.contacts[0].off_view_deg, 43, 4);
+	CAMERA.pitch = 0; CAMERA.yaw = 0;
+
+	// A torn reply must be dropped, not shown half-built.
+	var before = src.snapshot.contacts.length;
+	src.onData(JSON.stringify({ seq: 5, last: true, haveUser: true, user: USER, rows: [] }));
+	check("torn reply ignored", src.snapshot.contacts.length, before);
+
+	// The cap must be reported so the panel never claims the area is empty.
+	src.onData(JSON.stringify({ seq: 0, last: true, haveUser: true, user: USER,
+		returned: 250, rows: HERD }));
+	check("cap reported", src.snapshot.stats.capped, true);
+
+} catch (err) {
+	failures++;
+	lines.push("EXCEPTION  " + (err && err.stack ? err.stack : err));
+}
+
+lines.push("");
+lines.push(failures === 0 ? "ALL PASSED" : (failures + " FAILED"));
+document.getElementById("out").textContent = lines.join("\n");
+</script>
+</body>
+</html>
