@@ -83,16 +83,18 @@ function round(value, places) {
 //
 // TWO sources, because neither covers both cases.
 //
-// 1. The module's camera reading. This is the one that works IN VR -- it
-//    follows the headset. Preferred whenever it is available.
+// 1. The module's camera reading. Used IN VR, where it is the only reading
+//    that can follow the headset.
 // 2. The gameplay pitch/yaw variables. These track the 2D camera perfectly,
 //    including custom and joystick-mapped views. But IN VR THEY ARE USELESS:
 //    tested in a headset, they report the aircraft's direction and take no
 //    notice of where the player's head is pointing. Fallback only.
 //
-// Getting this wrong is not a crash, it is worse -- the "look at the animal"
-// rule silently starts judging the wrong direction, which in VR meant you had
-// to point the aeroplane at an animal to identify it.
+// Which one is used is decided by the MODE, not by which happens to be
+// available. 1.3.1 preferred the module's camera everywhere and broke 2D --
+// animals at 200 m dead ahead could not be identified. Getting this wrong is
+// worse than a crash: the "look at the animal" rule silently judges the wrong
+// direction, and the game just feels random.
 
 const CAMERA_STATE_COCKPIT = 2;
 
@@ -101,7 +103,13 @@ const CAMERA_STATE_COCKPIT = 2;
 // and no sane one is 1 DEGREE wide, so a small value means the set is radians.
 const RADIANS_IF_FOV_BELOW = 6.3;
 
-function readModuleView(cam) {
+// What the camera's angles are measured against. Only WORLD is an absolute
+// compass heading; the rest are relative to the aircraft, and treating one as
+// the other puts the view rule out by the aircraft's heading -- which is not
+// obviously broken, it is just wrong in a way that changes as you turn.
+const ROT_REF_WORLD = 2;
+
+function readModuleView(cam, aircraftHeading) {
 	if (!cam || !cam.ok) return null;
 	if (typeof cam.fov !== "number" || cam.fov <= 0) return null;
 	const toDeg = cam.fov <= RADIANS_IF_FOV_BELOW ? (180 / Math.PI) : 1;
@@ -109,11 +117,33 @@ function readModuleView(cam) {
 	// A camera claiming an absurd field of view means the reading is not what
 	// we think it is, and a wrong view direction is worse than none.
 	if (fov < 20 || fov > 170) return null;
+
+	let heading = cam.h * toDeg;
+	if (cam.rotRef !== ROT_REF_WORLD) {
+		// Relative to the aircraft, so it has to be added to the aircraft's
+		// own heading to become a compass direction.
+		if (typeof aircraftHeading !== "number") return null;
+		heading = aircraftHeading + heading;
+	}
 	return {
-		heading: ((cam.h * toDeg) % 360 + 360) % 360,
+		heading: ((heading % 360) + 360) % 360,
 		pitch: cam.p * toDeg,
 		fov: fov,
+		source: "module",
+		rotRef: cam.rotRef,
 	};
+}
+
+// Whether the player is in a headset. The gameplay pitch/yaw variables are
+// perfect in 2D and useless in VR, so this decides which reading to trust
+// rather than guessing from the numbers themselves.
+let inVrMode = false;
+try {
+	if (typeof Coherent !== "undefined" && Coherent.on) {
+		Coherent.on("SwitchVRModeState", (state) => { inVrMode = !!state; });
+	}
+} catch (err) {
+	/* no VR signal available; 2D behaviour is the safe default */
 }
 
 function readView(aircraftHeading) {
@@ -132,6 +162,8 @@ function readView(aircraftHeading) {
 	return {
 		heading: (aircraftHeading - yaw + 360.0) % 360.0,
 		pitch: pitch,
+		source: "variables",
+		cameraState: state,
 	};
 }
 
@@ -146,6 +178,9 @@ class FaunaInSimSource {
 		this.snapshot = null;
 		this.lastReplyAt = 0;
 		this.everReplied = false;
+		// null means "ask the sim". The tests set it directly so both modes
+		// can be exercised without a headset.
+		this.vr = null;
 	}
 
 	get available() {
@@ -263,10 +298,30 @@ class FaunaInSimSource {
 		// claim the area holds nothing else.
 		stats.capped = (head.returned || 0) >= RESPONSE_CAP;
 
-		// The module's camera first -- it is the only one that follows a VR
-		// headset. The variables are the fallback for 2D.
-		const view = readModuleView(head.cam) || readView(user.hdg);
+		// In 2D the gameplay variables are known good -- mouse look, built-in
+		// views and joystick-mapped views all tracked correctly. In VR they
+		// report the aircraft's direction and ignore the head entirely, so the
+		// module's camera is the only usable reading there.
+		//
+		// Preferring the module everywhere broke 2D in 1.3.1, so the choice is
+		// made by which mode the player is in, not by which reading exists.
+		const moduleView = readModuleView(head.cam, user.hdg);
+		const varView = readView(user.hdg);
+		const vr = (this.vr === null || this.vr === undefined) ? inVrMode : this.vr;
+		const view = vr ? (moduleView || varView) : (varView || moduleView);
 		const fovDeg = (view && view.fov) || ASSUMED_FOV_DEG;
+
+		// Kept so the panel can show what it is actually steering by. Working
+		// this out by guessing has cost two flights already.
+		this.viewDebug = {
+			vr: vr,
+			using: view ? (view.source || "variables") : "none",
+			cam: head.cam || null,
+			viewHeading: view ? round(view.heading, 1) : null,
+			viewPitch: view ? round(view.pitch, 1) : null,
+			aircraftHeading: round(user.hdg, 1),
+			fov: round(fovDeg, 1),
+		};
 		const byRoot = {};
 		kept.forEach((m) => {
 			(byRoot[m.root] = byRoot[m.root] || []).push(m);
@@ -296,6 +351,7 @@ class FaunaInSimSource {
 			stats: stats,
 			updated: Date.now() / 1000,
 			source: "insim",
+			view_debug: this.viewDebug || null,
 		};
 	}
 

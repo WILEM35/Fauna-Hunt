@@ -677,3 +677,19 @@ ingame-ui#FaunaHunt .ingameUiContent {
    collide with the word next to it. */
 .contact-tag.is-logged   > * + *,
 .contact-tag.is-captured > * + * { margin-left: 0.3em; }
+
+/* Diagnostic readout in Settings. Temporary -- remove once the view rule is
+   settled in both 2D and VR. */
+.debug-box {
+	font-family: "Consolas", monospace;
+	font-size: 0.72em;
+	line-height: 1.5;
+	color: var(--fh-dim);
+	background: rgba(255, 255, 255, 0.04);
+	border: 1px solid var(--fh-line);
+	border-radius: 3px;
+	padding: 0.5em 0.6em;
+	margin: 0.4em 0 0 0;
+	white-space: pre-wrap;
+	word-break: break-word;
+}

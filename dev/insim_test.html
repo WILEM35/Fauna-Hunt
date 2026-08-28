@@ -176,8 +176,13 @@ try {
 	// The gameplay variables cannot: in a headset they report the aircraft's
 	// direction and ignore the head entirely.
 
-	// Radians, which is what a small field of view means.
-	CAM = { ok: true, h: 0, p: -59 * Math.PI / 180, fov: 1.5708 };
+	// In VR the module's camera is the only usable reading, so it must win.
+	// In 2D the variables must win -- preferring the module everywhere is
+	// exactly what broke 2D in 1.3.1.
+	src.vr = true;
+	// rotRef 2 means the heading is already a compass direction. Radians,
+	// which is what a small field of view implies.
+	CAM = { ok: true, h: 0, p: -59 * Math.PI / 180, fov: 1.5708, rotRef: 2 };
 	CAMERA.state = 2; CAMERA.yaw = 0; CAMERA.pitch = 0;
 	reply(src, [HERD]);
 	var vr = src.snapshot;
@@ -186,7 +191,7 @@ try {
 	near("VR: looking down at the herd is in view", vr.contacts[0].off_view_deg, 0, 6);
 
 	// Degrees, in case the sim reports them that way.
-	CAM = { ok: true, h: 0, p: -59, fov: 90 };
+	CAM = { ok: true, h: 0, p: -59, fov: 90, rotRef: 2 };
 	reply(src, [HERD]);
 	near("VR: degree camera also understood", src.snapshot.fov_deg, 90, 1);
 	near("VR: same answer either way", src.snapshot.contacts[0].off_view_deg, 0, 6);
@@ -194,15 +199,35 @@ try {
 	// The module's camera must WIN over the variables, or VR stays broken.
 	// Here the variables say "looking straight ahead" and the camera says
 	// "looking down at it" -- the camera has to be the one that counts.
-	CAM = { ok: true, h: 0, p: -59, fov: 90 };
+	CAM = { ok: true, h: 0, p: -59, fov: 90, rotRef: 2 };
 	CAMERA.yaw = 0; CAMERA.pitch = 0;
 	reply(src, [HERD]);
-	check("module camera beats the variables",
+	check("VR: module camera beats the variables",
 		src.snapshot.contacts[0].off_view_deg < 10, true);
+
+	// The same reading in 2D must NOT win: the variables are known good there.
+	src.vr = false;
+	reply(src, [HERD]);
+	near("2D: variables beat the module camera",
+		src.snapshot.contacts[0].off_view_deg, 58, 6);
+	src.vr = true;
+
+	// A heading measured against the aircraft, not the compass. With the herd
+	// due north and the aircraft pointing north, 0 relative is still north --
+	// but the panel must ADD the aircraft heading, so turn the aircraft to
+	// prove it.
+	var turned = { lat: USER.lat, lon: USER.lon, alt_ft: USER.alt_ft, hdg: 90, gs_kt: 90 };
+	var saved = USER; USER = turned;
+	CAM = { ok: true, h: -90, p: -59, fov: 90, rotRef: 1 };
+	reply(src, [HERD]);
+	near("aircraft-relative heading is converted", 
+		src.snapshot.contacts[0].off_view_deg, 0, 8);
+	USER = saved;
 
 	// A nonsense field of view means the reading is not what we think, and a
 	// wrong direction is worse than none -- fall back rather than trust it.
-	CAM = { ok: true, h: 0, p: -59, fov: 900 };
+	CAM = { ok: true, h: 0, p: -59, fov: 900, rotRef: 2 };
+	src.vr = false;
 	reply(src, [HERD]);
 	near("absurd fov ignored, falls back", src.snapshot.fov_deg, 90, 1);
 	near("and uses the 2D variables again",
@@ -210,6 +235,7 @@ try {
 
 	// No camera from the module: 2D behaviour, unchanged.
 	CAM = { ok: false, h: 0, p: 0, fov: 0 };
+	src.vr = false;
 	CAMERA.state = 3;
 	reply(src, [HERD]);
 	check("no camera and outside cockpit still disables the rule",

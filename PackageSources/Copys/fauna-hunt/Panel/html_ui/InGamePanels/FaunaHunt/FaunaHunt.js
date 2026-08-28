@@ -331,6 +331,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			recognitionBlurb: pick("recognitionBlurb"),
 			serviceUrl: pick("serviceUrl"),
 			resetBtn: pick("resetBtn"),
+			viewDebug: pick("viewDebug"),
 			quizOverlay: pick("quizOverlay"),
 			quizPrompt: pick("quizPrompt"),
 			quizOptions: pick("quizOptions"),
@@ -544,6 +545,35 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.renderAlert(contacts);
 		if (this.view === "hunt") this.renderHunt();
 		this.updateStatusLine();
+		this.renderViewDebug();
+	}
+
+	// Shows what the view rule is actually steering by. Two flights have been
+	// spent guessing at this; the numbers are cheaper.
+	renderViewDebug() {
+		const box = this.nodes.viewDebug;
+		if (!box) return;
+		const d = this.snapshot && this.snapshot.view_debug;
+		if (!d) {
+			box.textContent = this.snapshot && this.snapshot.source === "insim"
+				? "no reading yet"
+				: "helper app in use (no module)";
+			return;
+		}
+		const nearest = (this.snapshot.contacts || [])[0];
+		const cam = d.cam || {};
+		box.textContent = [
+			"mode      " + (d.vr ? "VR" : "2D") + "   using: " + d.using,
+			"view      heading " + d.viewHeading + "   pitch " + d.viewPitch,
+			"aircraft  heading " + d.aircraftHeading + "   fov " + d.fov,
+			"camera    ok=" + (cam.ok === true) + " h=" + cam.h + " p=" + cam.p
+				+ " fov=" + cam.fov + " rotRef=" + cam.rotRef,
+			nearest
+				? "nearest   bearing " + nearest.bearing_deg + "   off view "
+					+ nearest.off_view_deg + "   (cone " + this.snapshot.view_cone_deg + ")"
+				: "nearest   none",
+		].join("
+");
 	}
 
 	setStatus(status) {
