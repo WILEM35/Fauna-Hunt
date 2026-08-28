@@ -189,7 +189,12 @@ class RecvListTemplate(ctypes.Structure):
 
 
 class RecvCameraData(ctypes.Structure):
-    """SIMCONNECT_RECV_CAMERA_DATA -- RECV header then SIMCONNECT_DATA_CAMERA."""
+    """SIMCONNECT_RECV_CAMERA_DATA -- RECV header then SIMCONNECT_DATA_CAMERA.
+
+    Packed, not naturally aligned. ctypes would otherwise pad before the first
+    double and before Fov, giving 104 bytes against the 96 the sim sends.
+    """
+    _pack_ = 1
     _fields_ = [
         ("dwSize", wintypes.DWORD),
         ("dwVersion", wintypes.DWORD),
@@ -204,10 +209,18 @@ class RecvCameraData(ctypes.Structure):
         ("targetX", ctypes.c_double),
         ("targetY", ctypes.c_double),
         ("targetZ", ctypes.c_double),
-        # Pbh -- pitch, bank, heading of the camera itself
-        ("pitch", ctypes.c_double),
-        ("bank", ctypes.c_double),
-        ("heading", ctypes.c_double),
+        # Pbh -- pitch, bank, heading of the camera itself.
+        # SIMCONNECT_DATA_PBH is three FLOATS, not doubles: getting this wrong
+        # made the struct 112 bytes against the 96 the sim actually sends, and
+        # every camera message was silently discarded as too short.
+        # The SDK header names these Pitch, Bank, Heading. In practice the
+        # middle float tracks the compass direction the view is facing (it read
+        # 25.504 with the aircraft on 25.5, then swung a full circle as the
+        # view turned) and the third stays near zero, which is roll. Named for
+        # what they measure, not what the header calls them. All degrees.
+        ("pitch", ctypes.c_float),
+        ("heading", ctypes.c_float),
+        ("roll", ctypes.c_float),
         ("rotationReferential", ctypes.c_int),
         ("rotationReferentialObjectId", wintypes.DWORD),
         ("fov", ctypes.c_double),
@@ -293,6 +306,10 @@ class SimConnect:
         d.SimConnect_CameraGet.argtypes = [wintypes.HANDLE, wintypes.DWORD]
         d.SimConnect_CameraGetStatus.restype = ctypes.c_long
         d.SimConnect_CameraGetStatus.argtypes = [wintypes.HANDLE]
+        d.SimConnect_CameraAcquire.restype = ctypes.c_long
+        d.SimConnect_CameraAcquire.argtypes = [wintypes.HANDLE, ctypes.c_char_p]
+        d.SimConnect_CameraRelease.restype = ctypes.c_long
+        d.SimConnect_CameraRelease.argtypes = [wintypes.HANDLE, ctypes.c_char_p]
 
     def _open(self, name):
         hr = self.dll.SimConnect_Open(
@@ -350,6 +367,14 @@ class SimConnect:
         hr = self.dll.SimConnect_CameraGet(self.handle, referential)
         if hr < 0:
             raise SimConnectError("CameraGet failed 0x%08X" % (hr & 0xFFFFFFFF))
+
+    def camera_acquire(self, client_id):
+        hr = self.dll.SimConnect_CameraAcquire(self.handle, client_id.encode("utf-8"))
+        if hr < 0:
+            raise SimConnectError("CameraAcquire failed 0x%08X" % (hr & 0xFFFFFFFF))
+
+    def camera_release(self, camera_def_name=""):
+        self.dll.SimConnect_CameraRelease(self.handle, camera_def_name.encode("utf-8"))
 
     def camera_get_status(self):
         hr = self.dll.SimConnect_CameraGetStatus(self.handle)

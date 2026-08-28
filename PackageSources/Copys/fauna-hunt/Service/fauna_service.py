@@ -31,6 +31,7 @@ import math
 import os
 import sys
 import threading
+import ctypes
 import time
 from collections import defaultdict
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -64,6 +65,11 @@ DEFINE_ID = 1
 REQUEST_USER = 100
 REQUEST_ANIMAL = 200
 REQUEST_AIRCRAFT = 201
+
+# How much of the screen counts as "looking at it". The sim reports its own
+# field of view, so half of that means anything actually visible qualifies --
+# and it adapts on its own between 2D and VR, which report different values.
+VIEW_CONE_FRACTION = 0.5
 
 # The sim streams fauna in a radius that grows with altitude: about 2.8 km on
 # the deck, 30 km at FL280. Asking for more than the sim spawns costs nothing,
@@ -103,6 +109,26 @@ def bearing_deg(lat1, lon1, lat2, lon2):
     y = math.sin(dl) * math.cos(p2)
     x = math.cos(p1) * math.sin(p2) - math.sin(p1) * math.cos(p2) * math.cos(dl)
     return (math.degrees(math.atan2(y, x)) + 360.0) % 360.0
+
+
+def angle_between(view_heading, view_pitch, target_bearing, target_elevation):
+    """Angle in degrees between where the camera points and where the animal is.
+
+    Done in 3D rather than on the compass alone: from 1000 ft the animal can be
+    dead ahead on the compass and still 40 degrees below the nose, and someone
+    staring at the sky should not be capturing it.
+    """
+    to_rad = math.pi / 180.0
+    v_h, v_p = view_heading * to_rad, view_pitch * to_rad
+    t_h, t_p = target_bearing * to_rad, target_elevation * to_rad
+    vx = math.cos(v_p) * math.cos(v_h)
+    vy = math.cos(v_p) * math.sin(v_h)
+    vz = math.sin(v_p)
+    tx = math.cos(t_p) * math.cos(t_h)
+    ty = math.cos(t_p) * math.sin(t_h)
+    tz = math.sin(t_p)
+    dot = max(-1.0, min(1.0, vx * tx + vy * ty + vz * tz))
+    return math.degrees(math.acos(dot))
 
 
 def clock_position(relative_bearing):
@@ -149,6 +175,7 @@ class FaunaService:
 
         self.lock = threading.Lock()
         self._user = None
+        self._camera = None
         self._raw = []
         self._rejected = defaultdict(int)
         self.snapshot = self._waiting_snapshot()
@@ -214,6 +241,10 @@ class FaunaService:
             self._handle(*message)
 
     def _handle(self, recv_id, raw):
+        if recv_id == sc.RECV_ID_CAMERA_DATA:
+            if len(raw) >= ctypes.sizeof(sc.RecvCameraData):
+                self._camera = sc.RecvCameraData.from_buffer_copy(raw)
+            return
         if recv_id == sc.RECV_ID_QUIT:
             # Sim shutting down. Not fatal -- the poll loop drops back to
             # waiting and picks the sim up again when it returns.
@@ -259,6 +290,12 @@ class FaunaService:
 
         self.link.request_data_on_sim_object_type(
             REQUEST_USER, DEFINE_ID, 0, sc.OBJECT_TYPE_USER)
+        try:
+            # Where the player is actually looking. Works in 2D and VR alike,
+            # and needs no camera control -- reading is free.
+            self.link.camera_get(sc.POSITION_REFERENTIAL_WORLD)
+        except sc.SimConnectError:
+            self._camera = None
         self._pump(0.15)
 
         self.link.request_data_on_sim_object_type(
@@ -280,9 +317,17 @@ class FaunaService:
         }
 
         with self.lock:
+            fov = None
+            if self._camera is not None:
+                fov = round(math.degrees(self._camera.fov), 1)
             self.snapshot = {
                 "connected": True,
                 "status": "connected",
+                # Half the field of view is the cone that counts as looking at
+                # something. Sent so the panel does not have to guess, and so
+                # it adapts between 2D and VR on its own.
+                "view_cone_deg": round(fov * VIEW_CONE_FRACTION, 1) if fov else None,
+                "fov_deg": fov,
                 "user": self._user,
                 "contacts": contacts,
                 "stats": stats,
@@ -334,6 +379,11 @@ class FaunaService:
         info = herd[0][2]
 
         distance = haversine_m(user["lat"], user["lon"], lat, lon)
+        # Capture is judged on the CLOSEST animal, not the middle of the herd:
+        # a scattered group can have its centre 400 m away while one animal is
+        # right under the wing, and that is the one you flew down to see.
+        nearest = min(haversine_m(user["lat"], user["lon"],
+                                  m[3]["lat"], m[3]["lon"]) for m in herd)
         bearing = bearing_deg(user["lat"], user["lon"], lat, lon)
         relative = (bearing - user["hdg"] + 360.0) % 360.0
 
@@ -343,6 +393,16 @@ class FaunaService:
                 sexes["unknown"] += 1
             else:
                 sexes[self.table.sex_of(species_root, title)] += 1
+
+        # How far off the animal is from where the player is looking. None when
+        # the sim gives us no camera -- the panel must then let everything
+        # through rather than locking the player out of their own game.
+        off_view = None
+        if self._camera is not None:
+            drop_m = (user["alt_ft"] - alt) * 0.3048
+            elevation = -math.degrees(math.atan2(drop_m, max(1.0, nearest)))
+            off_view = round(angle_between(
+                self._camera.heading, self._camera.pitch, bearing, elevation), 1)
 
         return {
             # Stable across the sim's object-id churn: species plus a coarse
@@ -361,6 +421,8 @@ class FaunaService:
             "lon": round(lon, 6),
             "alt_ft": round(alt, 1),
             "distance_m": round(distance, 1),
+            "nearest_m": round(nearest, 1),
+            "off_view_deg": off_view,
             "bearing_deg": round(bearing, 1),
             "relative_bearing_deg": round(relative, 1),
             "clock": clock_position(relative),

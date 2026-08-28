@@ -5,7 +5,6 @@
       "common": "Moose",
       "scientific": "Alces alces",
       "size": "large",
-      "rarity": 2,
       "region": "Europe",
       "titles": [
         "AAlcesFemale",
@@ -64,13 +63,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Moose"
     },
     "AAmericanus": {
       "common": "Pronghorn",
       "scientific": "Antilocapra americana",
       "size": "medium",
-      "rarity": 2,
       "region": "N.America",
       "titles": [
         "AAmericanusFemale",
@@ -129,13 +131,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Pronghorn"
     },
     "AJubatusHecki": {
       "common": "NW African Cheetah",
       "scientific": "Acinonyx jubatus hecki",
       "size": "medium",
-      "rarity": 4,
       "region": "Africa",
       "titles": [
         "AJubatusHeckiFemale",
@@ -194,13 +199,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Cheetah"
     },
     "AJubatusJubatus": {
       "common": "Cheetah",
       "scientific": "Acinonyx jubatus jubatus",
       "size": "medium",
-      "rarity": 3,
       "region": "Africa",
       "titles": [
         "AJubatusJubatusFemale",
@@ -259,13 +267,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Cheetah"
     },
     "AJubatusSoemmeringii": {
       "common": "NE African Cheetah",
       "scientific": "Acinonyx jubatus soemmeringii",
       "size": "medium",
-      "rarity": 4,
       "region": "Africa",
       "titles": [
         "AJubatusSoemmeringiiFemale",
@@ -324,13 +335,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Cheetah"
     },
     "ALervia": {
       "common": "Barbary Sheep",
       "scientific": "Ammotragus lervia",
       "size": "medium",
-      "rarity": 3,
       "region": "Africa",
       "titles": [
         "ALerviaFemale",
@@ -389,13 +403,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Barbary Sheep"
     },
     "AMelanoleuca": {
       "common": "Giant Panda",
       "scientific": "Ailuropoda melanoleuca",
       "size": "large",
-      "rarity": 4,
       "region": "Asia",
       "titles": [
         "AMelanoleucaFemale",
@@ -454,13 +471,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "legendary",
+      "points": 600,
+      "rank": 5,
+      "group": "Giant Panda"
     },
     "BBBubalis": {
       "common": "Water Buffalo",
       "scientific": "Bubalus bubalis",
       "size": "large",
-      "rarity": 2,
       "region": "Asia",
       "titles": [
         "BBBubalisFemale",
@@ -519,13 +539,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "everyday",
+      "points": 5,
+      "rank": 1,
+      "group": "Water Buffalo"
     },
     "BBison": {
       "common": "American Bison",
       "scientific": "Bison bison",
       "size": "huge",
-      "rarity": 2,
       "region": "N.America",
       "titles": [
         "BBisonFemale",
@@ -584,13 +607,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Bison"
     },
     "BBonasus": {
       "common": "European Bison",
       "scientific": "Bison bonasus",
       "size": "huge",
-      "rarity": 3,
       "region": "Europe",
       "titles": [
         "BBonasusFemale",
@@ -649,13 +675,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Bison"
     },
     "BBubalis": {
       "common": "Water Buffalo",
       "scientific": "Bubalus bubalis",
       "size": "large",
-      "rarity": 2,
       "region": "Asia",
       "titles": [
         "BBubalisFemale",
@@ -714,13 +743,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "everyday",
+      "points": 5,
+      "rank": 1,
+      "group": "Water Buffalo"
     },
     "BFrontalis": {
       "common": "Gayal",
       "scientific": "Bos frontalis",
       "size": "large",
-      "rarity": 3,
       "region": "Asia",
       "titles": [
         "BFrontalisFemale",
@@ -779,13 +811,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Gayal"
     },
     "BGrunniens": {
       "common": "Yak",
       "scientific": "Bos grunniens",
       "size": "large",
-      "rarity": 3,
       "region": "Asia",
       "titles": [
         "BGrunniensFemale",
@@ -826,13 +861,16 @@
           "sex": "juvenile",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Yak"
     },
     "BJavanicus": {
       "common": "Banteng",
       "scientific": "Bos javanicus",
       "size": "large",
-      "rarity": 3,
       "region": "Asia",
       "titles": [
         "BJavanicusFemale",
@@ -873,13 +911,16 @@
           "sex": "juvenile",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Banteng"
     },
     "BTaurusIndicus": {
       "common": "Zebu",
       "scientific": "Bos taurus indicus",
       "size": "large",
-      "rarity": 2,
       "region": "Asia",
       "titles": [
         "BTaurusIndicusFemale",
@@ -920,13 +961,16 @@
           "sex": "juvenile",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "everyday",
+      "points": 5,
+      "rank": 1,
+      "group": "Cattle"
     },
     "BTaurusPrimigenius": {
       "common": "Cattle",
       "scientific": "Bos taurus primigenius",
       "size": "large",
-      "rarity": 1,
       "region": "Global",
       "titles": [
         "BTaurusPrimigeniusFemale",
@@ -973,13 +1017,16 @@
           "sex": "juvenile",
           "variation": 1
         }
-      ]
+      ],
+      "tier": "everyday",
+      "points": 5,
+      "rank": 1,
+      "group": "Cattle"
     },
     "BlackBear": {
       "common": "Black Bear",
       "scientific": "Ursus americanus",
       "size": "large",
-      "rarity": 2,
       "region": "N.America",
       "titles": [
         "BlackBear"
@@ -990,13 +1037,16 @@
           "sex": "unknown",
           "variation": 0
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "American Black Bear"
     },
     "CBactrianus": {
       "common": "Bactrian Camel",
       "scientific": "Camelus bactrianus",
       "size": "large",
-      "rarity": 3,
       "region": "Asia",
       "titles": [
         "CBactrianusFemale",
@@ -1055,13 +1105,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Camel"
     },
     "CCanadensisNannodes": {
       "common": "Tule Elk",
       "scientific": "Cervus canadensis nannodes",
       "size": "large",
-      "rarity": 4,
       "region": "N.America",
       "titles": [
         "CCanadensisNannodesFemale",
@@ -1120,13 +1173,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Elk"
     },
     "CCrocuta": {
       "common": "Spotted Hyena",
       "scientific": "Crocuta crocuta",
       "size": "medium",
-      "rarity": 2,
       "region": "Africa",
       "titles": [
         "CCrocutaFemale",
@@ -1185,13 +1241,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Spotted Hyena"
     },
     "CDromedarius": {
       "common": "Dromedary Camel",
       "scientific": "Camelus dromedarius",
       "size": "large",
-      "rarity": 2,
       "region": "Africa",
       "titles": [
         "CDromedariusFemale",
@@ -1250,13 +1309,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Camel"
     },
     "CElaphusCanadensis": {
       "common": "Elk",
       "scientific": "Cervus elaphus canadensis",
       "size": "large",
-      "rarity": 2,
       "region": "N.America",
       "titles": [
         "CElaphusCanadensisFemale",
@@ -1315,13 +1377,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Elk"
     },
     "CHircusHircus": {
       "common": "Goat",
       "scientific": "Capra hircus hircus",
       "size": "medium",
-      "rarity": 1,
       "region": "Global",
       "titles": [
         "CHircusHircusFemale",
@@ -1380,13 +1445,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "everyday",
+      "points": 5,
+      "rank": 1,
+      "group": "Goat"
     },
     "CIbex": {
       "common": "Alpine Ibex",
       "scientific": "Capra ibex",
       "size": "medium",
-      "rarity": 3,
       "region": "Europe",
       "titles": [
         "CIbexFemale",
@@ -1445,13 +1513,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Alpine Ibex"
     },
     "CLupusAlbus": {
       "common": "Tundra Wolf",
       "scientific": "Canis lupus albus",
       "size": "medium",
-      "rarity": 4,
       "region": "Arctic",
       "titles": [
         "CLupusAlbusFemale",
@@ -1510,13 +1581,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Wolf"
     },
     "CLupusArctos": {
       "common": "Arctic Wolf",
       "scientific": "Canis lupus arctos",
       "size": "medium",
-      "rarity": 4,
       "region": "Arctic",
       "titles": [
         "CLupusArctosFemale",
@@ -1575,13 +1649,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Wolf"
     },
     "CLupusLupus": {
       "common": "Eurasian Wolf",
       "scientific": "Canis lupus lupus",
       "size": "medium",
-      "rarity": 3,
       "region": "Europe",
       "titles": [
         "CLupusLupusFemale",
@@ -1640,13 +1717,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Wolf"
     },
     "CNippon": {
       "common": "Sika Deer",
       "scientific": "Cervus nippon",
       "size": "medium",
-      "rarity": 2,
       "region": "Asia",
       "titles": [
         "CNipponFemale",
@@ -1705,13 +1785,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Sika Deer"
     },
     "CPalustris": {
       "common": "Mugger Crocodile",
       "scientific": "Crocodylus palustris",
       "size": "large",
-      "rarity": 4,
       "region": "Asia",
       "titles": [
         "CPalustrisFemale",
@@ -1770,13 +1853,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Crocodile"
     },
     "CPorosus": {
       "common": "Saltwater Crocodile",
       "scientific": "Crocodylus porosus",
       "size": "large",
-      "rarity": 3,
       "region": "Australia",
       "titles": [
         "CPorosusFemale",
@@ -1835,13 +1921,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Crocodile"
     },
     "CSimum": {
       "common": "White Rhinoceros",
       "scientific": "Ceratotherium simum",
       "size": "huge",
-      "rarity": 3,
       "region": "Africa",
       "titles": [
         "CSimumFemale",
@@ -1900,13 +1989,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Rhinoceros"
     },
     "CSuchus": {
       "common": "West African Crocodile",
       "scientific": "Crocodylus suchus",
       "size": "large",
-      "rarity": 4,
       "region": "Africa",
       "titles": [
         "CSuchusFemale",
@@ -1965,13 +2057,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Crocodile"
     },
     "CTaurinusAlbojubatus": {
       "common": "E. White-bearded Wildebeest",
       "scientific": "Connochaetes taurinus albojubatus",
       "size": "large",
-      "rarity": 4,
       "region": "Africa",
       "titles": [
         "CTaurinusAlbojubatusFemale",
@@ -2030,13 +2125,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Wildebeest"
     },
     "CTaurinusGnou": {
       "common": "Black Wildebeest",
       "scientific": "Connochaetes gnou",
       "size": "large",
-      "rarity": 3,
       "region": "Africa",
       "titles": [
         "CTaurinusGnouFemale",
@@ -2077,13 +2175,16 @@
           "sex": "male",
           "variation": 1
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Wildebeest"
     },
     "CTaurinusJohnstoni": {
       "common": "Nyassa Wildebeest",
       "scientific": "Connochaetes taurinus johnstoni",
       "size": "large",
-      "rarity": 4,
       "region": "Africa",
       "titles": [
         "CTaurinusJohnstoniFemale",
@@ -2142,13 +2243,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Wildebeest"
     },
     "CTaurinusMearnsi": {
       "common": "W. White-bearded Wildebeest",
       "scientific": "Connochaetes taurinus mearnsi",
       "size": "large",
-      "rarity": 4,
       "region": "Africa",
       "titles": [
         "CTaurinusMearnsiFemale",
@@ -2207,13 +2311,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Wildebeest"
     },
     "CTaurinusTaurinus": {
       "common": "Blue Wildebeest",
       "scientific": "Connochaetes taurinus taurinus",
       "size": "large",
-      "rarity": 2,
       "region": "Africa",
       "titles": [
         "CTaurinusTaurinusFemale",
@@ -2272,13 +2379,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Wildebeest"
     },
     "ECaballus": {
       "common": "Horse",
       "scientific": "Equus caballus",
       "size": "large",
-      "rarity": 1,
       "region": "Global",
       "titles": [
         "ECaballusFemale",
@@ -2373,13 +2483,16 @@
           "sex": "male",
           "variation": 4
         }
-      ]
+      ],
+      "tier": "everyday",
+      "points": 5,
+      "rank": 1,
+      "group": "Horse"
     },
     "EGrevyi": {
       "common": "Grevy's Zebra",
       "scientific": "Equus grevyi",
       "size": "large",
-      "rarity": 3,
       "region": "Africa",
       "titles": [
         "EGrevyiFemale",
@@ -2438,13 +2551,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Zebra"
     },
     "EHartmannae": {
       "common": "Hartmann's Mountain Zebra",
       "scientific": "Equus zebra hartmannae",
       "size": "large",
-      "rarity": 4,
       "region": "Africa",
       "titles": [
         "EHartmannaeFemale",
@@ -2503,13 +2619,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Zebra"
     },
     "EMaximus": {
       "common": "Asian Elephant",
       "scientific": "Elephas maximus",
       "size": "huge",
-      "rarity": 3,
       "region": "Asia",
       "titles": [
         "EMaximusFemale",
@@ -2568,13 +2687,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Asian Elephant"
     },
     "EPrzewalskii": {
       "common": "Przewalski's Horse",
       "scientific": "Equus przewalskii",
       "size": "large",
-      "rarity": 4,
       "region": "Asia",
       "titles": [
         "EPrzewalskiiFemale",
@@ -2633,13 +2755,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "legendary",
+      "points": 600,
+      "rank": 5,
+      "group": "Przewalski's Horse"
     },
     "EQuagga": {
       "common": "Plains Zebra",
       "scientific": "Equus quagga",
       "size": "large",
-      "rarity": 2,
       "region": "Africa",
       "titles": [
         "EQuaggaFemale",
@@ -2698,13 +2823,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Zebra"
     },
     "EThomsonii": {
       "common": "Thomson's Gazelle",
       "scientific": "Eudorcas thomsonii",
       "size": "medium",
-      "rarity": 2,
       "region": "Africa",
       "titles": [
         "EThomsoniiFemale",
@@ -2763,13 +2891,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Thomson's Gazelle"
     },
     "GAngolan": {
       "common": "Angolan Giraffe",
       "scientific": "Giraffa giraffa angolensis",
       "size": "huge",
-      "rarity": 4,
       "region": "Africa",
       "titles": [
         "GAngolanFemale",
@@ -2828,13 +2959,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Giraffe"
     },
     "GAntiquorum": {
       "common": "Kordofan Giraffe",
       "scientific": "Giraffa camelopardalis antiquorum",
       "size": "huge",
-      "rarity": 4,
       "region": "Africa",
       "titles": [
         "GAntiquorumFemale",
@@ -2893,13 +3027,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Giraffe"
     },
     "GCamelopardalis": {
       "common": "Nubian Giraffe",
       "scientific": "Giraffa camelopardalis",
       "size": "huge",
-      "rarity": 3,
       "region": "Africa",
       "titles": [
         "GCamelopardalisFemale",
@@ -2958,13 +3095,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Giraffe"
     },
     "GCamelopardalisPeralta": {
       "common": "West African Giraffe",
       "scientific": "Giraffa camelopardalis peralta",
       "size": "huge",
-      "rarity": 4,
       "region": "Africa",
       "titles": [
         "GCamelopardalisPeraltaFemale",
@@ -3023,13 +3163,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Giraffe"
     },
     "GGiraffa": {
       "common": "South African Giraffe",
       "scientific": "Giraffa giraffa",
       "size": "huge",
-      "rarity": 3,
       "region": "Africa",
       "titles": [
         "GGiraffaFemale",
@@ -3088,13 +3231,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Giraffe"
     },
     "GPeralta": {
       "common": "West African Giraffe",
       "scientific": "Giraffa camelopardalis peralta",
       "size": "huge",
-      "rarity": 4,
       "region": "Africa",
       "titles": [
         "GPeraltaFemale",
@@ -3153,13 +3299,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Giraffe"
     },
     "GReticulata": {
       "common": "Reticulated Giraffe",
       "scientific": "Giraffa reticulata",
       "size": "huge",
-      "rarity": 3,
       "region": "Africa",
       "titles": [
         "GReticulataFemale",
@@ -3218,13 +3367,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Giraffe"
     },
     "GTippelskirchi": {
       "common": "Masai Giraffe",
       "scientific": "Giraffa tippelskirchi",
       "size": "huge",
-      "rarity": 3,
       "region": "Africa",
       "titles": [
         "GTippelskirchiFemale",
@@ -3283,13 +3435,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Giraffe"
     },
     "GrizzlyBear": {
       "common": "Grizzly Bear",
       "scientific": "Ursus arctos horribilis",
       "size": "large",
-      "rarity": 2,
       "region": "N.America",
       "titles": [
         "GrizzlyBear"
@@ -3300,13 +3455,16 @@
           "sex": "unknown",
           "variation": 0
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Brown Bear"
     },
     "HAmphibius": {
       "common": "Hippopotamus",
       "scientific": "Hippopotamus amphibius",
       "size": "huge",
-      "rarity": 2,
       "region": "Africa",
       "titles": [
         "HAmphibiusFemale",
@@ -3365,13 +3523,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Hippopotamus"
     },
     "HHydrochaeris": {
       "common": "Capybara",
       "scientific": "Hydrochoerus hydrochaeris",
       "size": "small",
-      "rarity": 3,
       "region": "S.America",
       "titles": [
         "HHydrochaerisFemale",
@@ -3430,13 +3591,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Capybara"
     },
     "HIsthmius": {
       "common": "Lesser Capybara",
       "scientific": "Hydrochoerus isthmius",
       "size": "small",
-      "rarity": 4,
       "region": "S.America",
       "titles": [
         "HIsthmiusFemale",
@@ -3495,13 +3659,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Capybara"
     },
     "HMalayanus": {
       "common": "Sun Bear",
       "scientific": "Helarctos malayanus",
       "size": "medium",
-      "rarity": 4,
       "region": "Asia",
       "titles": [
         "HMalayanusFemale",
@@ -3560,13 +3727,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Sun Bear"
     },
     "HNiger": {
       "common": "Sable Antelope",
       "scientific": "Hippotragus niger",
       "size": "medium",
-      "rarity": 3,
       "region": "Africa",
       "titles": [
         "HNigerFemale",
@@ -3625,13 +3795,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Sable Antelope"
     },
     "HumpbackWhale": {
       "common": "Humpback Whale",
       "scientific": "Megaptera novaeangliae",
       "size": "huge",
-      "rarity": 4,
       "region": "Ocean",
       "titles": [
         "HumpbackWhale"
@@ -3642,13 +3815,16 @@
           "sex": "unknown",
           "variation": 0
         }
-      ]
+      ],
+      "tier": "legendary",
+      "points": 600,
+      "rank": 5,
+      "group": "Humpback Whale"
     },
     "LAfricana": {
       "common": "African Bush Elephant",
       "scientific": "Loxodonta africana",
       "size": "huge",
-      "rarity": 2,
       "region": "Africa",
       "titles": [
         "LAfricanaFemale",
@@ -3707,13 +3883,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "African Elephant"
     },
     "LCyclotis": {
       "common": "African Forest Elephant",
       "scientific": "Loxodonta cyclotis",
       "size": "huge",
-      "rarity": 4,
       "region": "Africa",
       "titles": [
         "LCyclotisFemale",
@@ -3772,13 +3951,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "African Elephant"
     },
     "LGlama": {
       "common": "Llama",
       "scientific": "Lama glama",
       "size": "medium",
-      "rarity": 2,
       "region": "S.America",
       "titles": [
         "LGlamaFemale",
@@ -3837,13 +4019,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "everyday",
+      "points": 5,
+      "rank": 1,
+      "group": "Llama"
     },
     "MRufus": {
       "common": "Red Kangaroo",
       "scientific": "Macropus rufus",
       "size": "medium",
-      "rarity": 2,
       "region": "Australia",
       "titles": [
         "MRufusFemale",
@@ -3902,13 +4087,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Red Kangaroo"
     },
     "MTridactyla": {
       "common": "Giant Anteater",
       "scientific": "Myrmecophaga tridactyla",
       "size": "medium",
-      "rarity": 3,
       "region": "S.America",
       "titles": [
         "MTridactylaFemale",
@@ -3967,13 +4155,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Giant Anteater"
     },
     "NLarvatus": {
       "common": "Proboscis Monkey",
       "scientific": "Nasalis larvatus",
       "size": "small",
-      "rarity": 4,
       "region": "Asia",
       "titles": [
         "NLarvatusFemale",
@@ -4032,13 +4223,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "legendary",
+      "points": 600,
+      "rank": 5,
+      "group": "Proboscis Monkey"
     },
     "OAfer": {
       "common": "Aardvark",
       "scientific": "Orycteropus afer",
       "size": "medium",
-      "rarity": 4,
       "region": "Africa",
       "titles": [
         "OAferFemale",
@@ -4097,13 +4291,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Aardvark"
     },
     "OAmericanus": {
       "common": "Mountain Goat",
       "scientific": "Oreamnos americanus",
       "size": "medium",
-      "rarity": 2,
       "region": "N.America",
       "titles": [
         "OAmericanusFemale",
@@ -4162,13 +4359,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Mountain Goat"
     },
     "OAriesAries": {
       "common": "Sheep",
       "scientific": "Ovis aries aries",
       "size": "medium",
-      "rarity": 1,
       "region": "Global",
       "titles": [
         "OAriesAriesFemale",
@@ -4245,13 +4445,16 @@
           "sex": "male",
           "variation": 3
         }
-      ]
+      ],
+      "tier": "everyday",
+      "points": 5,
+      "rank": 1,
+      "group": "Sheep"
     },
     "OAriesMusimon": {
       "common": "Mouflon",
       "scientific": "Ovis aries musimon",
       "size": "medium",
-      "rarity": 3,
       "region": "Europe",
       "titles": [
         "OAriesMusimonFemale",
@@ -4310,13 +4513,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Mouflon"
     },
     "OCanadensis": {
       "common": "Bighorn Sheep",
       "scientific": "Ovis canadensis",
       "size": "medium",
-      "rarity": 2,
       "region": "N.America",
       "titles": [
         "OCanadensisFemale",
@@ -4375,13 +4581,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Bighorn Sheep"
     },
     "OCanadensisNelsoni": {
       "common": "Desert Bighorn",
       "scientific": "Ovis canadensis nelsoni",
       "size": "medium",
-      "rarity": 4,
       "region": "N.America",
       "titles": [
         "OCanadensisNelsoniFemale",
@@ -4440,13 +4649,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Bighorn Sheep"
     },
     "ODalliDalli": {
       "common": "Dall Sheep",
       "scientific": "Ovis dalli dalli",
       "size": "medium",
-      "rarity": 3,
       "region": "N.America",
       "titles": [
         "ODalliDalliFemale",
@@ -4505,13 +4717,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Dall Sheep"
     },
     "ODalliStonei": {
       "common": "Stone's Sheep",
       "scientific": "Ovis dalli stonei",
       "size": "medium",
-      "rarity": 4,
       "region": "N.America",
       "titles": [
         "ODalliStoneiFemale",
@@ -4570,13 +4785,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Dall Sheep"
     },
     "OHemionus": {
       "common": "Mule Deer",
       "scientific": "Odocoileus hemionus",
       "size": "medium",
-      "rarity": 2,
       "region": "N.America",
       "titles": [
         "OHemionusFemale",
@@ -4635,13 +4853,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Mule Deer"
     },
     "Orca": {
       "common": "Orca",
       "scientific": "Orcinus orca",
       "size": "huge",
-      "rarity": 4,
       "region": "Ocean",
       "titles": [
         "Orca"
@@ -4652,13 +4873,16 @@
           "sex": "unknown",
           "variation": 0
         }
-      ]
+      ],
+      "tier": "legendary",
+      "points": 600,
+      "rank": 5,
+      "group": "Orca"
     },
     "PAethiopicus": {
       "common": "Desert Warthog",
       "scientific": "Phacochoerus aethiopicus",
       "size": "medium",
-      "rarity": 4,
       "region": "Africa",
       "titles": [
         "PAethiopicusFemale",
@@ -4717,13 +4941,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Warthog"
     },
     "PAfricanus": {
       "common": "Common Warthog",
       "scientific": "Phacochoerus africanus",
       "size": "medium",
-      "rarity": 2,
       "region": "Africa",
       "titles": [
         "PAfricanusFemale",
@@ -4782,13 +5009,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Warthog"
     },
     "PLeoLeo": {
       "common": "Northern Lion",
       "scientific": "Panthera leo leo",
       "size": "large",
-      "rarity": 3,
       "region": "Africa",
       "titles": [
         "PLeoLeoFemale",
@@ -4847,13 +5077,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Lion"
     },
     "PLeoMelanochaita": {
       "common": "Southern Lion",
       "scientific": "Panthera leo melanochaita",
       "size": "large",
-      "rarity": 2,
       "region": "Africa",
       "titles": [
         "PLeoMelanochaitaFemale",
@@ -4912,13 +5145,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Lion"
     },
     "PLeoPersica": {
       "common": "Asiatic Lion",
       "scientific": "Panthera leo persica",
       "size": "large",
-      "rarity": 4,
       "region": "Asia",
       "titles": [
         "PLeoPersicaFemale",
@@ -4977,13 +5213,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Lion"
     },
     "PPaniscus": {
       "common": "Bonobo",
       "scientific": "Pan paniscus",
       "size": "medium",
-      "rarity": 4,
       "region": "Africa",
       "titles": [
         "PPaniscusFemale",
@@ -5042,13 +5281,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "legendary",
+      "points": 600,
+      "rank": 5,
+      "group": "Bonobo"
     },
     "PTigris": {
       "common": "Tiger",
       "scientific": "Panthera tigris",
       "size": "large",
-      "rarity": 3,
       "region": "Asia",
       "titles": [
         "PTigrisFemale",
@@ -5107,13 +5349,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Tiger"
     },
     "PTigrisAltaica": {
       "common": "Siberian Tiger",
       "scientific": "Panthera tigris altaica",
       "size": "large",
-      "rarity": 4,
       "region": "Asia",
       "titles": [
         "PTigrisAltaicaFemale",
@@ -5172,13 +5417,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "legendary",
+      "points": 600,
+      "rank": 5,
+      "group": "Tiger"
     },
     "PTigrisSondaica": {
       "common": "Sunda Tiger",
       "scientific": "Panthera tigris sondaica",
       "size": "large",
-      "rarity": 4,
       "region": "Asia",
       "titles": [
         "PTigrisSondaicaFemale",
@@ -5237,13 +5485,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Tiger"
     },
     "PTigrisTigris": {
       "common": "Bengal Tiger",
       "scientific": "Panthera tigris tigris",
       "size": "large",
-      "rarity": 3,
       "region": "Asia",
       "titles": [
         "PTigrisTigrisFemale",
@@ -5302,13 +5553,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Tiger"
     },
     "PTroglodytesVerus": {
       "common": "Western Chimpanzee",
       "scientific": "Pan troglodytes verus",
       "size": "medium",
-      "rarity": 3,
       "region": "Africa",
       "titles": [
         "PTroglodytesVerusFemale",
@@ -5367,13 +5621,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Chimpanzee"
     },
     "PUncia": {
       "common": "Snow Leopard",
       "scientific": "Panthera uncia",
       "size": "medium",
-      "rarity": 4,
       "region": "Asia",
       "titles": [
         "PUnciaFemale",
@@ -5432,13 +5689,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "legendary",
+      "points": 600,
+      "rank": 5,
+      "group": "Snow Leopard"
     },
     "RTarandusGroenlandicus": {
       "common": "Caribou",
       "scientific": "Rangifer tarandus groenlandicus",
       "size": "medium",
-      "rarity": 3,
       "region": "Arctic",
       "titles": [
         "RTarandusGroenlandicusFemale",
@@ -5497,13 +5757,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Caribou"
     },
     "SCaffer": {
       "common": "African Buffalo",
       "scientific": "Syncerus caffer",
       "size": "large",
-      "rarity": 2,
       "region": "Africa",
       "titles": [
         "SCafferFemale",
@@ -5562,13 +5825,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "African Buffalo"
     },
     "SCafferBrachyceros": {
       "common": "West African Buffalo",
       "scientific": "Syncerus caffer brachyceros",
       "size": "large",
-      "rarity": 4,
       "region": "Africa",
       "titles": [
         "SCafferBrachycerosFemale",
@@ -5627,13 +5893,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "African Buffalo"
     },
     "SCafferNanus": {
       "common": "Forest Buffalo",
       "scientific": "Syncerus caffer nanus",
       "size": "large",
-      "rarity": 4,
       "region": "Africa",
       "titles": [
         "SCafferNanusFemale",
@@ -5692,13 +5961,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "African Buffalo"
     },
     "SCamelus": {
       "common": "Ostrich",
       "scientific": "Struthio camelus",
       "size": "large",
-      "rarity": 2,
       "region": "Africa",
       "titles": [
         "SCamelusFemale",
@@ -5757,13 +6029,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "Ostrich"
     },
     "SyrianBear": {
       "common": "Syrian Brown Bear",
       "scientific": "Ursus arctos syriacus",
       "size": "large",
-      "rarity": 4,
       "region": "Asia",
       "titles": [
         "SyrianBear"
@@ -5774,13 +6049,16 @@
           "sex": "unknown",
           "variation": 0
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Brown Bear"
     },
     "TEurycerus": {
       "common": "Bongo",
       "scientific": "Tragelaphus eurycerus",
       "size": "medium",
-      "rarity": 4,
       "region": "Africa",
       "titles": [
         "TEurycerusFemale",
@@ -5839,13 +6117,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Bongo"
     },
     "UAmericanus": {
       "common": "American Black Bear",
       "scientific": "Ursus americanus",
       "size": "large",
-      "rarity": 2,
       "region": "N.America",
       "titles": [
         "UAmericanusFemale",
@@ -5904,13 +6185,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "common",
+      "points": 20,
+      "rank": 2,
+      "group": "American Black Bear"
     },
     "UArctosArctos": {
       "common": "Eurasian Brown Bear",
       "scientific": "Ursus arctos arctos",
       "size": "large",
-      "rarity": 3,
       "region": "Europe",
       "titles": [
         "UArctosArctosFemale",
@@ -5969,13 +6253,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Brown Bear"
     },
     "UArctosCollaris": {
       "common": "E. Siberian Brown Bear",
       "scientific": "Ursus arctos collaris",
       "size": "large",
-      "rarity": 4,
       "region": "Asia",
       "titles": [
         "UArctosCollarisFemale",
@@ -6034,13 +6321,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Brown Bear"
     },
     "UArctosHorribilis": {
       "common": "Grizzly Bear",
       "scientific": "Ursus arctos horribilis",
       "size": "large",
-      "rarity": 2,
       "region": "N.America",
       "titles": [
         "UArctosHorribilisFemale",
@@ -6099,13 +6389,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Brown Bear"
     },
     "UArctosIsabellinus": {
       "common": "Himalayan Brown Bear",
       "scientific": "Ursus arctos isabellinus",
       "size": "large",
-      "rarity": 4,
       "region": "Asia",
       "titles": [
         "UArctosIsabellinusFemale",
@@ -6164,13 +6457,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Brown Bear"
     },
     "UArctosLasiotus": {
       "common": "Ussuri Brown Bear",
       "scientific": "Ursus arctos lasiotus",
       "size": "large",
-      "rarity": 4,
       "region": "Asia",
       "titles": [
         "UArctosLasiotusFemale",
@@ -6229,13 +6525,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Brown Bear"
     },
     "UMaritimus": {
       "common": "Polar Bear",
       "scientific": "Ursus maritimus",
       "size": "large",
-      "rarity": 3,
       "region": "Arctic",
       "titles": [
         "UMaritimusFemale",
@@ -6294,13 +6593,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Polar Bear"
     },
     "UThibetanus": {
       "common": "Asian Black Bear",
       "scientific": "Ursus thibetanus",
       "size": "large",
-      "rarity": 3,
       "region": "Asia",
       "titles": [
         "UThibetanusFemale",
@@ -6359,13 +6661,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Asian Black Bear"
     },
     "VLagopus": {
       "common": "Arctic Fox",
       "scientific": "Vulpes lagopus",
       "size": "small",
-      "rarity": 3,
       "region": "Arctic",
       "titles": [
         "VLagopusFemale",
@@ -6424,13 +6729,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "regional",
+      "points": 60,
+      "rank": 3,
+      "group": "Arctic Fox"
     },
     "VLagopusBeringensis": {
       "common": "Bering Arctic Fox",
       "scientific": "Vulpes lagopus beringensis",
       "size": "small",
-      "rarity": 4,
       "region": "Arctic",
       "titles": [
         "VLagopusBeringensisFemale",
@@ -6489,13 +6797,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Arctic Fox"
     },
     "VLagopusFuliginosus": {
       "common": "Iceland Arctic Fox",
       "scientific": "Vulpes lagopus fuliginosus",
       "size": "small",
-      "rarity": 4,
       "region": "Arctic",
       "titles": [
         "VLagopusFuliginosusFemale",
@@ -6554,13 +6865,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Arctic Fox"
     },
     "VLagopusPribilofensis": {
       "common": "Pribilof Arctic Fox",
       "scientific": "Vulpes lagopus pribilofensis",
       "size": "small",
-      "rarity": 4,
       "region": "Arctic",
       "titles": [
         "VLagopusPribilofensisFemale",
@@ -6619,13 +6933,16 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "rare",
+      "points": 200,
+      "rank": 4,
+      "group": "Arctic Fox"
     },
     "VPacos": {
       "common": "Alpaca",
       "scientific": "Vicugna pacos",
       "size": "medium",
-      "rarity": 2,
       "region": "S.America",
       "titles": [
         "VPacosFemale",
@@ -6684,7 +7001,11 @@
           "sex": "male",
           "variation": 2
         }
-      ]
+      ],
+      "tier": "everyday",
+      "points": 5,
+      "rank": 1,
+      "group": "Alpaca"
     }
   },
   "title_to_species": {
@@ -7695,5 +8016,263 @@
     "ahqw Pilot Airline 2 Walk",
     "ahqw Skydiver Walk",
     "ahqw Workman"
-  ]
+  ],
+  "tiers": {
+    "everyday": {
+      "rank": 1,
+      "points": 5,
+      "label": "everyday"
+    },
+    "common": {
+      "rank": 2,
+      "points": 20,
+      "label": "common"
+    },
+    "regional": {
+      "rank": 3,
+      "points": 60,
+      "label": "regional"
+    },
+    "rare": {
+      "rank": 4,
+      "points": 200,
+      "label": "rare"
+    },
+    "legendary": {
+      "rank": 5,
+      "points": 600,
+      "label": "legendary"
+    }
+  },
+  "groups": {
+    "Aardvark": [
+      "OAfer"
+    ],
+    "African Buffalo": [
+      "SCaffer",
+      "SCafferBrachyceros",
+      "SCafferNanus"
+    ],
+    "African Elephant": [
+      "LAfricana",
+      "LCyclotis"
+    ],
+    "Alpaca": [
+      "VPacos"
+    ],
+    "Alpine Ibex": [
+      "CIbex"
+    ],
+    "American Black Bear": [
+      "BlackBear",
+      "UAmericanus"
+    ],
+    "Arctic Fox": [
+      "VLagopus",
+      "VLagopusBeringensis",
+      "VLagopusFuliginosus",
+      "VLagopusPribilofensis"
+    ],
+    "Asian Black Bear": [
+      "UThibetanus"
+    ],
+    "Asian Elephant": [
+      "EMaximus"
+    ],
+    "Banteng": [
+      "BJavanicus"
+    ],
+    "Barbary Sheep": [
+      "ALervia"
+    ],
+    "Bighorn Sheep": [
+      "OCanadensis",
+      "OCanadensisNelsoni"
+    ],
+    "Bison": [
+      "BBison",
+      "BBonasus"
+    ],
+    "Bongo": [
+      "TEurycerus"
+    ],
+    "Bonobo": [
+      "PPaniscus"
+    ],
+    "Brown Bear": [
+      "GrizzlyBear",
+      "SyrianBear",
+      "UArctosArctos",
+      "UArctosCollaris",
+      "UArctosHorribilis",
+      "UArctosIsabellinus",
+      "UArctosLasiotus"
+    ],
+    "Camel": [
+      "CBactrianus",
+      "CDromedarius"
+    ],
+    "Capybara": [
+      "HHydrochaeris",
+      "HIsthmius"
+    ],
+    "Caribou": [
+      "RTarandusGroenlandicus"
+    ],
+    "Cattle": [
+      "BTaurusIndicus",
+      "BTaurusPrimigenius"
+    ],
+    "Cheetah": [
+      "AJubatusHecki",
+      "AJubatusJubatus",
+      "AJubatusSoemmeringii"
+    ],
+    "Chimpanzee": [
+      "PTroglodytesVerus"
+    ],
+    "Crocodile": [
+      "CPalustris",
+      "CPorosus",
+      "CSuchus"
+    ],
+    "Dall Sheep": [
+      "ODalliDalli",
+      "ODalliStonei"
+    ],
+    "Elk": [
+      "CCanadensisNannodes",
+      "CElaphusCanadensis"
+    ],
+    "Gayal": [
+      "BFrontalis"
+    ],
+    "Giant Anteater": [
+      "MTridactyla"
+    ],
+    "Giant Panda": [
+      "AMelanoleuca"
+    ],
+    "Giraffe": [
+      "GAngolan",
+      "GAntiquorum",
+      "GCamelopardalis",
+      "GCamelopardalisPeralta",
+      "GGiraffa",
+      "GPeralta",
+      "GReticulata",
+      "GTippelskirchi"
+    ],
+    "Goat": [
+      "CHircusHircus"
+    ],
+    "Hippopotamus": [
+      "HAmphibius"
+    ],
+    "Horse": [
+      "ECaballus"
+    ],
+    "Humpback Whale": [
+      "HumpbackWhale"
+    ],
+    "Lion": [
+      "PLeoLeo",
+      "PLeoMelanochaita",
+      "PLeoPersica"
+    ],
+    "Llama": [
+      "LGlama"
+    ],
+    "Moose": [
+      "AAlces"
+    ],
+    "Mouflon": [
+      "OAriesMusimon"
+    ],
+    "Mountain Goat": [
+      "OAmericanus"
+    ],
+    "Mule Deer": [
+      "OHemionus"
+    ],
+    "Orca": [
+      "Orca"
+    ],
+    "Ostrich": [
+      "SCamelus"
+    ],
+    "Polar Bear": [
+      "UMaritimus"
+    ],
+    "Proboscis Monkey": [
+      "NLarvatus"
+    ],
+    "Pronghorn": [
+      "AAmericanus"
+    ],
+    "Przewalski's Horse": [
+      "EPrzewalskii"
+    ],
+    "Red Kangaroo": [
+      "MRufus"
+    ],
+    "Rhinoceros": [
+      "CSimum"
+    ],
+    "Sable Antelope": [
+      "HNiger"
+    ],
+    "Sheep": [
+      "OAriesAries"
+    ],
+    "Sika Deer": [
+      "CNippon"
+    ],
+    "Snow Leopard": [
+      "PUncia"
+    ],
+    "Spotted Hyena": [
+      "CCrocuta"
+    ],
+    "Sun Bear": [
+      "HMalayanus"
+    ],
+    "Thomson's Gazelle": [
+      "EThomsonii"
+    ],
+    "Tiger": [
+      "PTigris",
+      "PTigrisAltaica",
+      "PTigrisSondaica",
+      "PTigrisTigris"
+    ],
+    "Warthog": [
+      "PAethiopicus",
+      "PAfricanus"
+    ],
+    "Water Buffalo": [
+      "BBBubalis",
+      "BBubalis"
+    ],
+    "Wildebeest": [
+      "CTaurinusAlbojubatus",
+      "CTaurinusGnou",
+      "CTaurinusJohnstoni",
+      "CTaurinusMearnsi",
+      "CTaurinusTaurinus"
+    ],
+    "Wolf": [
+      "CLupusAlbus",
+      "CLupusArctos",
+      "CLupusLupus"
+    ],
+    "Yak": [
+      "BGrunniens"
+    ],
+    "Zebra": [
+      "EGrevyi",
+      "EHartmannae",
+      "EQuagga"
+    ]
+  }
 }

@@ -113,12 +113,28 @@ const RECOGNITION = {
 };
 const DEFAULT_RECOGNITION = "ask";
 
-const RARITY_POINTS = { 1: 10, 2: 25, 3: 60, 4: 150 };
-const RARITY_LABEL = { 1: "domestic", 2: "common", 3: "regional", 4: "rare" };
+// Identifying is half the game. Getting close enough to capture is the other
+// half, and it is what pulls people down to the deck where the sim looks best
+// and the flying is interesting.
+const CAPTURE_RANGE_M = 250;
+// If the sim gives us no camera, everything passes. Never lock someone out of
+// their own game because a reading failed.
+const DEFAULT_VIEW_CONE_DEG = 45;
+// A capture is worth the identification again, so a captured animal is double.
+const CAPTURE_MULTIPLIER = 1.0;
+
+// Points come from the species table now, not a table in here -- see
+// probe/apply_rarity.py. Fallback only, for a table that predates tiers.
+const TIER_POINTS = { everyday: 5, common: 20, regional: 60, rare: 200, legendary: 600 };
+const TIER_LABEL = { everyday: "everyday", common: "common", regional: "regional",
+	rare: "rare", legendary: "legendary" };
 // Identifying it first go is worth far more than grinding down the shortlist.
 const TRY_MULTIPLIER = [1.0, 0.5, 0.25, 0.1];
 // Seeing a species you already have is worth something, but not much.
 const REPEAT_MULT = 0.25;
+// Only the eight legendary animals raise an alert. Anything commoner
+// fires often enough to become wallpaper.
+const ALERT_TIER = "legendary";
 
 const SECTORS = ["north", "north-east", "east", "south-east",
 	"south", "south-west", "west", "north-west"];
@@ -231,7 +247,8 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			recognition: DEFAULT_RECOGNITION,
 			serviceUrl: DEFAULT_SERVICE_URL,
 			lifelist: {},   // species root -> { first, lat, lon, best, count }
-			logged: {},     // contact key -> true, so a herd is only worth it once
+			logged: {},     // contact key -> {species, lat, lon} once identified
+			captured: {},   // contact key -> true once you got close enough
 			attempts: {},   // contact key -> { tries, wrong[], options[] } across back-outs
 		};
 		this.species = null;      // the full table, fetched once
@@ -242,6 +259,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.hintHeldUntil = 0;
 		this.listHeldUntil = 0;
 		this.pointerOverList = false;
+		this.alertFor = null;
 		this.rows = {};
 		this.cappedNote = null;
 		this.quiz = null;
@@ -297,6 +315,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			huntEmpty: pick("huntEmpty"),
 			spotHint: pick("spotHint"),
 			listHold: pick("listHold"),
+			alert: pick("alert"),
 			lifelistStats: pick("lifelistStats"),
 			lifelistBody: pick("lifelistBody"),
 			difficultyRow: pick("difficultyRow"),
@@ -342,6 +361,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		});
 		this.nodes.contactList.addEventListener("mouseleave", () => {
 			this.pointerOverList = false;
+		this.alertFor = null;
 			this.updateHoldNote();
 		});
 		this.nodes.quizGiveUp.addEventListener("click", () => this.resolveQuiz(null));
@@ -426,6 +446,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		if (!BACKGROUNDS[this.state.background]) this.state.background = DEFAULT_BACKGROUND;
 		if (!RECOGNITION[this.state.recognition]) this.state.recognition = DEFAULT_RECOGNITION;
 		if (!this.state.attempts) this.state.attempts = {};
+		if (!this.state.captured) this.state.captured = {};
 		if (!this.state.lifelist) this.state.lifelist = {};
 		if (!this.state.logged) this.state.logged = {};
 		if (this.nodes && this.nodes.serviceUrl) {
@@ -476,6 +497,9 @@ class IngamePanelFaunaHunt extends TemplateElement {
 				// "has data" are two different things and must read differently.
 				this.setStatus(data.connected === false ? "nosim" : "ok");
 				if (!this.species) this.fetchSpecies();
+				const contacts = (data && data.contacts) || [];
+				this.checkCaptures(contacts);
+				this.renderAlert(contacts);
 				if (this.view === "hunt") this.renderHunt();
 				this.updateStatusLine();
 			},
@@ -713,11 +737,17 @@ class IngamePanelFaunaHunt extends TemplateElement {
 				// A tick, not the word alone: "identified" and "identify" are
 				// one letter apart at a glance, and people were tapping tiles
 				// they had already finished with.
-				? "<span class=\"contact-tag is-logged\">"
+				? (this.isCaptured(contact)
+					? "<span class=\"contact-tag is-captured\">"
+						+ "<svg viewBox=\"0 0 16 16\" width=\"1em\" height=\"1em\" "
+						+ "fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" "
+						+ "stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\">"
+						+ "<path d=\"M3 8.5 L6.5 12 L13 4.5\"/></svg>captured</span>"
+					: "<span class=\"contact-tag is-logged\">"
 					+ "<svg viewBox=\"0 0 16 16\" width=\"1em\" height=\"1em\" "
 					+ "fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" "
 					+ "stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\">"
-					+ "<path d=\"M3 8.5 L6.5 12 L13 4.5\"/></svg>done</span>"
+					+ "<path d=\"M3 8.5 L6.5 12 L13 4.5\"/></svg>done</span>")
 				: (near ? "<span class=\"contact-tag\">identify</span>" : ""));
 	}
 
@@ -778,6 +808,84 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		return false;
 	}
 
+	// You have to be looking at it. Not the aircraft's nose -- your actual view,
+	// which is the headset in VR and the camera in 2D. Stops you identifying an
+	// animal behind you because its tile happened to be nearest.
+	inView(contact) {
+		if (contact.off_view_deg === undefined || contact.off_view_deg === null) {
+			return true;                       // no camera reading -- do not block
+		}
+		const cone = (this.snapshot && this.snapshot.view_cone_deg)
+			|| DEFAULT_VIEW_CONE_DEG;
+		return contact.off_view_deg <= cone;
+	}
+
+	isCaptured(contact) {
+		return !!this.state.captured[contact.key];
+	}
+
+	// Capture needs no press. Identify it, then fly close enough to the nearest
+	// animal in the herd and it is yours -- which is what pulls people down to
+	// the deck instead of identifying everything from altitude.
+	checkCaptures(contacts) {
+		let caught = null;
+		contacts.forEach((contact) => {
+			if (this.state.captured[contact.key]) return;
+			if (!this.isLogged(contact)) return;
+			const nearest = contact.nearest_m !== undefined
+				? contact.nearest_m : contact.distance_m;
+			if (nearest > CAPTURE_RANGE_M) return;
+			if (!this.inView(contact)) return;   // close is not enough -- look at it
+
+			this.state.captured[contact.key] = true;
+			const bonus = Math.round(this.pointsFor(contact)
+				* CAPTURE_MULTIPLIER * this.difficulty.scoreMult);
+			this.state.score += bonus;
+
+			const record = this.state.lifelist[contact.species];
+			if (record) {
+				record.captured = true;
+				record.capturedOn = record.capturedOn || todayIso();
+			}
+			caught = { contact: contact, bonus: bonus };
+		});
+
+		if (caught) {
+			this.saveState();
+			this.renderScore();
+			this.setSpotHint("Nice capture — " + caught.contact.common
+				+ ". +" + caught.bonus + " points.", false, true);
+		}
+		return !!caught;
+	}
+
+	// Only the legendary eight. Anything commoner becomes wallpaper.
+	legendaryNearby(contacts) {
+		for (let i = 0; i < contacts.length; i++) {
+			if (contacts[i].tier === ALERT_TIER) return contacts[i];
+		}
+		return null;
+	}
+
+	renderAlert(contacts) {
+		const node = this.nodes.alert;
+		if (!node) return;
+		const found = this.legendaryNearby(contacts);
+		if (!found) {
+			node.classList.add("hidden");
+			this.alertFor = null;
+			return;
+		}
+		if (this.alertFor !== found.key) {
+			this.alertFor = found.key;
+			const known = this.isLogged(found);
+			node.textContent = known
+				? found.common + " nearby — " + Math.round(found.distance_m) + " m"
+				: "Something legendary is out here";
+		}
+		node.classList.remove("hidden");
+	}
+
 	contactByKey(key) {
 		const contacts = (this.snapshot && this.snapshot.contacts) || [];
 		for (let i = 0; i < contacts.length; i++) {
@@ -801,6 +909,12 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		if (contact.distance_m > IDENTIFY_RANGE_M) {
 			this.setSpotHint("Too far to be sure. Get within "
 				+ IDENTIFY_RANGE_M + " m of it.", true, true);
+			return;
+		}
+		if (!this.inView(contact)) {
+			// Feedback on a tap they made, not an unsolicited warning -- a tap
+			// that silently does nothing reads as a broken panel.
+			this.setSpotHint("It's not in that direction.", true, true);
 			return;
 		}
 		this.openQuiz(contact);
@@ -855,6 +969,11 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		return shuffle(options);
 	}
 
+	pointsFor(contact) {
+		if (contact.points) return contact.points;
+		return TIER_POINTS[contact.tier] || 20;
+	}
+
 	labelFor(root, contact) {
 		if (root === contact.species) return contact.common;
 		const table = this.species || {};
@@ -897,6 +1016,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.hintHeldUntil = 0;
 		this.listHeldUntil = 0;
 		this.pointerOverList = false;
+		this.alertFor = null;
 		this.rows = {};
 		this.cappedNote = null;
 		this.nodes.quizOverlay.classList.remove("hidden");
@@ -955,7 +1075,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		let points = 0;
 
 		if (!gaveUp) {
-			const base = RARITY_POINTS[contact.rarity] || 25;
+			const base = this.pointsFor(contact);
 			const distanceMult = Math.min(3, 1 + contact.distance_m / 1000);
 			const tryMult = TRY_MULTIPLIER[Math.min(tries, TRY_MULTIPLIER.length - 1)];
 			points = base * distanceMult * this.difficulty.scoreMult * tryMult;
@@ -992,7 +1112,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 
 		const bits = [contact.scientific];
 		if (contact.count > 1) bits.push(contact.count + " animals");
-		bits.push(RARITY_LABEL[contact.rarity] || "");
+		bits.push(TIER_LABEL[contact.tier] || "");
 		bits.push(Math.round(contact.distance_m) + " m out");
 		nodes.resultDetail.textContent = bits.filter(Boolean).join(" · ");
 
@@ -1012,10 +1132,12 @@ class IngamePanelFaunaHunt extends TemplateElement {
 
 	// ------------------------------------------------------------ lifelist
 
+	// Grouped by headline animal rather than by species. The sim ships seven
+	// brown bears and eight giraffes; listed flat that reads as a taxonomy
+	// exercise, and finding your first tiger stops feeling like an event.
 	renderLifelist() {
 		const table = this.species;
 		const found = this.state.lifelist;
-		const foundCount = Object.keys(found).length;
 
 		if (!table) {
 			this.nodes.lifelistStats.innerHTML = "";
@@ -1025,19 +1147,38 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			return;
 		}
 
-		const total = Object.keys(table).length;
-		const rare = Object.keys(found).filter((r) => table[r] && table[r].rarity === 4).length;
+		const groups = {};
+		Object.keys(table).forEach((root) => {
+			const info = table[root];
+			const name = info.group || info.common;
+			const g = groups[name] || (groups[name] = {
+				name: name, region: info.region, roots: [],
+				rank: info.rank || 0, tier: info.tier || "common",
+			});
+			g.roots.push(root);
+			// A group takes the rarity of its rarest member, so "Tiger" reads
+			// legendary once the Siberian is in it.
+			if ((info.rank || 0) > g.rank) {
+				g.rank = info.rank || 0;
+				g.tier = info.tier || g.tier;
+			}
+		});
+
+		const names = Object.keys(groups);
+		const identified = names.filter((n) => groups[n].roots.some((r) => found[r]));
+		const captured = names.filter((n) =>
+			groups[n].roots.some((r) => found[r] && found[r].captured));
+
 		this.nodes.lifelistStats.innerHTML =
-			"<div><b>" + foundCount + " / " + total + "</b>species</div>"
-			+ "<div><b>" + rare + "</b>rare subspecies</div>"
+			"<div><b>" + identified.length + " / " + names.length + "</b>identified</div>"
+			+ "<div><b>" + captured.length + "</b>captured</div>"
 			+ "<div><b>" + Math.round(this.state.score) + "</b>points</div>";
 
 		const byRegion = {};
-		Object.keys(table).forEach((root) => {
-			const region = table[root].region || "Global";
-			(byRegion[region] = byRegion[region] || []).push(root);
+		names.forEach((n) => {
+			const region = groups[n].region || "Global";
+			(byRegion[region] = byRegion[region] || []).push(n);
 		});
-
 		const regions = Object.keys(byRegion).sort((a, b) => {
 			const ia = REGION_ORDER.indexOf(a), ib = REGION_ORDER.indexOf(b);
 			return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
@@ -1045,22 +1186,37 @@ class IngamePanelFaunaHunt extends TemplateElement {
 
 		const html = [];
 		regions.forEach((region) => {
-			const roots = byRegion[region].sort((a, b) =>
-				table[a].common.localeCompare(table[b].common));
-			const got = roots.filter((r) => found[r]).length;
+			const list = byRegion[region].sort((a, b) => a.localeCompare(b));
+			const got = list.filter((n) => groups[n].roots.some((r) => found[r])).length;
 			html.push("<p class=\"region-head\">" + region
-				+ " · " + got + " of " + roots.length + "</p>");
-			roots.forEach((root) => {
-				const info = table[root];
-				const record = found[root];
-				html.push("<div class=\"life-row" + (record ? " is-found" : "") + "\">"
+				+ " · " + got + " of " + list.length + "</p>");
+
+			list.forEach((name) => {
+				const g = groups[name];
+				const seen = g.roots.filter((r) => found[r]);
+				const caught = seen.filter((r) => found[r].captured);
+				const isFound = seen.length > 0;
+
+				let state = "";
+				if (caught.length) {
+					state = "<span class=\"life-state is-captured\">captured</span>";
+				} else if (isFound) {
+					state = "<span class=\"life-state\">identified</span>";
+				}
+
+				// Variant count only matters once you have started collecting.
+				const variants = g.roots.length > 1 && isFound
+					? "<span class=\"life-variants\">" + seen.length
+						+ " of " + g.roots.length + "</span>"
+					: "";
+
+				html.push("<div class=\"life-row" + (isFound ? " is-found" : "") + "\">"
 					+ "<span class=\"life-name\">"
-					+ (record ? info.common : "—")
-					+ (record ? " <span class=\"life-sci\">" + info.scientific + "</span>" : "")
+					+ (isFound ? name : "—")
 					+ "</span>"
-					+ "<span class=\"rarity r" + info.rarity + "\">"
-					+ (RARITY_LABEL[info.rarity] || "") + "</span>"
-					+ "<span class=\"life-when\">" + (record ? record.first : "") + "</span>"
+					+ variants
+					+ state
+					+ "<span class=\"rarity tier-" + g.tier + "\">" + g.tier + "</span>"
 					+ "</div>");
 			});
 		});
@@ -1179,6 +1335,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.state.lifelist = {};
 		this.state.logged = {};
 		this.state.attempts = {};
+		this.state.captured = {};
 		this.resetArmed = false;
 		this.nodes.resetBtn.textContent = "Reset all progress";
 		this.nodes.resetBtn.classList.remove("is-armed");

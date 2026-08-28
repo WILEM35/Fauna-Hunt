@@ -54,9 +54,16 @@ New-Item -ItemType Directory -Path $Staging -Force | Out-Null
 # rather than failing. Check first, and cap the retries regardless.
 $svc = Get-Process -Name "FaunaHuntService" -ErrorAction SilentlyContinue
 if ($svc) {
-    Write-Host "FaunaHuntService.exe is running ($($svc.Count) instance(s))." -ForegroundColor Red
-    Write-Host "It locks the file being replaced. Close those windows and re-run." -ForegroundColor Red
-    exit 1
+    # It only reads the sim and serves the panel, so closing it costs nothing
+    # but a restart -- and leaving it running silently blocks the whole build.
+    Write-Host "Closing $($svc.Count) running FaunaHuntService instance(s)..." -ForegroundColor Yellow
+    Stop-Process -Name "FaunaHuntService" -Force -ErrorAction SilentlyContinue
+    Start-Sleep -Seconds 2
+    if (Get-Process -Name "FaunaHuntService" -ErrorAction SilentlyContinue) {
+        Write-Host "Could not close it. Close the window by hand and re-run." -ForegroundColor Red
+        exit 1
+    }
+    Write-Host "  closed - restart it after the build" -ForegroundColor Yellow
 }
 
 Write-Host "Staging..." -ForegroundColor Cyan

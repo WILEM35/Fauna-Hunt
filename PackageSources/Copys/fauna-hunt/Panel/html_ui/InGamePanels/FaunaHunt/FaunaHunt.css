@@ -434,6 +434,48 @@ ingame-ui#FaunaHunt .ingameUiContent {
 
 .danger-btn.is-armed { background: var(--fh-danger); color: #1a0a06; }
 
+/* A legendary animal is worth interrupting for. Nothing commoner gets one. */
+.alert {
+	flex: 0 0 auto;
+	margin: 0.4em 0.45em 0 0.45em;
+	padding: 0.5em 0.7em;
+	background: rgba(185, 140, 224, 0.14);
+	border: 1px solid var(--fh-rare);
+	border-radius: 3px;
+	color: var(--fh-rare);
+	font-size: 0.9em;
+	letter-spacing: 0.02em;
+	text-align: center;
+}
+
+.contact-tag.is-captured {
+	color: var(--fh-accent);
+	border-color: transparent;
+	background: rgba(111, 208, 140, 0.16);
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3em;
+}
+
+.life-state {
+	font-size: 0.72em;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--fh-dim);
+}
+
+.life-state.is-captured { color: var(--fh-accent); }
+
+.life-variants {
+	font-size: 0.72em;
+	color: var(--fh-faint);
+	font-variant-numeric: tabular-nums;
+}
+
+.rarity.tier-regional  { color: var(--fh-dim); }
+.rarity.tier-rare      { color: var(--fh-warn); }
+.rarity.tier-legendary { color: var(--fh-rare); }
+
 /* ---------------------------------------------------------- overlays */
 
 .overlay {

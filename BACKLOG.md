@@ -51,7 +51,7 @@ If the header still has no controls after this, close this item as NOT
 POSSIBLE. Every mechanism I can find has been tried, the SDK documents none,
 and no installed third-party panel has them either.
 
-### [ ] "You have to be looking at it" — camera-direction gating
+### [~] "You have to be looking at it" — camera-direction gating
 
 Identifying currently needs only proximity. Requiring the player to actually
 have the animal in view would restore what the removed SPOT button was
@@ -76,12 +76,29 @@ the cone could match what is genuinely visible rather than an invented number.
 **Probe written: `probe/camera_probe.py`** (1.1.0). It never acquires the
 camera, so if readings come back at all then reading is free.
 
-*Three things it answers:*
-1. Does it follow the VR headset, or only the 2D camera?
-2. Does reading it require `SimConnect_CameraAcquire`? If reading needs taking
-   camera control from the player, the feature is dead — that is not
-   acceptable in a spotting game.
-3. Does it update at head-turn speed, or only aircraft-turn speed?
+**PROVED VIABLE, 2026-08-27.** All three answered:
+
+1. **It follows the view, not the aircraft — in VR as well as 2D.** Parked on
+   25.5 in 2D, the camera read 25.504 looking straight ahead. In the headset,
+   parked on 25.7, head turns swung it across 269 degrees and pitch across 76
+   while the aircraft never moved. Roll tracks head tilt.
+   The ~15 degree offset seen in the VR run was simply the player sitting off
+   centre, not recentred — not an offset in the data. Nothing to correct.
+2. **No acquire needed.** Status reported NOT_ACQUIRED and data flowed anyway,
+   so reading never touches the player's camera control.
+3. **~3.3 readings/sec**, ample.
+
+Details that cost time and should not be re-derived:
+- `SIMCONNECT_RECV_CAMERA_DATA` is **96 bytes and PACKED** — ctypes pads it to
+  104 by default, and every message is silently dropped as too short.
+- `SIMCONNECT_DATA_PBH` is three **floats**, not doubles.
+- Despite the header naming them Pitch/Bank/Heading, the **middle float is the
+  compass direction the view faces** and the third is roll. All in **degrees**,
+  world-referenced (rotRef 2). FOV comes back in radians: 1.26 (~72 deg) in 2D, 1.571 (90 deg) in VR.
+
+Still to design: cone width (FOV is available, so it can match what is really
+visible), whether looking is required to identify or only to score, and how the
+tile shows that you are not looking at it yet.
 
 ### [x] Recognise known species — optional — 1.1.0
 

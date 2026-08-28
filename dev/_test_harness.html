@@ -85,7 +85,10 @@ function contact(species, distance, bearing, count, over) {
 	return {
 		key: species + "@" + distance,
 		species: species, common: info.common, scientific: info.scientific,
-		size: info.size, rarity: info.rarity, region: info.region,
+		size: info.size, region: info.region,
+		tier: info.tier, points: info.points, rank: info.rank, group: info.group,
+		nearest_m: distance,
+		off_view_deg: window.__offView === undefined ? 0 : window.__offView,
 		count: count, sexes: { male: count },
 		lat: 53.4, lon: 7.22, alt_ft: 30,
 		distance_m: distance, bearing_deg: bearing,
@@ -139,6 +142,7 @@ function buildSnapshot() {
 	contacts.sort((a, b) => a.distance_m - b.distance_m);
 	return {
 		connected: true, user: user, contacts: contacts,
+		view_cone_deg: 45, fov_deg: 90,
 		stats: { contacts: contacts.length, individuals: 0, capped: capped, rejected: {} },
 		updated: Date.now() / 1000,
 	};
@@ -178,6 +182,7 @@ const PANEL_MARKUP = `
 		<button type="button" class="tab" data-view="settings">Settings</button>
 		<span id="scoreChip" class="score-chip">0</span>
 	</nav>
+	<div id="alert" class="alert hidden"></div>
 	<div id="offline" class="offline hidden">
 		<p class="offline-title">Data service not running</p>
 		<p class="offline-body">Start it in a terminal, then this panel connects on its own.</p>
