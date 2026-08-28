@@ -96,6 +96,23 @@ const BACKGROUNDS = {
 };
 const DEFAULT_BACKGROUND = "tinted";
 
+// Whether a species you have already identified is recognised on sight
+// anywhere, or has to be worked out afresh at every new herd.
+const RECOGNITION = {
+	ask: {
+		label: "Ask every time",
+		blurb: "Every herd is its own puzzle. A species you know still has to be "
+			+ "identified again somewhere new, and still scores.",
+	},
+	sight: {
+		label: "Recognise on sight",
+		blurb: "A species you have identified is named the moment it appears, "
+			+ "anywhere. Those tiles cannot be identified again and score "
+			+ "nothing — you are choosing to hunt only what is new.",
+	},
+};
+const DEFAULT_RECOGNITION = "ask";
+
 const RARITY_POINTS = { 1: 10, 2: 25, 3: 60, 4: 150 };
 const RARITY_LABEL = { 1: "domestic", 2: "common", 3: "regional", 4: "rare" };
 // Identifying it first go is worth far more than grinding down the shortlist.
@@ -211,6 +228,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			difficulty: "tracker",
 			textSize: DEFAULT_TEXT_SIZE,
 			background: DEFAULT_BACKGROUND,
+			recognition: DEFAULT_RECOGNITION,
 			serviceUrl: DEFAULT_SERVICE_URL,
 			lifelist: {},   // species root -> { first, lat, lon, best, count }
 			logged: {},     // contact key -> true, so a herd is only worth it once
@@ -244,6 +262,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.applyTextSize();
 		this.renderBackground();
 		this.applyBackground();
+		this.renderRecognition();
 		this.renderScore();
 		this.fetchSpecies();
 		this.pollTimer = setInterval(() => this.poll(), POLL_INTERVAL_MS);
@@ -284,6 +303,8 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			difficultyBlurb: pick("difficultyBlurb"),
 			textSizeRow: pick("textSizeRow"),
 			backgroundRow: pick("backgroundRow"),
+			recognitionRow: pick("recognitionRow"),
+			recognitionBlurb: pick("recognitionBlurb"),
 			serviceUrl: pick("serviceUrl"),
 			resetBtn: pick("resetBtn"),
 			quizOverlay: pick("quizOverlay"),
@@ -403,6 +424,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		if (!TEXT_SIZES[this.state.textSize]) this.state.textSize = DEFAULT_TEXT_SIZE;
 		if (this.state.background === "slight") this.state.background = "tinted";
 		if (!BACKGROUNDS[this.state.background]) this.state.background = DEFAULT_BACKGROUND;
+		if (!RECOGNITION[this.state.recognition]) this.state.recognition = DEFAULT_RECOGNITION;
 		if (!this.state.attempts) this.state.attempts = {};
 		if (!this.state.lifelist) this.state.lifelist = {};
 		if (!this.state.logged) this.state.logged = {};
@@ -419,6 +441,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.applyTextSize();
 		this.renderBackground();
 		this.applyBackground();
+		this.renderRecognition();
 		this.renderScore();
 		if (this.view === "hunt") this.renderHunt();
 		if (this.view === "lifelist") this.renderLifelist();
@@ -734,6 +757,12 @@ class IngamePanelFaunaHunt extends TemplateElement {
 	// True if this herd has already been identified, even if the sim has since
 	// handed it to us under a different key.
 	isLogged(contact) {
+		// Recognise-on-sight: knowing the species anywhere is enough, so a
+		// herd you have never met is still named and cannot be scored.
+		if (this.state.recognition === "sight"
+			&& this.state.lifelist[contact.species]) {
+			return true;
+		}
 		if (this.state.logged[contact.key]) return true;
 		const logged = this.state.logged;
 		const keys = Object.keys(logged);
@@ -1090,6 +1119,28 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			});
 			row.appendChild(button);
 		});
+	}
+
+	renderRecognition() {
+		const row = this.nodes.recognitionRow;
+		if (!row) return;
+		row.innerHTML = "";
+		Object.keys(RECOGNITION).forEach((key) => {
+			const button = document.createElement("button");
+			button.type = "button";
+			button.className = "seg-btn" + (key === this.state.recognition ? " is-active" : "");
+			button.textContent = RECOGNITION[key].label;
+			button.addEventListener("click", () => {
+				this.state.recognition = key;
+				this.saveState();
+				this.renderRecognition();
+				this.renderHunt();
+			});
+			row.appendChild(button);
+		});
+		if (this.nodes.recognitionBlurb) {
+			this.nodes.recognitionBlurb.textContent = RECOGNITION[this.state.recognition].blurb;
+		}
 	}
 
 	renderTextSize() {

@@ -83,6 +83,18 @@ camera, so if readings come back at all then reading is free.
    acceptable in a spotting game.
 3. Does it update at head-turn speed, or only aircraft-turn speed?
 
+### [x] Recognise known species — optional — 1.1.0
+
+Settings > Known species. "Ask every time" (default) keeps today's behaviour:
+identification is per herd, so a species you know still has to be worked out
+again at a new location, and still scores at the repeat rate. "Recognise on
+sight" names any herd of a species already on your lifelist the moment it
+appears, anywhere — those tiles are done and score nothing.
+
+The trade is deliberate and stated in the blurb under the control: you give up
+repeat points in exchange for a list where anything still vague is something
+you have never seen.
+
 ### [x] Name the animal on the tile once it has been identified — 1.1.0
 
 An identified contact still reads "a large animal, on its own" — the same
