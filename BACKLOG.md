@@ -383,3 +383,25 @@ The field of view is now measured rather than assumed, so the cone adapts
 between 2D and VR by itself.
 
 Bench tests cover both unit conventions, the precedence, and the fallback.
+
+## A syntax error shipped a blank panel (1.3.2)
+
+The panel came up with tabs, a score of zero and nothing else. That is what a
+BROKEN SCRIPT looks like, not lost data: if any panel script fails to parse,
+the custom element never registers and the sim renders the bare HTML.
+
+Cause: an edit left a real newline inside a string literal --
+`].join("` then an actual line break. Same family as the eaten backslashes in
+build.ps1, and invisible for the same reason.
+
+Two things let it reach the sim:
+
+1. The bench tests only load the translator, not the panel, so they passed.
+2. Nothing ever checked that the panel scripts parse.
+
+`probe/check_js.py` now parses all three panel scripts and also refuses control
+characters left by a mangled edit. `build.ps1` runs it and will not build if it
+fails. Fixed in 1.3.3.
+
+**Lesson: passing tests said nothing about the file that was actually broken.**
+Check the artefact that ships, not only the part under test.

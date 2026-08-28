@@ -71,6 +71,16 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
+# A syntax error in ANY panel script takes the whole panel down -- the sim
+# shows bare tabs and a zero score, which reads as lost save data rather
+# than a broken build. Nothing checked this until one shipped.
+Write-Host "Checking the panel scripts..." -ForegroundColor Cyan
+& python "$ProjectDir\probe\check_js.py"
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Panel scripts did not pass. Not building." -ForegroundColor Red
+    exit 1
+}
+
 # The in-sim module. This is what replaces the helper program.
 Write-Host "Building the in-sim module..." -ForegroundColor Cyan
 & "$ProjectDir\wasm\build-wasm.ps1"

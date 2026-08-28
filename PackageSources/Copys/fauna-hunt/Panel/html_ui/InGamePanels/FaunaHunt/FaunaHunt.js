@@ -572,8 +572,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 				? "nearest   bearing " + nearest.bearing_deg + "   off view "
 					+ nearest.off_view_deg + "   (cone " + this.snapshot.view_cone_deg + ")"
 				: "nearest   none",
-		].join("
-");
+		].join("\n");
 	}
 
 	setStatus(status) {
