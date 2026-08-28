@@ -189,3 +189,17 @@ status bar, the stats strip, quiz buttons and the pills.
 
 **The harness cannot catch this.** It runs in a real browser where gap works.
 Spacing has to be judged in the sim.
+
+## In-sim probe built (2026-08-28)
+
+A separate throwaway package, `wilem35-fauna-probe` (source: `C:\Tools\fauna-probe`),
+answers the one remaining question: does the animal data actually arrive inside
+the sim, and does the view direction read correctly. It shares nothing with
+Fauna Hunt and cannot affect it.
+
+It is driven by its panel rather than a timer, because a standalone module gets
+no tick of its own and the alternative -- a dispatch callback -- has a signature
+that differs between the desktop and WebAssembly builds of SimConnect. Polling
+with `GetNextDispatch` sidesteps that; a shipping add-on here already imports it.
+
+Delete the package once the question is settled.
