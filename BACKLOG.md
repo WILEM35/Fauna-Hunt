@@ -285,3 +285,42 @@ Worth remembering how long this took by comparing files: three rounds of
 plausible-but-wrong guesses (the version handshake, symlinked folders, the
 camera call), against about a minute once the console was open. The console is
 the first stop for a module that will not load, not the last.
+
+## PROVEN: the game can run entirely inside the sim (2026-08-28)
+
+The probe passed on a live flight with the helper app closed:
+
+    OK  Module reached SimConnect              open
+    OK  Animals found from inside the sim      246 nearby
+    --  Knows where you are looking            not in this build
+    Example: CTaurinusAlbojubatusFemale
+
+All three capabilities are now confirmed on this machine:
+
+1. **Finding animals** -- the module enumerated 246 and returned real titles.
+2. **Reaching the panel** -- that result travelled over CommBus to the panel.
+3. **View direction** -- proven separately, and it needs neither the helper nor
+   the module: the panel reads it itself.
+
+The helper app can be removed.
+
+### Suggested shape for the migration
+
+Keep the module THIN. It should enumerate animals and hand them to the panel,
+nothing else. All the grouping, rarity, fuzzing and scoring stays in the panel,
+in JavaScript, where it already lives.
+
+Reasons: it is the smallest amount of C++ to write and maintain; the fuzzing
+stays in the panel layer, which is a standing design rule; and difficulty stays
+retunable by editing one file.
+
+Open questions to settle before starting:
+
+* **How much data can one CommBus message carry?** 246 animals is a lot of
+  text. May need chunking, or trimming the fields sent.
+* **What poll rate is sane** from inside the sim, versus the current 1 second.
+* **Where the species table lives** so the panel can read it -- it can sit in
+  `html_ui` and be fetched, but that needs checking.
+
+Nothing here threatens saves: the lifelist and score go through the sim's own
+save system and do not touch the helper.
