@@ -81,7 +81,8 @@ SEARCH_RADIUS_M = 60000
 EAGLE_TITLE = "Asobo PassiveAircraft Eagle"
 EAGLE_SPECIES = {
     "common": "Golden Eagle", "scientific": "Aquila chrysaetos",
-    "size": "small", "rarity": 4, "region": "Global",
+    "size": "small", "tier": "rare", "points": 200, "rank": 4,
+    "region": "Global", "group": "Golden Eagle",
 }
 
 # Same species within this distance of each other read as one herd.
@@ -413,7 +414,13 @@ class FaunaService:
             "common": info["common"],
             "scientific": info["scientific"],
             "size": info["size"],
-            "rarity": info["rarity"],
+            # Read with .get: the species table is data the panel and the
+            # service share, and a missing key here killed the whole
+            # service on its first animal rather than degrading.
+            "tier": info.get("tier", "common"),
+            "points": info.get("points", 20),
+            "rank": info.get("rank", 2),
+            "group": info.get("group", info.get("common", "")),
             "region": info["region"],
             "count": len(herd),
             "sexes": dict(sexes),

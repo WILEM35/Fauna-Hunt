@@ -67,7 +67,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Moose"
+      "group": "Moose",
+      "where": "Scandinavia, Alaska, Canada"
     },
     "AAmericanus": {
       "common": "Pronghorn",
@@ -135,7 +136,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Pronghorn"
+      "group": "Pronghorn",
+      "where": "Wyoming, Montana, the Great Plains"
     },
     "AJubatusHecki": {
       "common": "NW African Cheetah",
@@ -203,7 +205,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Cheetah"
+      "group": "Cheetah",
+      "where": "Serengeti, Namibia, Kalahari"
     },
     "AJubatusJubatus": {
       "common": "Cheetah",
@@ -271,7 +274,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Cheetah"
+      "group": "Cheetah",
+      "where": "Serengeti, Namibia, Kalahari"
     },
     "AJubatusSoemmeringii": {
       "common": "NE African Cheetah",
@@ -339,7 +343,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Cheetah"
+      "group": "Cheetah",
+      "where": "Serengeti, Namibia, Kalahari"
     },
     "ALervia": {
       "common": "Barbary Sheep",
@@ -407,7 +412,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Barbary Sheep"
+      "group": "Barbary Sheep",
+      "where": "Atlas Mountains: Morocco, Algeria"
     },
     "AMelanoleuca": {
       "common": "Giant Panda",
@@ -475,7 +481,8 @@
       "tier": "legendary",
       "points": 600,
       "rank": 5,
-      "group": "Giant Panda"
+      "group": "Giant Panda",
+      "where": "Sichuan: Wolong and Qinling mountains"
     },
     "BBBubalis": {
       "common": "Water Buffalo",
@@ -543,7 +550,8 @@
       "tier": "everyday",
       "points": 5,
       "rank": 1,
-      "group": "Water Buffalo"
+      "group": "Water Buffalo",
+      "where": "Paddy country: India, SE Asia"
     },
     "BBison": {
       "common": "American Bison",
@@ -611,7 +619,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Bison"
+      "group": "Bison",
+      "where": "Bialowieza in Poland, Yellowstone"
     },
     "BBonasus": {
       "common": "European Bison",
@@ -679,7 +688,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Bison"
+      "group": "Bison",
+      "where": "Bialowieza in Poland, Yellowstone"
     },
     "BBubalis": {
       "common": "Water Buffalo",
@@ -747,7 +757,8 @@
       "tier": "everyday",
       "points": 5,
       "rank": 1,
-      "group": "Water Buffalo"
+      "group": "Water Buffalo",
+      "where": "Paddy country: India, SE Asia"
     },
     "BFrontalis": {
       "common": "Gayal",
@@ -815,7 +826,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Gayal"
+      "group": "Gayal",
+      "where": "NE India, Bangladesh, Myanmar"
     },
     "BGrunniens": {
       "common": "Yak",
@@ -865,7 +877,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Yak"
+      "group": "Yak",
+      "where": "Tibetan plateau, Nepal, Mongolia"
     },
     "BJavanicus": {
       "common": "Banteng",
@@ -915,7 +928,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Banteng"
+      "group": "Banteng",
+      "where": "Java, Borneo, Cambodia"
     },
     "BTaurusIndicus": {
       "common": "Zebu",
@@ -965,7 +979,8 @@
       "tier": "everyday",
       "points": 5,
       "rank": 1,
-      "group": "Cattle"
+      "group": "Cattle",
+      "where": "Farmland worldwide"
     },
     "BTaurusPrimigenius": {
       "common": "Cattle",
@@ -1021,7 +1036,8 @@
       "tier": "everyday",
       "points": 5,
       "rank": 1,
-      "group": "Cattle"
+      "group": "Cattle",
+      "where": "Farmland worldwide"
     },
     "BlackBear": {
       "common": "Black Bear",
@@ -1041,7 +1057,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "American Black Bear"
+      "group": "American Black Bear",
+      "where": "Forests of Canada and the US"
     },
     "CBactrianus": {
       "common": "Bactrian Camel",
@@ -1109,7 +1126,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Camel"
+      "group": "Camel",
+      "where": "Gobi Desert, Sahara, Arabian Peninsula"
     },
     "CCanadensisNannodes": {
       "common": "Tule Elk",
@@ -1177,7 +1195,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Elk"
+      "group": "Elk",
+      "where": "Yellowstone, Rockies, California coast"
     },
     "CCrocuta": {
       "common": "Spotted Hyena",
@@ -1245,7 +1264,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Spotted Hyena"
+      "group": "Spotted Hyena",
+      "where": "Savanna across sub-Saharan Africa"
     },
     "CDromedarius": {
       "common": "Dromedary Camel",
@@ -1313,7 +1333,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Camel"
+      "group": "Camel",
+      "where": "Gobi Desert, Sahara, Arabian Peninsula"
     },
     "CElaphusCanadensis": {
       "common": "Elk",
@@ -1381,7 +1402,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Elk"
+      "group": "Elk",
+      "where": "Yellowstone, Rockies, California coast"
     },
     "CHircusHircus": {
       "common": "Goat",
@@ -1449,7 +1471,8 @@
       "tier": "everyday",
       "points": 5,
       "rank": 1,
-      "group": "Goat"
+      "group": "Goat",
+      "where": "Farmland worldwide"
     },
     "CIbex": {
       "common": "Alpine Ibex",
@@ -1517,7 +1540,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Alpine Ibex"
+      "group": "Alpine Ibex",
+      "where": "Alps: Gran Paradiso, Valais"
     },
     "CLupusAlbus": {
       "common": "Tundra Wolf",
@@ -1585,7 +1609,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Wolf"
+      "group": "Wolf",
+      "where": "Arctic Canada, Siberia, Carpathians"
     },
     "CLupusArctos": {
       "common": "Arctic Wolf",
@@ -1653,7 +1678,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Wolf"
+      "group": "Wolf",
+      "where": "Arctic Canada, Siberia, Carpathians"
     },
     "CLupusLupus": {
       "common": "Eurasian Wolf",
@@ -1721,7 +1747,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Wolf"
+      "group": "Wolf",
+      "where": "Arctic Canada, Siberia, Carpathians"
     },
     "CNippon": {
       "common": "Sika Deer",
@@ -1789,7 +1816,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Sika Deer"
+      "group": "Sika Deer",
+      "where": "Japan, Korea, NE China"
     },
     "CPalustris": {
       "common": "Mugger Crocodile",
@@ -1857,7 +1885,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Crocodile"
+      "group": "Crocodile",
+      "where": "N. Australia, Indian rivers, West Africa"
     },
     "CPorosus": {
       "common": "Saltwater Crocodile",
@@ -1925,7 +1954,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Crocodile"
+      "group": "Crocodile",
+      "where": "N. Australia, Indian rivers, West Africa"
     },
     "CSimum": {
       "common": "White Rhinoceros",
@@ -1993,7 +2023,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Rhinoceros"
+      "group": "Rhinoceros",
+      "where": "Kruger, KwaZulu-Natal, Etosha"
     },
     "CSuchus": {
       "common": "West African Crocodile",
@@ -2061,7 +2092,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Crocodile"
+      "group": "Crocodile",
+      "where": "N. Australia, Indian rivers, West Africa"
     },
     "CTaurinusAlbojubatus": {
       "common": "E. White-bearded Wildebeest",
@@ -2129,7 +2161,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Wildebeest"
+      "group": "Wildebeest",
+      "where": "Serengeti, Maasai Mara, Kalahari"
     },
     "CTaurinusGnou": {
       "common": "Black Wildebeest",
@@ -2179,7 +2212,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Wildebeest"
+      "group": "Wildebeest",
+      "where": "Serengeti, Maasai Mara, Kalahari"
     },
     "CTaurinusJohnstoni": {
       "common": "Nyassa Wildebeest",
@@ -2247,7 +2281,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Wildebeest"
+      "group": "Wildebeest",
+      "where": "Serengeti, Maasai Mara, Kalahari"
     },
     "CTaurinusMearnsi": {
       "common": "W. White-bearded Wildebeest",
@@ -2315,7 +2350,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Wildebeest"
+      "group": "Wildebeest",
+      "where": "Serengeti, Maasai Mara, Kalahari"
     },
     "CTaurinusTaurinus": {
       "common": "Blue Wildebeest",
@@ -2383,7 +2419,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Wildebeest"
+      "group": "Wildebeest",
+      "where": "Serengeti, Maasai Mara, Kalahari"
     },
     "ECaballus": {
       "common": "Horse",
@@ -2487,7 +2524,8 @@
       "tier": "everyday",
       "points": 5,
       "rank": 1,
-      "group": "Horse"
+      "group": "Horse",
+      "where": "Farmland worldwide"
     },
     "EGrevyi": {
       "common": "Grevy's Zebra",
@@ -2555,7 +2593,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Zebra"
+      "group": "Zebra",
+      "where": "Serengeti, Etosha, Namib escarpment"
     },
     "EHartmannae": {
       "common": "Hartmann's Mountain Zebra",
@@ -2623,7 +2662,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Zebra"
+      "group": "Zebra",
+      "where": "Serengeti, Etosha, Namib escarpment"
     },
     "EMaximus": {
       "common": "Asian Elephant",
@@ -2691,7 +2731,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Asian Elephant"
+      "group": "Asian Elephant",
+      "where": "Sri Lanka, Kerala, Thailand"
     },
     "EPrzewalskii": {
       "common": "Przewalski's Horse",
@@ -2759,7 +2800,8 @@
       "tier": "legendary",
       "points": 600,
       "rank": 5,
-      "group": "Przewalski's Horse"
+      "group": "Przewalski's Horse",
+      "where": "Mongolian steppe: Hustai, Gobi B"
     },
     "EQuagga": {
       "common": "Plains Zebra",
@@ -2827,7 +2869,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Zebra"
+      "group": "Zebra",
+      "where": "Serengeti, Etosha, Namib escarpment"
     },
     "EThomsonii": {
       "common": "Thomson's Gazelle",
@@ -2895,7 +2938,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Thomson's Gazelle"
+      "group": "Thomson's Gazelle",
+      "where": "Serengeti and Maasai Mara"
     },
     "GAngolan": {
       "common": "Angolan Giraffe",
@@ -2963,7 +3007,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Giraffe"
+      "group": "Giraffe",
+      "where": "Serengeti, Kruger, Etosha, Niger"
     },
     "GAntiquorum": {
       "common": "Kordofan Giraffe",
@@ -3031,7 +3076,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Giraffe"
+      "group": "Giraffe",
+      "where": "Serengeti, Kruger, Etosha, Niger"
     },
     "GCamelopardalis": {
       "common": "Nubian Giraffe",
@@ -3099,7 +3145,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Giraffe"
+      "group": "Giraffe",
+      "where": "Serengeti, Kruger, Etosha, Niger"
     },
     "GCamelopardalisPeralta": {
       "common": "West African Giraffe",
@@ -3167,7 +3214,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Giraffe"
+      "group": "Giraffe",
+      "where": "Serengeti, Kruger, Etosha, Niger"
     },
     "GGiraffa": {
       "common": "South African Giraffe",
@@ -3235,7 +3283,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Giraffe"
+      "group": "Giraffe",
+      "where": "Serengeti, Kruger, Etosha, Niger"
     },
     "GPeralta": {
       "common": "West African Giraffe",
@@ -3303,7 +3352,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Giraffe"
+      "group": "Giraffe",
+      "where": "Serengeti, Kruger, Etosha, Niger"
     },
     "GReticulata": {
       "common": "Reticulated Giraffe",
@@ -3371,7 +3421,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Giraffe"
+      "group": "Giraffe",
+      "where": "Serengeti, Kruger, Etosha, Niger"
     },
     "GTippelskirchi": {
       "common": "Masai Giraffe",
@@ -3439,7 +3490,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Giraffe"
+      "group": "Giraffe",
+      "where": "Serengeti, Kruger, Etosha, Niger"
     },
     "GrizzlyBear": {
       "common": "Grizzly Bear",
@@ -3459,7 +3511,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Brown Bear"
+      "group": "Brown Bear",
+      "where": "Kamchatka, Alaska, Carpathians, Hokkaido"
     },
     "HAmphibius": {
       "common": "Hippopotamus",
@@ -3527,7 +3580,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Hippopotamus"
+      "group": "Hippopotamus",
+      "where": "Rivers and lakes: Zambezi, Okavango, Nile"
     },
     "HHydrochaeris": {
       "common": "Capybara",
@@ -3595,7 +3649,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Capybara"
+      "group": "Capybara",
+      "where": "Pantanal, Llanos, Amazon wetlands"
     },
     "HIsthmius": {
       "common": "Lesser Capybara",
@@ -3663,7 +3718,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Capybara"
+      "group": "Capybara",
+      "where": "Pantanal, Llanos, Amazon wetlands"
     },
     "HMalayanus": {
       "common": "Sun Bear",
@@ -3731,7 +3787,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Sun Bear"
+      "group": "Sun Bear",
+      "where": "Borneo, Sumatra, Malay peninsula"
     },
     "HNiger": {
       "common": "Sable Antelope",
@@ -3799,7 +3856,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Sable Antelope"
+      "group": "Sable Antelope",
+      "where": "Zimbabwe, Zambia, Angola"
     },
     "HumpbackWhale": {
       "common": "Humpback Whale",
@@ -3819,7 +3877,8 @@
       "tier": "legendary",
       "points": 600,
       "rank": 5,
-      "group": "Humpback Whale"
+      "group": "Humpback Whale",
+      "where": "Coastal migration: Alaska, Hawaii, Hervey Bay"
     },
     "LAfricana": {
       "common": "African Bush Elephant",
@@ -3887,7 +3946,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "African Elephant"
+      "group": "African Elephant",
+      "where": "Botswana, Kenya, Tanzania"
     },
     "LCyclotis": {
       "common": "African Forest Elephant",
@@ -3955,7 +4015,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "African Elephant"
+      "group": "African Elephant",
+      "where": "Botswana, Kenya, Tanzania"
     },
     "LGlama": {
       "common": "Llama",
@@ -4023,7 +4084,8 @@
       "tier": "everyday",
       "points": 5,
       "rank": 1,
-      "group": "Llama"
+      "group": "Llama",
+      "where": "Andean farmland: Peru, Bolivia"
     },
     "MRufus": {
       "common": "Red Kangaroo",
@@ -4091,7 +4153,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Red Kangaroo"
+      "group": "Red Kangaroo",
+      "where": "Inland Australia: NSW, Queensland outback"
     },
     "MTridactyla": {
       "common": "Giant Anteater",
@@ -4159,7 +4222,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Giant Anteater"
+      "group": "Giant Anteater",
+      "where": "Pantanal, Cerrado, Gran Chaco"
     },
     "NLarvatus": {
       "common": "Proboscis Monkey",
@@ -4227,7 +4291,8 @@
       "tier": "legendary",
       "points": 600,
       "rank": 5,
-      "group": "Proboscis Monkey"
+      "group": "Proboscis Monkey",
+      "where": "Borneo river mangroves: Sabah, Sarawak"
     },
     "OAfer": {
       "common": "Aardvark",
@@ -4295,7 +4360,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Aardvark"
+      "group": "Aardvark",
+      "where": "Namibia, Botswana, South Africa"
     },
     "OAmericanus": {
       "common": "Mountain Goat",
@@ -4363,7 +4429,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Mountain Goat"
+      "group": "Mountain Goat",
+      "where": "Rockies, Glacier, Coast Mountains"
     },
     "OAriesAries": {
       "common": "Sheep",
@@ -4449,7 +4516,8 @@
       "tier": "everyday",
       "points": 5,
       "rank": 1,
-      "group": "Sheep"
+      "group": "Sheep",
+      "where": "Farmland worldwide"
     },
     "OAriesMusimon": {
       "common": "Mouflon",
@@ -4517,7 +4585,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Mouflon"
+      "group": "Mouflon",
+      "where": "Corsica, Sardinia, Cyprus"
     },
     "OCanadensis": {
       "common": "Bighorn Sheep",
@@ -4585,7 +4654,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Bighorn Sheep"
+      "group": "Bighorn Sheep",
+      "where": "Rockies, Death Valley, Sierra Nevada"
     },
     "OCanadensisNelsoni": {
       "common": "Desert Bighorn",
@@ -4653,7 +4723,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Bighorn Sheep"
+      "group": "Bighorn Sheep",
+      "where": "Rockies, Death Valley, Sierra Nevada"
     },
     "ODalliDalli": {
       "common": "Dall Sheep",
@@ -4721,7 +4792,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Dall Sheep"
+      "group": "Dall Sheep",
+      "where": "Alaska Range, Yukon, N. British Columbia"
     },
     "ODalliStonei": {
       "common": "Stone's Sheep",
@@ -4789,7 +4861,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Dall Sheep"
+      "group": "Dall Sheep",
+      "where": "Alaska Range, Yukon, N. British Columbia"
     },
     "OHemionus": {
       "common": "Mule Deer",
@@ -4857,7 +4930,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Mule Deer"
+      "group": "Mule Deer",
+      "where": "Western US and Canada"
     },
     "Orca": {
       "common": "Orca",
@@ -4877,7 +4951,8 @@
       "tier": "legendary",
       "points": 600,
       "rank": 5,
-      "group": "Orca"
+      "group": "Orca",
+      "where": "Puget Sound, Norway fjords, Antarctic coast"
     },
     "PAethiopicus": {
       "common": "Desert Warthog",
@@ -4945,7 +5020,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Warthog"
+      "group": "Warthog",
+      "where": "Savanna across sub-Saharan Africa"
     },
     "PAfricanus": {
       "common": "Common Warthog",
@@ -5013,7 +5089,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Warthog"
+      "group": "Warthog",
+      "where": "Savanna across sub-Saharan Africa"
     },
     "PLeoLeo": {
       "common": "Northern Lion",
@@ -5081,7 +5158,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Lion"
+      "group": "Lion",
+      "where": "Serengeti, Kruger, Gir Forest in India"
     },
     "PLeoMelanochaita": {
       "common": "Southern Lion",
@@ -5149,7 +5227,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Lion"
+      "group": "Lion",
+      "where": "Serengeti, Kruger, Gir Forest in India"
     },
     "PLeoPersica": {
       "common": "Asiatic Lion",
@@ -5217,7 +5296,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Lion"
+      "group": "Lion",
+      "where": "Serengeti, Kruger, Gir Forest in India"
     },
     "PPaniscus": {
       "common": "Bonobo",
@@ -5285,7 +5365,8 @@
       "tier": "legendary",
       "points": 600,
       "rank": 5,
-      "group": "Bonobo"
+      "group": "Bonobo",
+      "where": "Congo Basin, south of the Congo River"
     },
     "PTigris": {
       "common": "Tiger",
@@ -5353,7 +5434,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Tiger"
+      "group": "Tiger",
+      "where": "Bengal, Russian Far East, Sumatra"
     },
     "PTigrisAltaica": {
       "common": "Siberian Tiger",
@@ -5421,7 +5503,8 @@
       "tier": "legendary",
       "points": 600,
       "rank": 5,
-      "group": "Tiger"
+      "group": "Tiger",
+      "where": "Bengal, Russian Far East, Sumatra"
     },
     "PTigrisSondaica": {
       "common": "Sunda Tiger",
@@ -5489,7 +5572,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Tiger"
+      "group": "Tiger",
+      "where": "Bengal, Russian Far East, Sumatra"
     },
     "PTigrisTigris": {
       "common": "Bengal Tiger",
@@ -5557,7 +5641,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Tiger"
+      "group": "Tiger",
+      "where": "Bengal, Russian Far East, Sumatra"
     },
     "PTroglodytesVerus": {
       "common": "Western Chimpanzee",
@@ -5625,7 +5710,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Chimpanzee"
+      "group": "Chimpanzee",
+      "where": "West Africa: Guinea, Ivory Coast, Liberia"
     },
     "PUncia": {
       "common": "Snow Leopard",
@@ -5693,7 +5779,8 @@
       "tier": "legendary",
       "points": 600,
       "rank": 5,
-      "group": "Snow Leopard"
+      "group": "Snow Leopard",
+      "where": "Himalaya: Ladakh, Nepal, Bhutan, Tibet"
     },
     "RTarandusGroenlandicus": {
       "common": "Caribou",
@@ -5761,7 +5848,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Caribou"
+      "group": "Caribou",
+      "where": "Northern Canada, Alaska, Greenland"
     },
     "SCaffer": {
       "common": "African Buffalo",
@@ -5829,7 +5917,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "African Buffalo"
+      "group": "African Buffalo",
+      "where": "Serengeti, Kruger, Okavango"
     },
     "SCafferBrachyceros": {
       "common": "West African Buffalo",
@@ -5897,7 +5986,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "African Buffalo"
+      "group": "African Buffalo",
+      "where": "Serengeti, Kruger, Okavango"
     },
     "SCafferNanus": {
       "common": "Forest Buffalo",
@@ -5965,7 +6055,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "African Buffalo"
+      "group": "African Buffalo",
+      "where": "Serengeti, Kruger, Okavango"
     },
     "SCamelus": {
       "common": "Ostrich",
@@ -6033,7 +6124,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "Ostrich"
+      "group": "Ostrich",
+      "where": "Savanna and semi-desert across Africa"
     },
     "SyrianBear": {
       "common": "Syrian Brown Bear",
@@ -6053,7 +6145,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Brown Bear"
+      "group": "Brown Bear",
+      "where": "Kamchatka, Alaska, Carpathians, Hokkaido"
     },
     "TEurycerus": {
       "common": "Bongo",
@@ -6121,7 +6214,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Bongo"
+      "group": "Bongo",
+      "where": "Congo Basin, Cameroon, Kenya highlands"
     },
     "UAmericanus": {
       "common": "American Black Bear",
@@ -6189,7 +6283,8 @@
       "tier": "common",
       "points": 20,
       "rank": 2,
-      "group": "American Black Bear"
+      "group": "American Black Bear",
+      "where": "Forests of Canada and the US"
     },
     "UArctosArctos": {
       "common": "Eurasian Brown Bear",
@@ -6257,7 +6352,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Brown Bear"
+      "group": "Brown Bear",
+      "where": "Kamchatka, Alaska, Carpathians, Hokkaido"
     },
     "UArctosCollaris": {
       "common": "E. Siberian Brown Bear",
@@ -6325,7 +6421,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Brown Bear"
+      "group": "Brown Bear",
+      "where": "Kamchatka, Alaska, Carpathians, Hokkaido"
     },
     "UArctosHorribilis": {
       "common": "Grizzly Bear",
@@ -6393,7 +6490,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Brown Bear"
+      "group": "Brown Bear",
+      "where": "Kamchatka, Alaska, Carpathians, Hokkaido"
     },
     "UArctosIsabellinus": {
       "common": "Himalayan Brown Bear",
@@ -6461,7 +6559,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Brown Bear"
+      "group": "Brown Bear",
+      "where": "Kamchatka, Alaska, Carpathians, Hokkaido"
     },
     "UArctosLasiotus": {
       "common": "Ussuri Brown Bear",
@@ -6529,7 +6628,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Brown Bear"
+      "group": "Brown Bear",
+      "where": "Kamchatka, Alaska, Carpathians, Hokkaido"
     },
     "UMaritimus": {
       "common": "Polar Bear",
@@ -6597,7 +6697,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Polar Bear"
+      "group": "Polar Bear",
+      "where": "Svalbard, Hudson Bay, northern Greenland"
     },
     "UThibetanus": {
       "common": "Asian Black Bear",
@@ -6665,7 +6766,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Asian Black Bear"
+      "group": "Asian Black Bear",
+      "where": "Himalayan foothills, Japan, Korea"
     },
     "VLagopus": {
       "common": "Arctic Fox",
@@ -6733,7 +6835,8 @@
       "tier": "regional",
       "points": 60,
       "rank": 3,
-      "group": "Arctic Fox"
+      "group": "Arctic Fox",
+      "where": "Iceland, Svalbard, Alaska, Bering islands"
     },
     "VLagopusBeringensis": {
       "common": "Bering Arctic Fox",
@@ -6801,7 +6904,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Arctic Fox"
+      "group": "Arctic Fox",
+      "where": "Iceland, Svalbard, Alaska, Bering islands"
     },
     "VLagopusFuliginosus": {
       "common": "Iceland Arctic Fox",
@@ -6869,7 +6973,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Arctic Fox"
+      "group": "Arctic Fox",
+      "where": "Iceland, Svalbard, Alaska, Bering islands"
     },
     "VLagopusPribilofensis": {
       "common": "Pribilof Arctic Fox",
@@ -6937,7 +7042,8 @@
       "tier": "rare",
       "points": 200,
       "rank": 4,
-      "group": "Arctic Fox"
+      "group": "Arctic Fox",
+      "where": "Iceland, Svalbard, Alaska, Bering islands"
     },
     "VPacos": {
       "common": "Alpaca",
@@ -7005,7 +7111,8 @@
       "tier": "everyday",
       "points": 5,
       "rank": 1,
-      "group": "Alpaca"
+      "group": "Alpaca",
+      "where": "Andean farmland: Peru, Bolivia"
     }
   },
   "title_to_species": {

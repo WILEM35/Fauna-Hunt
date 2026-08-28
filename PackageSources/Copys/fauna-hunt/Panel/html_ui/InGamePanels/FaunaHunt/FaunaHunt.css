@@ -267,7 +267,9 @@ ingame-ui#FaunaHunt .ingameUiContent {
 	align-items: center;
 	gap: 0.6em;
 	padding: 0.5em;
-	border-top: 1px solid var(--fh-line);
+	/* Sits above the list now: the closest animal is at the top, so the
+	   message about it belongs there rather than at the far end. */
+	border-bottom: 1px solid var(--fh-line);
 }
 
 .spot-hint {
@@ -341,7 +343,13 @@ ingame-ui#FaunaHunt .ingameUiContent {
 .life-name { flex: 1 1 auto; min-width: 0; font-size: 0.95em; }
 
 .life-row.is-found .life-name { color: var(--fh-text); }
-.life-row:not(.is-found) .life-name { color: var(--fh-faint); }
+.life-row:not(.is-found) .life-name {
+	/* A place to go looking, not a name. Smaller and quieter than a found
+	   animal, so the list still reads as mostly undiscovered. */
+	color: var(--fh-faint);
+	font-size: 0.82em;
+	font-style: italic;
+}
 
 .life-sci {
 	font-size: 0.8em;

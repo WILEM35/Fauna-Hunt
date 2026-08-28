@@ -116,7 +116,7 @@ const DEFAULT_RECOGNITION = "ask";
 // Identifying is half the game. Getting close enough to capture is the other
 // half, and it is what pulls people down to the deck where the sim looks best
 // and the flying is interesting.
-const CAPTURE_RANGE_M = 250;
+const CAPTURE_RANGE_M = 150;
 // If the sim gives us no camera, everything passes. Never lock someone out of
 // their own game because a reading failed.
 const DEFAULT_VIEW_CONE_DEG = 45;
@@ -498,6 +498,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 				this.setStatus(data.connected === false ? "nosim" : "ok");
 				if (!this.species) this.fetchSpecies();
 				const contacts = (data && data.contacts) || [];
+				this.trackLogged(contacts);
 				this.checkCaptures(contacts);
 				this.renderAlert(contacts);
 				if (this.view === "hunt") this.renderHunt();
@@ -822,6 +823,41 @@ class IngamePanelFaunaHunt extends TemplateElement {
 
 	isCaptured(contact) {
 		return !!this.state.captured[contact.key];
+	}
+
+	// Animals run from aircraft. A logged sighting remembers WHERE it happened,
+	// and a herd that flees past that radius stops being recognised -- so you
+	// chase them out of their own identification. Walk the anchor along with
+	// them instead, on every poll.
+	trackLogged(contacts) {
+		let moved = false;
+		contacts.forEach((contact) => {
+			const entry = this.state.logged[contact.key];
+			if (entry && entry !== true && entry.species === contact.species) {
+				if (haversineM(entry.lat, entry.lon, contact.lat, contact.lon) > 40) {
+					entry.lat = contact.lat;
+					entry.lon = contact.lon;
+					moved = true;
+				}
+				return;
+			}
+			// Matched by proximity rather than by key: the herd has drifted into
+			// a new grid cell, so move the record to where they actually are.
+			const keys = Object.keys(this.state.logged);
+			for (let i = 0; i < keys.length; i++) {
+				const other = this.state.logged[keys[i]];
+				if (!other || other === true || other.species !== contact.species) continue;
+				if (haversineM(other.lat, other.lon, contact.lat, contact.lon) <= LOGGED_MATCH_M) {
+					if (haversineM(other.lat, other.lon, contact.lat, contact.lon) > 40) {
+						other.lat = contact.lat;
+						other.lon = contact.lon;
+						moved = true;
+					}
+					break;
+				}
+			}
+		});
+		if (moved) this.saveState();
 	}
 
 	// Capture needs no press. Identify it, then fly close enough to the nearest
@@ -1193,6 +1229,9 @@ class IngamePanelFaunaHunt extends TemplateElement {
 
 			list.forEach((name) => {
 				const g = groups[name];
+				// An undiscovered animal shows where to go looking rather than a
+				// bare dash, which read as a broken row rather than a mystery.
+				const where = (this.species[g.roots[0]] || {}).where || "";
 				const seen = g.roots.filter((r) => found[r]);
 				const caught = seen.filter((r) => found[r].captured);
 				const isFound = seen.length > 0;
@@ -1212,7 +1251,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 
 				html.push("<div class=\"life-row" + (isFound ? " is-found" : "") + "\">"
 					+ "<span class=\"life-name\">"
-					+ (isFound ? name : "—")
+					+ (isFound ? name : (where || "—"))
 					+ "</span>"
 					+ variants
 					+ state

@@ -189,14 +189,14 @@ const PANEL_MARKUP = `
 		<code class="offline-cmd">python fauna_service.py</code>
 	</div>
 	<div id="viewHunt" class="view">
+		<div class="spot-bar">
+			<span id="spotHint" class="spot-hint"></span>
+			<span id="listHold" class="list-hold hidden">list held</span>
+		</div>
 		<div id="contactList" class="contact-list"></div>
 		<div id="huntEmpty" class="empty hidden">
 			<p>No contacts in range.</p>
 			<p class="hint">Fauna streams in closer to the ground, and further out with altitude.</p>
-		</div>
-		<div class="spot-bar">
-			<span id="spotHint" class="spot-hint"></span>
-			<span id="listHold" class="list-hold hidden">list held</span>
 		</div>
 	</div>
 	<div id="viewLifelist" class="view hidden">

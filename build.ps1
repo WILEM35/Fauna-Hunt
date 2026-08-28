@@ -45,6 +45,23 @@ if (-not (Test-Path $PackageTool)) {
 Get-ChildItem -Path "$ProjectDir\PackageSources" -Filter "__pycache__" -Recurse -Directory -ErrorAction SilentlyContinue |
     ForEach-Object { Remove-Item $_.FullName -Recurse -Force }
 
+# The service ships as a compiled exe. Nothing here used to rebuild it, so a
+# change to fauna_service.py shipped as source only and the exe silently stayed
+# behind -- which is how a crash on the very first animal reached a release.
+$serviceDir = "$ProjectDir\PackageSources\Copysauna-hunt\Service"
+$exe = "$serviceDir\FaunaHuntService.exe"
+$newestSource = Get-ChildItem "$serviceDir\*.py", "$serviceDir\species.json" -ErrorAction SilentlyContinue |
+    Sort-Object LastWriteTime -Descending | Select-Object -First 1
+if ($newestSource -and (-not (Test-Path $exe) -or
+        $newestSource.LastWriteTime -gt (Get-Item $exe).LastWriteTime)) {
+    Write-Host "Service source is newer than the exe - rebuilding it first..." -ForegroundColor Yellow
+    & "$ProjectDiruild-service-exe.ps1"
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "Service exe rebuild failed." -ForegroundColor Red
+        exit 1
+    }
+}
+
 Write-Host "Clearing build caches..." -ForegroundColor Cyan
 foreach ($dir in @("Packages", "PackagesMetadata", "_PackageInt")) {
     $path = Join-Path $ProjectDir $dir

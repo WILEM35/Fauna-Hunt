@@ -150,6 +150,95 @@ RATING = {
 }
 
 
+# Where to go looking, per headline animal.
+#
+# IMPORTANT: this is the animal's REAL-WORLD range, not verified against where
+# MSFS actually spawns it. The sim's own zone data lives in encrypted travelbook
+# packages and cannot be read. The two should broadly agree, since Asobo placed
+# fauna by real range, but treat a hint as a lead rather than a guarantee -- and
+# correct it when testing proves otherwise.
+WHERE = {
+    # --- Africa ---
+    "Aardvark":            "Namibia, Botswana, South Africa",
+    "African Buffalo":     "Serengeti, Kruger, Okavango",
+    "African Elephant":    "Botswana, Kenya, Tanzania",
+    "Barbary Sheep":       "Atlas Mountains: Morocco, Algeria",
+    "Bongo":               "Congo Basin, Cameroon, Kenya highlands",
+    "Bonobo":              "Congo Basin, south of the Congo River",
+    "Cheetah":             "Serengeti, Namibia, Kalahari",
+    "Chimpanzee":          "West Africa: Guinea, Ivory Coast, Liberia",
+    "Giraffe":             "Serengeti, Kruger, Etosha, Niger",
+    "Hippopotamus":        "Rivers and lakes: Zambezi, Okavango, Nile",
+    "Lion":                "Serengeti, Kruger, Gir Forest in India",
+    "Ostrich":             "Savanna and semi-desert across Africa",
+    "Rhinoceros":          "Kruger, KwaZulu-Natal, Etosha",
+    "Sable Antelope":      "Zimbabwe, Zambia, Angola",
+    "Spotted Hyena":       "Savanna across sub-Saharan Africa",
+    "Thomson's Gazelle":   "Serengeti and Maasai Mara",
+    "Warthog":             "Savanna across sub-Saharan Africa",
+    "Wildebeest":          "Serengeti, Maasai Mara, Kalahari",
+    "Zebra":               "Serengeti, Etosha, Namib escarpment",
+
+    # --- Arctic ---
+    "Arctic Fox":          "Iceland, Svalbard, Alaska, Bering islands",
+    "Caribou":             "Northern Canada, Alaska, Greenland",
+    "Polar Bear":          "Svalbard, Hudson Bay, northern Greenland",
+    "Wolf":                "Arctic Canada, Siberia, Carpathians",
+
+    # --- Asia ---
+    "Asian Black Bear":    "Himalayan foothills, Japan, Korea",
+    "Asian Elephant":      "Sri Lanka, Kerala, Thailand",
+    "Banteng":             "Java, Borneo, Cambodia",
+    "Brown Bear":          "Kamchatka, Alaska, Carpathians, Hokkaido",
+    "Camel":               "Gobi Desert, Sahara, Arabian Peninsula",
+    "Cattle":              "Farmland worldwide",
+    "Crocodile":           "N. Australia, Indian rivers, West Africa",
+    "Gayal":               "NE India, Bangladesh, Myanmar",
+    "Giant Panda":         "Sichuan: Wolong and Qinling mountains",
+    "Proboscis Monkey":    "Borneo river mangroves: Sabah, Sarawak",
+    "Przewalski's Horse":  "Mongolian steppe: Hustai, Gobi B",
+    "Sika Deer":           "Japan, Korea, NE China",
+    "Snow Leopard":        "Himalaya: Ladakh, Nepal, Bhutan, Tibet",
+    "Sun Bear":            "Borneo, Sumatra, Malay peninsula",
+    "Tiger":               "Bengal, Russian Far East, Sumatra",
+    "Water Buffalo":       "Paddy country: India, SE Asia",
+    "Yak":                 "Tibetan plateau, Nepal, Mongolia",
+
+    # --- Australia ---
+    "Red Kangaroo":        "Inland Australia: NSW, Queensland outback",
+
+    # --- Europe ---
+    "Alpine Ibex":         "Alps: Gran Paradiso, Valais",
+    "Bison":               "Bialowieza in Poland, Yellowstone",
+    "Moose":               "Scandinavia, Alaska, Canada",
+    "Mouflon":             "Corsica, Sardinia, Cyprus",
+
+    # --- Global ---
+    "Goat":                "Farmland worldwide",
+    "Horse":               "Farmland worldwide",
+    "Sheep":               "Farmland worldwide",
+
+    # --- North America ---
+    "American Black Bear": "Forests of Canada and the US",
+    "Bighorn Sheep":       "Rockies, Death Valley, Sierra Nevada",
+    "Dall Sheep":          "Alaska Range, Yukon, N. British Columbia",
+    "Elk":                 "Yellowstone, Rockies, California coast",
+    "Mountain Goat":       "Rockies, Glacier, Coast Mountains",
+    "Mule Deer":           "Western US and Canada",
+    "Pronghorn":           "Wyoming, Montana, the Great Plains",
+
+    # --- Ocean ---
+    "Humpback Whale":      "Coastal migration: Alaska, Hawaii, Hervey Bay",
+    "Orca":                "Puget Sound, Norway fjords, Antarctic coast",
+
+    # --- South America ---
+    "Alpaca":              "Andean farmland: Peru, Bolivia",
+    "Capybara":            "Pantanal, Llanos, Amazon wetlands",
+    "Giant Anteater":      "Pantanal, Cerrado, Gran Chaco",
+    "Llama":               "Andean farmland: Peru, Bolivia",
+}
+
+
 def main():
     here = os.path.dirname(os.path.abspath(__file__))
     path = os.path.normpath(os.path.join(
@@ -176,6 +265,7 @@ def main():
         entry["points"] = TIERS[tier]["points"]
         entry["rank"] = TIERS[tier]["rank"]
         entry["group"] = group
+        entry["where"] = WHERE.get(group, "")
         # The old 1-4 rarity is gone; leave nothing behind to read by accident.
         entry.pop("rarity", None)
 
@@ -184,6 +274,11 @@ def main():
     for root, entry in species.items():
         groups.setdefault(entry["group"], []).append(root)
     data["groups"] = {g: sorted(v) for g, v in sorted(groups.items())}
+
+    unplaced = sorted(g for g in groups if not WHERE.get(g))
+    if unplaced:
+        print("")
+        print("No location hint for: %s" % ", ".join(unplaced))
 
     with open(path, "w", encoding="utf-8") as handle:
         json.dump(data, handle, indent=2)
