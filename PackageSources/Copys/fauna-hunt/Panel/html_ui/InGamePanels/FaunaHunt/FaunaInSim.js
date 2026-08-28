@@ -80,19 +80,41 @@ function round(value, places) {
 }
 
 // -------------------------------------------------------------- view angle
-// Where the player is looking, read straight from the sim. This is the part
-// that used to need the helper: the camera call it used can only be made from
-// outside the sim, but these two variables carry the same answer and a panel
-// can read them. The F/A-18's helmet-mounted display uses exactly these.
 //
-// Two traps, both found by testing against the helper's camera call:
-//   * they are measured from the aircraft's nose, not from north, and the sign
-//     is inverted -- world heading is aircraft heading MINUS the yaw.
-//   * outside the cockpit they read exactly zero. That is indistinguishable
-//     from "looking straight ahead", so the view rule is switched off there
-//     rather than applied to a wrong answer.
+// TWO sources, because neither covers both cases.
+//
+// 1. The module's camera reading. This is the one that works IN VR -- it
+//    follows the headset. Preferred whenever it is available.
+// 2. The gameplay pitch/yaw variables. These track the 2D camera perfectly,
+//    including custom and joystick-mapped views. But IN VR THEY ARE USELESS:
+//    tested in a headset, they report the aircraft's direction and take no
+//    notice of where the player's head is pointing. Fallback only.
+//
+// Getting this wrong is not a crash, it is worse -- the "look at the animal"
+// rule silently starts judging the wrong direction, which in VR meant you had
+// to point the aeroplane at an animal to identify it.
 
 const CAMERA_STATE_COCKPIT = 2;
+
+// The camera call reports raw numbers and the SDK does not say in what units.
+// The field of view settles it for all three: no sane view is 60 RADIANS wide,
+// and no sane one is 1 DEGREE wide, so a small value means the set is radians.
+const RADIANS_IF_FOV_BELOW = 6.3;
+
+function readModuleView(cam) {
+	if (!cam || !cam.ok) return null;
+	if (typeof cam.fov !== "number" || cam.fov <= 0) return null;
+	const toDeg = cam.fov <= RADIANS_IF_FOV_BELOW ? (180 / Math.PI) : 1;
+	const fov = cam.fov * toDeg;
+	// A camera claiming an absurd field of view means the reading is not what
+	// we think it is, and a wrong view direction is worse than none.
+	if (fov < 20 || fov > 170) return null;
+	return {
+		heading: ((cam.h * toDeg) % 360 + 360) % 360,
+		pitch: cam.p * toDeg,
+		fov: fov,
+	};
+}
 
 function readView(aircraftHeading) {
 	let state = 0;
@@ -241,7 +263,10 @@ class FaunaInSimSource {
 		// claim the area holds nothing else.
 		stats.capped = (head.returned || 0) >= RESPONSE_CAP;
 
-		const view = readView(user.hdg);
+		// The module's camera first -- it is the only one that follows a VR
+		// headset. The variables are the fallback for 2D.
+		const view = readModuleView(head.cam) || readView(user.hdg);
+		const fovDeg = (view && view.fov) || ASSUMED_FOV_DEG;
 		const byRoot = {};
 		kept.forEach((m) => {
 			(byRoot[m.root] = byRoot[m.root] || []).push(m);
@@ -262,9 +287,10 @@ class FaunaInSimSource {
 			connected: true,
 			status: "connected",
 			// Half the field of view is the cone that counts as looking at
-			// something.
-			view_cone_deg: round(ASSUMED_FOV_DEG * VIEW_CONE_FRACTION, 1),
-			fov_deg: ASSUMED_FOV_DEG,
+			// something. Measured when the module gives us one -- so it adapts
+			// between 2D and VR on its own -- and assumed otherwise.
+			view_cone_deg: round(fovDeg * VIEW_CONE_FRACTION, 1),
+			fov_deg: round(fovDeg, 1),
 			user: user,
 			contacts: contacts,
 			stats: stats,

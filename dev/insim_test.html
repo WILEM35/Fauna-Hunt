@@ -40,6 +40,7 @@ function near(name, got, want, tol) {
 
 // The sim's variables, faked. Cockpit view, looking 30 degrees left of the nose.
 var CAMERA = { state: 2, pitch: 0, yaw: 30 };
+var CAM = { ok: false, h: 0, p: 0, fov: 0 };
 window.SimVar = {
 	GetSimVarValue: function (name) {
 		if (name === "CAMERA STATE") return CAMERA.state;
@@ -86,6 +87,7 @@ function reply(source, chunks) {
 			last: i === chunks.length - 1,
 			haveUser: true,
 			user: USER,
+			cam: CAM,
 			returned: HERD.length + ZEBRA.length + JUNK.length,
 			rows: chunks[i]
 		}));
@@ -167,6 +169,52 @@ try {
 	near("steep look-down widens the yaw tolerance",
 		src.snapshot.contacts[0].off_view_deg, 43, 4);
 	CAMERA.pitch = 0; CAMERA.yaw = 0;
+
+
+	// ---------------------------------------------------------- VR camera
+	// The module's camera reading is what makes the look-at rule work in VR.
+	// The gameplay variables cannot: in a headset they report the aircraft's
+	// direction and ignore the head entirely.
+
+	// Radians, which is what a small field of view means.
+	CAM = { ok: true, h: 0, p: -59 * Math.PI / 180, fov: 1.5708 };
+	CAMERA.state = 2; CAMERA.yaw = 0; CAMERA.pitch = 0;
+	reply(src, [HERD]);
+	var vr = src.snapshot;
+	near("VR: radian camera understood as 90 deg fov", vr.fov_deg, 90, 1);
+	near("VR: cone is half the fov", vr.view_cone_deg, 45, 1);
+	near("VR: looking down at the herd is in view", vr.contacts[0].off_view_deg, 0, 6);
+
+	// Degrees, in case the sim reports them that way.
+	CAM = { ok: true, h: 0, p: -59, fov: 90 };
+	reply(src, [HERD]);
+	near("VR: degree camera also understood", src.snapshot.fov_deg, 90, 1);
+	near("VR: same answer either way", src.snapshot.contacts[0].off_view_deg, 0, 6);
+
+	// The module's camera must WIN over the variables, or VR stays broken.
+	// Here the variables say "looking straight ahead" and the camera says
+	// "looking down at it" -- the camera has to be the one that counts.
+	CAM = { ok: true, h: 0, p: -59, fov: 90 };
+	CAMERA.yaw = 0; CAMERA.pitch = 0;
+	reply(src, [HERD]);
+	check("module camera beats the variables",
+		src.snapshot.contacts[0].off_view_deg < 10, true);
+
+	// A nonsense field of view means the reading is not what we think, and a
+	// wrong direction is worse than none -- fall back rather than trust it.
+	CAM = { ok: true, h: 0, p: -59, fov: 900 };
+	reply(src, [HERD]);
+	near("absurd fov ignored, falls back", src.snapshot.fov_deg, 90, 1);
+	near("and uses the 2D variables again",
+		src.snapshot.contacts[0].off_view_deg, 58, 6);
+
+	// No camera from the module: 2D behaviour, unchanged.
+	CAM = { ok: false, h: 0, p: 0, fov: 0 };
+	CAMERA.state = 3;
+	reply(src, [HERD]);
+	check("no camera and outside cockpit still disables the rule",
+		src.snapshot.contacts[0].off_view_deg, null);
+	CAMERA.state = 2;
 
 	// A torn reply must be dropped, not shown half-built.
 	var before = src.snapshot.contacts.length;

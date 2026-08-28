@@ -24,6 +24,7 @@
 
 #include <MSFS/MSFS.h>
 #include <MSFS/MSFS_WindowsTypes.h>
+#include <MSFS/MSFS_Camera.h>
 #include <MSFS/MSFS_CommBus.h>
 #include <SimConnect.h>
 
@@ -68,6 +69,33 @@ static bool g_haveUser = false;
 static int  g_returned = 0;      // how many the sim offered, before our cap
 
 static char g_out[CHUNK_CHARS + 1024];
+
+// Where the player is LOOKING. In VR this is the headset, which the panel
+// cannot get any other way: the gameplay pitch/yaw variables track the 2D
+// camera only, and in VR they report the aircraft's direction no matter where
+// the player's head is pointing. This call is the same one the old helper
+// program used, and that one demonstrably followed the headset.
+//
+// Units are not documented. They are reported raw and the panel decides, using
+// the field of view to tell radians from degrees -- one API returns one unit
+// for all three, and a field of view is unambiguous where a heading is not.
+static bool   g_camOk = false;
+static double g_camH = 0.0;
+static double g_camP = 0.0;
+static double g_camFov = 0.0;
+
+static void read_camera()
+{
+    FsCameraData cam;
+    if (fsCameraGet(FS_POSITION_REFERENTIAL_WORLD, &cam)) {
+        g_camOk = true;
+        g_camH = cam.pbh.h;
+        g_camP = cam.pbh.p;
+        g_camFov = cam.fov;
+    } else {
+        g_camOk = false;
+    }
+}
 
 static void reset_batch()
 {
@@ -133,9 +161,11 @@ static void send_chunk(int seq, bool last, const char* rows)
     int n = snprintf(g_out, sizeof(g_out),
         "{\"seq\":%d,\"last\":%s,\"haveUser\":%s,"
         "\"user\":{\"lat\":%.7f,\"lon\":%.7f,\"alt_ft\":%.1f,\"hdg\":%.2f,\"gs_kt\":%.1f},"
+        "\"cam\":{\"ok\":%s,\"h\":%.4f,\"p\":%.4f,\"fov\":%.4f},"
         "\"returned\":%d,\"rows\":[%s]}",
         seq, last ? "true" : "false", g_haveUser ? "true" : "false",
         g_user.lat, g_user.lon, g_user.alt, g_user.hdg, g_user.gs,
+        g_camOk ? "true" : "false", g_camH, g_camP, g_camFov,
         g_returned, rows);
     if (n > 0) {
         fsCommBusCall("FaunaHunt.Data", g_out, (unsigned int)strlen(g_out) + 1,
@@ -186,6 +216,7 @@ static void onPoll(const char*, unsigned int, void*)
 
     // Collect what the PREVIOUS poll asked for, report it, then ask again.
     drain();
+    read_camera();
     emit();
 
     SimConnect_RequestDataOnSimObjectType(g_sim, REQ_USER, DEF_ALL, 0,

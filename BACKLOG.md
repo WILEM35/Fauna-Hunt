@@ -357,3 +357,29 @@ Two had been broken for several releases, and one of them is why the service
 exe was never rebuilt automatically -- which is how a crashing service reached
 a release. Worth checking for control characters after any scripted edit of a
 Windows path.
+
+## 1.3.1 -- the look-at rule in VR
+
+Tested in a headset: the gameplay pitch/yaw variables DO NOT track the head.
+They report the aircraft's direction, so identifying an animal in VR meant
+pointing the aeroplane at it. In 2D they were flawless -- mouse look, built-in
+views and joystick-mapped views all worked.
+
+The fix is the camera call, `fsCameraGet`, put back into the module. It was
+dropped earlier while hunting the module load failure and never actually
+cleared: the real cause was the missing `malloc` export, so the camera call was
+never the problem. It is the same call the old helper used, and that one
+demonstrably followed the headset -- the 15-degree error once traced to sitting
+off-centre in the seat is the proof.
+
+The panel now prefers the module's camera and falls back to the variables when
+there is none, so 2D keeps working exactly as it did.
+
+The SDK does not document what units the camera call returns, so the panel
+decides from the field of view: nothing sane is 60 radians wide or 1 degree
+wide. An absurd field of view is treated as "this reading is not what I think
+it is" and the fallback is used -- a wrong view direction is worse than none.
+The field of view is now measured rather than assumed, so the cone adapts
+between 2D and VR by itself.
+
+Bench tests cover both unit conventions, the precedence, and the fallback.
