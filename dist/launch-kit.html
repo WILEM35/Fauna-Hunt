@@ -232,7 +232,7 @@
 <div class="wrap">
 
 	<header>
-		<span class="eyebrow">Fauna Hunt 2.1.1</span>
+		<span class="eyebrow">Fauna Hunt 2.1.4</span>
 		<h1>Launch kit</h1>
 		<p class="lede">Every piece of text you need, with a copy button on each one. 2.1.0 is already on GitHub and needs replacing — that is section one.</p>
 	</header>
@@ -243,13 +243,13 @@
 		<ol class="steps">
 			<li>Push the new tag: run the command below.</li>
 			<li>On GitHub, <strong>edit the 2.1.0 release</strong> and delete it, or mark it a pre-release so nobody lands on it.</li>
-			<li><strong>Draft a new release</strong> on tag <strong>v2.1.1</strong>, attach <strong>FaunaHunt-v2.1.1.zip</strong>, and paste the title and notes from section 02.</li>
+			<li><strong>Draft a new release</strong> on tag <strong>v2.1.4</strong>, attach <strong>FaunaHunt-v2.1.4.zip</strong>, and paste the title and notes from section 02.</li>
 			<li>Post a short follow-up in the Discord channel — there is text for it in section 04.</li>
 		</ol>
 
 		<div class="block">
 			<div class="block-head">
-				<span class="block-label">Push the 2.1.1 tag</span>
+				<span class="block-label">Push the 2.1.4 tag</span>
 				<button class="copy" data-target="git1">Copy</button>
 			</div>
 			<pre class="one-line" id="git1">git -C C:\Tools\fauna-hunt push origin main --tags</pre>
@@ -260,8 +260,8 @@
 		<h2><span class="step">02</span> GitHub release</h2>
 		<ol class="steps">
 			<li>Go to the repo, then <strong>Releases → Draft a new release</strong>.</li>
-			<li>Under <strong>Choose a tag</strong>, pick <strong>v2.1.1</strong>.</li>
-			<li>Attach <strong>FaunaHunt-v2.1.1.zip</strong> from your Desktop.</li>
+			<li>Under <strong>Choose a tag</strong>, pick <strong>v2.1.4</strong>.</li>
+			<li>Attach <strong>FaunaHunt-v2.1.4.zip</strong> from your Desktop.</li>
 			<li>Paste the title and notes below, then publish.</li>
 		</ol>
 
@@ -270,7 +270,7 @@
 				<span class="block-label">Release title</span>
 				<button class="copy" data-target="ghtitle">Copy</button>
 			</div>
-			<pre class="one-line" id="ghtitle">Fauna Hunt 2.1.1 - direction arrows, and a character fix</pre>
+			<pre class="one-line" id="ghtitle">Fauna Hunt 2.1.4 - direction arrows and a nearest/ahead sort</pre>
 		</div>
 
 		<div class="block">
@@ -280,13 +280,23 @@
 			</div>
 			<pre id="ghbody">## New: direction arrows
 
-Every contact now has a small arrow beside it, pointing where the animal is relative to your nose. Straight up means dead ahead.
+Every contact now has an arrow beside it, pointing where the animal is relative to your nose. Straight up means dead ahead.
 
-The arrow is deliberately **no more precise than the words next to it** — it snaps to the same steps the text uses, so it gives nothing away that you were not already being told. It is just far quicker to read at a glance, especially in VR.
+The arrow is deliberately **no more precise than the words next to it** — it snaps to the same steps the text uses, so it gives nothing away you were not already being told. It is just much quicker to read at a glance, especially in VR.
+
+## New: sort by nearest, or by what is ahead
+
+A small toggle above the list.
+
+**Nearest** is what it has always done, and it is right in a helicopter — you can turn on the spot, so anything is reachable.
+
+**Ahead** lifts the 180 degree arc in front of you to the top. In an aeroplane a contact behind you means flying a circuit, and by the time you are back the herd has moved. It sorts rather than hides, so something rare behind you never silently disappears.
 
 ## Fixed
 
-* **Damaged characters.** In 2.1.0 bearings read `070Â°` instead of `070°`, and several dashes were destroyed. Anyone running 2.1.0 should replace it.
+* **The list could freeze in VR.** Hovering it deliberately stops it reordering so it does not reshuffle while you are reaching for a row — but in VR the "pointer left" event often never arrives, so it stayed frozen for the rest of the flight. Waving the pointer over it and away is what appeared to fix it. It now releases by itself.
+* **Damaged characters.** In 2.1.0 bearings read `070Â°` instead of `070°`. Anyone running 2.1.0 should replace it.
+* A stray line meant the **rare-animal alert could re-fire** every time the pointer left the list.
 
 ## The helper app is gone (since 2.1.0)
 
@@ -300,19 +310,15 @@ Fauna Hunt used to need a second program running alongside the simulator. It was
 * **Stop using `FaunaHuntService.exe`** — it no longer exists and is not needed.
 * **Your score and lifelist are kept.** They live in the simulator's own save data.
 
-## Also in this line
-
-* **VR: you can identify from any direction.** The simulator will not tell add-ons where a headset is aimed, so rather than make you point the aircraft at an animal, that check is off in VR. In a 2D cockpit view it works as before.
-* **Settings shows the version**, so it is obvious which build is running.
-
 ## Known limitations
 
+* **In VR, identification does not check where you are looking.** The simulator will not tell add-ons where a headset is aimed, so rather than make you point the aircraft at an animal, that check is off in VR. In a 2D cockpit view it works normally.
 * **No birds.** The simulator keeps its flying animals somewhere add-ons cannot reach. Ground animals only.
 * **MSFS 2024 only.** The animal data does not exist in 2020.
 
 ## Install
 
-1. Download `FaunaHunt-v2.1.1.zip` below.
+1. Download `FaunaHunt-v2.1.4.zip` below.
 2. Copy the `wilem35-fauna-hunt` folder into your Community folder.
 3. Start MSFS 2024 and click the paw print in the toolbar.
 
@@ -387,6 +393,16 @@ Your lifelist keeps track of everything you have caught. The ones you are still 
 Most of the good stuff is African. A bush flight across the Serengeti is worth a hundred laps of the local farmland.
 
 
+NEAREST, OR WHAT IS AHEAD
+
+A toggle above the list changes how it is ordered.
+
+Nearest is right in a helicopter - you can turn on the spot, so anything is
+reachable. In an aeroplane, a contact behind you means flying a circuit, and by
+the time you are back the herd has moved. Ahead lifts the 180 degree arc in
+front of you to the top instead.
+
+
 DIFFICULTY
 
 Three settings that change how much the spotter gives away and how early:
@@ -430,8 +446,8 @@ https://github.com/WILEM35/Fauna-Hunt</pre>
 		<dl class="fields">
 			<div class="field"><dt>Category</dt><dd>Utilities &amp; Tools → In-Game Panels, or Miscellaneous</dd></div>
 			<div class="field"><dt>Compatibility</dt><dd>Microsoft Flight Simulator 2024</dd></div>
-			<div class="field"><dt>Version</dt><dd>2.1.1</dd></div>
-			<div class="field"><dt>File</dt><dd>FaunaHunt-v2.1.1.zip</dd></div>
+			<div class="field"><dt>Version</dt><dd>2.1.4</dd></div>
+			<div class="field"><dt>File</dt><dd>FaunaHunt-v2.1.4.zip</dd></div>
 		</dl>
 
 		<p class="note"><strong>Screenshots, best first:</strong> the contact list with several herds at different ranges; animals out of the window with the panel beside them; the four-way identification prompt; the lifelist with its location hints; a wide shot over the Serengeti. Avoid the diagnostic shots from testing.</p>
@@ -445,13 +461,15 @@ https://github.com/WILEM35/Fauna-Hunt</pre>
 				<span class="block-label">Message</span>
 				<button class="copy" data-target="discord">Copy</button>
 			</div>
-			<pre id="discord">Small update — grab 2.1.1 if you picked up the version I posted earlier.
+			<pre id="discord">Update — grab 2.1.4 if you picked up the version I posted earlier.
 
-2.1.0 had a character bug that made bearings show as "070Â°". Fixed.
+New: every contact has an arrow showing roughly where the animal is relative to your nose, so you can pick a heading at a glance. And there is a Nearest / Ahead toggle above the list — Ahead only lifts what is in front of you to the top, which is much better in an aeroplane than a helicopter.
 
-New in 2.1.1: every contact now has an arrow pointing where the animal is relative to your nose, so you can tell at a glance without reading the o'clock. Handy in VR.
+Fixed: the list could freeze in VR once you hovered it, and 2.1.0 had a bug that made bearings show as "070Â°".
 
-Same install as before: delete the old folder, drop the new one into Community.</pre>
+Same install as before: delete the old folder, drop the new one into Community.
+
+Feedback welcome — I am leaving it alone for a week to see how it plays.</pre>
 		</div>
 	</section>
 
