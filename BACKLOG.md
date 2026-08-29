@@ -705,3 +705,29 @@ Also worth settling:
   than a thin drawn arrow.
 * Whether it replaces the o'clock text or sits beside it. Beside, probably:
   the words work when read aloud on a group flight, the arrow works at a glance.
+
+## 2.1.1 -- arrows, and the character damage repaired
+
+The arrows are quantised to the same step as the words beside them: 45 degrees
+at sector range, 30 at coarse, 10 at fine, and 30 at o'clock range which the
+o'clock already is. Drawing from the true bearing would have handed back the
+precision the text deliberately withholds. Drawn as an SVG rather than a glyph,
+because the sim's font is missing more characters than expected -- that is what
+made the tick marks show as empty boxes in the probe panel.
+
+### Four times now: a backslash eaten by an edit
+
+`Copys\fauna-hunt` became `Copys` + formfeed for the third time, this time in
+build.ps1's version-stamping step, which failed with "Illegal characters in
+path" -- and because that command chained the packaging after it without
+checking, a zip labelled 2.1.1 was produced containing 2.1.0 content. Deleted.
+The fourth was in the launch-kit page, in the very command being handed over.
+
+`probe/check_js.py` now scans the .ps1 files for control characters as well as
+the panel scripts, so a build cannot start with one.
+
+**The real lesson is about how these files get edited.** Writing a Windows path
+inside a Python string literal is the cause every single time: `\f`, `\b` and
+`\t` are escape sequences and vanish silently. Edit paths at byte level, or
+build them from a backslash constant, and never trust a path that came out of a
+scripted edit without checking the bytes.
