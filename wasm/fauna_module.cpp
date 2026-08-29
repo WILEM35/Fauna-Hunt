@@ -86,8 +86,39 @@ static double g_camFov = 0.0;
 static int    g_camRotRef = 0;
 static int    g_camPosRef = 0;
 
+// The camera call takes a referential. Asked for WORLD it returns the
+// AIRCRAFT's view direction, not the headset's -- proven by turning the
+// helicopter 90 degrees while looking at the same animals: the reading moved
+// with the aircraft and ignored the head entirely.
+//
+// So every referential the API offers is sampled and reported. If any of them
+// follows the head, one flight will show it: look forward, then look 90
+// degrees to the side WITHOUT turning the aircraft, and see which pair moves.
+static const int REF_COUNT = 5;
+static bool   g_refOk[REF_COUNT];
+static double g_refH[REF_COUNT];
+static double g_refP[REF_COUNT];
+
+static void read_all_referentials()
+{
+    for (int r = 0; r < REF_COUNT; ++r) {
+        FsCameraData c;
+        if (fsCameraGet(r, &c)) {
+            g_refOk[r] = true;
+            g_refH[r] = c.pbh.h;
+            g_refP[r] = c.pbh.p;
+        } else {
+            g_refOk[r] = false;
+            g_refH[r] = 0.0;
+            g_refP[r] = 0.0;
+        }
+    }
+}
+
 static void read_camera()
 {
+    read_all_referentials();
+
     FsCameraData cam;
     if (fsCameraGet(FS_POSITION_REFERENTIAL_WORLD, &cam)) {
         g_camOk = true;
@@ -173,11 +204,18 @@ static void send_chunk(int seq, bool last, const char* rows)
         "\"user\":{\"lat\":%.7f,\"lon\":%.7f,\"alt_ft\":%.1f,\"hdg\":%.2f,\"gs_kt\":%.1f},"
         "\"cam\":{\"ok\":%s,\"h\":%.4f,\"p\":%.4f,\"fov\":%.4f,"
         "\"rotRef\":%d,\"posRef\":%d},"
+        "\"refs\":[[%d,%.2f,%.2f],[%d,%.2f,%.2f],[%d,%.2f,%.2f],"
+        "[%d,%.2f,%.2f],[%d,%.2f,%.2f]],"
         "\"returned\":%d,\"rows\":[%s]}",
         seq, last ? "true" : "false", g_haveUser ? "true" : "false",
         g_user.lat, g_user.lon, g_user.alt, g_user.hdg, g_user.gs,
         g_camOk ? "true" : "false", g_camH, g_camP, g_camFov,
         g_camRotRef, g_camPosRef,
+        g_refOk[0] ? 1 : 0, g_refH[0], g_refP[0],
+        g_refOk[1] ? 1 : 0, g_refH[1], g_refP[1],
+        g_refOk[2] ? 1 : 0, g_refH[2], g_refP[2],
+        g_refOk[3] ? 1 : 0, g_refH[3], g_refP[3],
+        g_refOk[4] ? 1 : 0, g_refH[4], g_refP[4],
         g_returned, rows);
     if (n > 0) {
         fsCommBusCall("FaunaHunt.Data", g_out, (unsigned int)strlen(g_out) + 1,

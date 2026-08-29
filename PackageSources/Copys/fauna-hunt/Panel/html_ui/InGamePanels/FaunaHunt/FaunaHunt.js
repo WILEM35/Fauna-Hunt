@@ -572,7 +572,23 @@ class IngamePanelFaunaHunt extends TemplateElement {
 				? "nearest   bearing " + nearest.bearing_deg + "   off view "
 					+ nearest.off_view_deg + "   (cone " + this.snapshot.view_cone_deg + ")"
 				: "nearest   none",
+			this.refsLine(d.refs),
 		].join("\n");
+	}
+
+	// Every reference point the camera call offers, side by side. Asked for
+	// the world it returns the AIRCRAFT's direction, not the headset's. If any
+	// of these follows the head, its numbers will move when you look around
+	// without turning the aircraft -- and that one becomes the VR reading.
+	refsLine(refs) {
+		if (!refs || !refs.length) return "refs      none";
+		const names = ["none", "aircraft", "world", "eyepoint", "datum"];
+		const parts = [];
+		for (let i = 0; i < refs.length; i++) {
+			const r = refs[i];
+			parts.push(names[i] + (r[0] ? " h" + r[1] + " p" + r[2] : " --"));
+		}
+		return "refs      " + parts.join("  ");
 	}
 
 	setStatus(status) {

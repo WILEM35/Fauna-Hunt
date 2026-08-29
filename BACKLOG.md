@@ -405,3 +405,31 @@ fails. Fixed in 1.3.3.
 
 **Lesson: passing tests said nothing about the file that was actually broken.**
 Check the artefact that ships, not only the part under test.
+
+## SETTLED: the sim does not expose VR head direction to add-ons
+
+Tested every reference point the camera call offers -- none, aircraft, world,
+eyepoint, datum -- reported side by side in a headset. All five agree with each
+other to within about a degree, and all five follow the AIRCRAFT.
+
+The clean proof came from turning the helicopter 90 degrees while looking at the
+same animals throughout: the reading moved with the aircraft and ignored the
+head completely. Off view went from 83.8 (out) to 8.6 (in) purely because the
+nose moved.
+
+Also ruled out along the way:
+
+* `CAMERA GAMEPLAY PITCH YAW` -- perfect in 2D, reports the aircraft in VR.
+* `fsCameraGet` at every referential -- as above.
+* No VR or head-tracking variable exists in the sim's own interface code.
+* `FLYING_ANIMAL` appears nowhere in the SDK, so the same wall stands for birds.
+
+**So the "look at the animal" rule cannot work in VR as intended.** The choice
+is between gating on the aircraft's nose in VR, or not gating there at all.
+2D is unaffected and works properly.
+
+### Incidental, and worth acting on
+
+Fauna density is set PER PROFILE and they differ: 2D is on 1 (lowest), VR on 3.
+More fauna is a straight improvement to the game, and the 2D setting is costing
+contacts for no reason. It is in the sim's graphics settings, not ours to change.

@@ -323,6 +323,7 @@ class FaunaInSimSource {
 			vr: vr,
 			using: view ? (view.source || "variables") : "none",
 			cam: head.cam || null,
+			refs: head.refs || null,
 			viewHeading: view ? round(view.heading, 1) : null,
 			viewPitch: view ? round(view.pitch, 1) : null,
 			aircraftHeading: round(user.hdg, 1),
