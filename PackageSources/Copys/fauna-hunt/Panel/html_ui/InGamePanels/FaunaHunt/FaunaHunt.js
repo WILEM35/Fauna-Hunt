@@ -16,7 +16,7 @@
 // Rewritten by build.ps1 from the package version, so it cannot drift.
 // Shown in Settings: without it there is no way to tell which build is
 // actually running, and a stale one looks exactly like a bug that will not die.
-const PANEL_VERSION = "2.1.0";
+const PANEL_VERSION = "2.1.1";
 
 const STORAGE_KEY = "FaunaHunt_State_v1";
 const POLL_INTERVAL_MS = 1000;
@@ -154,6 +154,24 @@ const REGION_ORDER = ["Global", "Europe", "Africa", "Asia", "N.America",
 	"S.America", "Arctic", "Australia", "Ocean"];
 
 // ------------------------------------------------------------- utilities
+
+// A small arrow pointing where the animal is, relative to the nose.
+//
+// Quantised to the SAME step as the words beside it, always. The whole design
+// rests on not marking the animal exactly, and an arrow drawn from the true
+// bearing would quietly hand back the precision the text withholds -- at long
+// range it would stop being a hint and become a marker. Coarse words, coarse
+// arrow: it is the same information, just faster to read at a glance in VR.
+//
+// Drawn rather than written: a glyph would depend on the sim's font having it,
+// and the sim's font is missing more than you would expect.
+function directionArrow(relativeBearing, step) {
+	const deg = quantise(relativeBearing, step) % 360;
+	return "<svg class=\"dir-arrow\" viewBox=\"0 0 12 12\" aria-hidden=\"true\" "
+		+ "style=\"transform: rotate(" + deg + "deg)\">"
+		+ "<path d=\"M6 0.8 L10.6 11.2 L6 8.4 L1.4 11.2 Z\"/></svg>";
+}
+
 
 function sectorOf(bearing) {
 	return SECTORS[Math.round(bearing / 45) % 8];
@@ -597,6 +615,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 				// is just the panel being coy about nothing.
 				what: this.isLogged(contact) ? size : "Movement",
 				where: "somewhere " + sectorOf(contact.bearing_deg),
+				arrow: directionArrow(contact.relative_bearing_deg, 45),
 				range: "",
 			};
 		}
@@ -605,6 +624,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			return {
 				what: size,
 				where: "bearing " + String(quantise(contact.bearing_deg, 30)).padStart(3, "0") + "°",
+				arrow: directionArrow(contact.relative_bearing_deg, 30),
 				range: distanceBracket(contact.distance_m),
 			};
 		}
@@ -616,6 +636,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			return {
 				what: this.isLogged(contact) ? size : size + ", " + herd,
 				where: "bearing " + String(quantise(contact.bearing_deg, 10)).padStart(3, "0") + "°",
+				arrow: directionArrow(contact.relative_bearing_deg, 10),
 				range: roundTo(contact.distance_m, 100) + " m",
 			};
 		}
@@ -626,7 +647,10 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			: "A single animal";
 		return {
 			what: this.isLogged(contact) ? size : count,
+			// An o'clock position is already 30 degree steps, so the arrow
+			// matches it exactly.
 			where: "your " + contact.clock + " o'clock, " + (contact.above ? "high" : "low"),
+			arrow: directionArrow(contact.relative_bearing_deg, 30),
 			range: roundTo(contact.distance_m, 50) + " m",
 		};
 	}
@@ -751,7 +775,8 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			+ (clickable ? " is-clickable" : "");
 		row.innerHTML = "<div class=\"contact-desc\">"
 			+ "<span class=\"contact-what\">" + described.what + "</span>"
-			+ "<span class=\"contact-where\">" + described.where + "</span>"
+			+ "<span class=\"contact-where\">"
+			+ (described.arrow || "") + described.where + "</span>"
 			+ "</div>"
 			+ "<span class=\"contact-range\">" + described.range + "</span>"
 			+ (logged

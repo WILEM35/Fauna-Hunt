@@ -50,7 +50,7 @@ Get-ChildItem -Path "$ProjectDir\PackageSources" -Filter "__pycache__" -Recurse 
 # a bug that will not die -- which cost a test cycle.
 $verXml = [xml](Get-Content "$ProjectDir\PackageDefinitions\wilem35-fauna-hunt.xml")
 $version = $verXml.AssetPackage.Version
-$panelJs = "$ProjectDir\PackageSources\Copysauna-hunt\Panel\html_ui\InGamePanels\FaunaHunt\FaunaHunt.js"
+$panelJs = "$ProjectDir\PackageSources\Copys\fauna-hunt\Panel\html_ui\InGamePanels\FaunaHunt\FaunaHunt.js"
 # Read and write as UTF-8 explicitly, with no byte order mark.
 #
 # Get-Content reads a file with no BOM as ANSI, which turns every degree sign

@@ -693,3 +693,16 @@ ingame-ui#FaunaHunt .ingameUiContent {
 	white-space: pre-wrap;
 	word-break: break-word;
 }
+
+/* Direction arrow beside the o'clock or bearing text. Points where the animal
+   is relative to the nose, and is deliberately no more precise than the words
+   it sits next to. Scales with the text so it works at XS and in VR. */
+.dir-arrow {
+	display: inline-block;
+	width: 0.82em;
+	height: 0.82em;
+	margin-right: 0.4em;
+	vertical-align: -0.09em;
+	fill: currentColor;
+	opacity: 0.8;
+}
