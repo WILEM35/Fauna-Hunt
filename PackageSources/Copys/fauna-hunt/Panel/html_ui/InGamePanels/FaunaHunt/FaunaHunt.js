@@ -1,4 +1,4 @@
-// Fauna Hunt
+﻿// Fauna Hunt
 //
 // A wildlife-spotting game. The sim has 107 species of animal wandering
 // around; this panel turns finding them into the point of the flight.
@@ -16,7 +16,7 @@
 // Rewritten by build.ps1 from the package version, so it cannot drift.
 // Shown in Settings: without it there is no way to tell which build is
 // actually running, and a stale one looks exactly like a bug that will not die.
-const PANEL_VERSION = "2.0.9";
+const PANEL_VERSION = "2.1.0";
 
 const STORAGE_KEY = "FaunaHunt_State_v1";
 const POLL_INTERVAL_MS = 1000;
@@ -112,7 +112,7 @@ const RECOGNITION = {
 		label: "Recognise on sight",
 		blurb: "A species you have identified is named the moment it appears, "
 			+ "anywhere. Those tiles cannot be identified again and score "
-			+ "nothing — you are choosing to hunt only what is new.",
+			+ "nothing â€” you are choosing to hunt only what is new.",
 	},
 };
 const DEFAULT_RECOGNITION = "ask";
@@ -588,7 +588,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 	describeContact(contact) {
 		const tier = this.tierFor(contact.distance_m);
 		const size = this.isLogged(contact)
-			? contact.common + (contact.count > 1 ? " × " + contact.count : "")
+			? contact.common + (contact.count > 1 ? " Ã— " + contact.count : "")
 			: (SIZE_WORDS[contact.size] || "an animal");
 
 		if (tier === "sector") {
@@ -604,7 +604,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		if (tier === "coarse") {
 			return {
 				what: size,
-				where: "bearing " + String(quantise(contact.bearing_deg, 30)).padStart(3, "0") + "°",
+				where: "bearing " + String(quantise(contact.bearing_deg, 30)).padStart(3, "0") + "Â°",
 				range: distanceBracket(contact.distance_m),
 			};
 		}
@@ -615,7 +615,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 				: "on its own";
 			return {
 				what: this.isLogged(contact) ? size : size + ", " + herd,
-				where: "bearing " + String(quantise(contact.bearing_deg, 10)).padStart(3, "0") + "°",
+				where: "bearing " + String(quantise(contact.bearing_deg, 10)).padStart(3, "0") + "Â°",
 				range: roundTo(contact.distance_m, 100) + " m",
 			};
 		}
@@ -786,7 +786,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		if (!this.cappedNote) {
 			this.cappedNote = document.createElement("p");
 			this.cappedNote.className = "capped-note";
-			this.cappedNote.textContent = "Too much wildlife to track it all — "
+			this.cappedNote.textContent = "Too much wildlife to track it all â€” "
 				+ "there is more out there than this list shows.";
 		}
 		list.appendChild(this.cappedNote);
@@ -952,7 +952,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		if (caught) {
 			this.saveState();
 			this.renderScore();
-			this.setSpotHint("Nice capture — " + caught.contact.common
+			this.setSpotHint("Nice capture â€” " + caught.contact.common
 				+ ". +" + caught.bonus + " points.", false, true);
 		}
 		return !!caught;
@@ -979,7 +979,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			this.alertFor = found.key;
 			const known = this.isLogged(found);
 			node.textContent = known
-				? found.common + " nearby — " + Math.round(found.distance_m) + " m"
+				? found.common + " nearby â€” " + Math.round(found.distance_m) + " m"
 				: "Something legendary is out here";
 		}
 		node.classList.remove("hidden");
@@ -1213,17 +1213,17 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		if (contact.count > 1) bits.push(contact.count + " animals");
 		bits.push(TIER_LABEL[contact.tier] || "");
 		bits.push(Math.round(contact.distance_m) + " m out");
-		nodes.resultDetail.textContent = bits.filter(Boolean).join(" · ");
+		nodes.resultDetail.textContent = bits.filter(Boolean).join(" Â· ");
 
 		if (gaveUp) {
-			nodes.resultPoints.textContent = "No points — but now you know.";
+			nodes.resultPoints.textContent = "No points â€” but now you know.";
 		} else {
 			const notes = [];
 			if (tries > 0) notes.push(tries + " wrong " + plural(tries, "guess", "guesses"));
 			if (alreadyHave) notes.push("already on your lifelist");
 			nodes.resultPoints.textContent = "+" + points + " points"
 				+ (notes.length ? " (" + notes.join(", ") + ")" : "")
-				+ (!alreadyHave ? " — new species!" : "");
+				+ (!alreadyHave ? " â€” new species!" : "");
 		}
 
 		nodes.resultOverlay.classList.remove("hidden");
@@ -1241,7 +1241,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		if (!table) {
 			this.nodes.lifelistStats.innerHTML = "";
 			this.nodes.lifelistBody.innerHTML =
-				"<p class=\"region-head\">Species list unavailable — "
+				"<p class=\"region-head\">Species list unavailable â€” "
 				+ "waiting for the simulator.</p>";
 			return;
 		}
@@ -1288,7 +1288,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			const list = byRegion[region].sort((a, b) => a.localeCompare(b));
 			const got = list.filter((n) => groups[n].roots.some((r) => found[r])).length;
 			html.push("<p class=\"region-head\">" + region
-				+ " · " + got + " of " + list.length + "</p>");
+				+ " Â· " + got + " of " + list.length + "</p>");
 
 			list.forEach((name) => {
 				const g = groups[name];
@@ -1314,7 +1314,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 
 				html.push("<div class=\"life-row" + (isFound ? " is-found" : "") + "\">"
 					+ "<span class=\"life-name\">"
-					+ (isFound ? name : (where || "—"))
+					+ (isFound ? name : (where || "â€”"))
 					+ "</span>"
 					+ variants
 					+ state
