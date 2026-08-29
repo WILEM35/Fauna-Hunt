@@ -14,6 +14,7 @@ Run by build.ps1. Exits non-zero if anything fails to parse.
 
 import io
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -21,6 +22,53 @@ PANEL = os.path.join(HERE, os.pardir, "PackageSources", "Copys", "fauna-hunt",
                      "Panel", "html_ui", "InGamePanels", "FaunaHunt")
 
 SCRIPTS = ["FaunaSpeciesData.js", "FaunaInSim.js", "FaunaHunt.js"]
+
+
+# Functions that are called but defined nowhere.
+#
+# Deleting a range of lines from one file removed EIGHT helpers that another
+# file still called. Nothing complained: the panel parsed fine, the bench tests
+# passed because the harness defines its own copy, and the failure only showed
+# up in flight -- as an empty list, because the error was swallowed inside a
+# callback. This is the check that would have caught it in a second.
+BUILTINS = set("""
+    if for while switch catch function return typeof new delete void throw
+    Math JSON Object Array String Number Boolean Date RegExp Promise Error
+    parseInt parseFloat isFinite isNaN encodeURIComponent decodeURIComponent
+    setTimeout setInterval clearTimeout clearInterval requestAnimationFrame
+    console window document navigator performance
+    SimVar Coherent RegisterCommBusListener RegisterViewListener
+    TemplateElement BaseInstrument checkAutoload GetStoredData SetStoredData
+    XMLHttpRequest customElements
+""".split())
+
+DEFINE = re.compile(r"^\s*(?:function\s+(\w+)|(?:const|let|var)\s+(\w+)\s*=|class\s+(\w+))", re.M)
+# Methods inside a class: `name(args) {`. These are only ever called through
+# `this.`, which the call pattern below already skips -- but their DEFINITIONS
+# look exactly like calls, so they have to be collected or everything is noise.
+METHOD = re.compile(r"^\s{1,3}(?:get\s+|set\s+|static\s+|async\s+)?(\w+)\s*\([^;]*\)\s*\{", re.M)
+CALL = re.compile(r"(?<![.\w$])([A-Za-z_$][\w$]*)\s*\(")
+
+# Words that are followed by a bracket but are not calls at all.
+NOT_CALLS = set("catch function switch return typeof new delete void throw of in"
+                " super object rgba url translate scale".split())
+
+
+def undefined_calls(sources):
+    defined = set(BUILTINS)
+    for src in sources.values():
+        for m in DEFINE.finditer(src):
+            defined.update(n for n in m.groups() if n)
+        defined.update(m.group(1) for m in METHOD.finditer(src))
+
+    missing = {}
+    for name, src in sources.items():
+        for m in CALL.finditer(src):
+            fn = m.group(1)
+            if fn in defined or fn in NOT_CALLS:
+                continue
+            missing.setdefault(fn, set()).add(name)
+    return missing
 
 
 def main():

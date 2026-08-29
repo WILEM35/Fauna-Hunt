@@ -16,7 +16,7 @@
 // Rewritten by build.ps1 from the package version, so it cannot drift.
 // Shown in Settings: without it there is no way to tell which build is
 // actually running, and a stale one looks exactly like a bug that will not die.
-const PANEL_VERSION = "2.0.7";
+const PANEL_VERSION = "2.0.9";
 
 const STORAGE_KEY = "FaunaHunt_State_v1";
 const POLL_INTERVAL_MS = 1000;
@@ -154,6 +154,57 @@ const REGION_ORDER = ["Global", "Europe", "Africa", "Asia", "N.America",
 	"S.America", "Arctic", "Australia", "Ocean"];
 
 // ------------------------------------------------------------- utilities
+
+function sectorOf(bearing) {
+	return SECTORS[Math.round(bearing / 45) % 8];
+}
+
+function quantise(value, step) {
+	return Math.round(value / step) * step;
+}
+
+function distanceBracket(metres) {
+	if (metres < 1000) {
+		const low = Math.floor(metres / 250) * 250;
+		return low + " to " + (low + 250) + " m";
+	}
+	const km = metres / 1000;
+	return Math.floor(km) + " to " + Math.ceil(km === Math.floor(km) ? km + 1 : km) + " km";
+}
+
+function roundTo(value, step) {
+	return Math.round(value / step) * step;
+}
+
+function plural(count, one, many) {
+	return count === 1 ? one : many;
+}
+
+function shuffle(list) {
+	const out = list.slice();
+	for (let i = out.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		const swap = out[i];
+		out[i] = out[j];
+		out[j] = swap;
+	}
+	return out;
+}
+
+function haversineM(lat1, lon1, lat2, lon2) {
+	const toRad = Math.PI / 180;
+	const p1 = lat1 * toRad, p2 = lat2 * toRad;
+	const dp = p2 - p1;
+	const dl = (lon2 - lon1) * toRad;
+	const a = Math.sin(dp / 2) * Math.sin(dp / 2)
+		+ Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) * Math.sin(dl / 2);
+	return 2 * EARTH_RADIUS_M * Math.asin(Math.min(1, Math.sqrt(a)));
+}
+
+function todayIso() {
+	return new Date().toISOString().slice(0, 10);
+}
+
 
 // --------------------------------------------------------------- element
 
@@ -413,7 +464,16 @@ class IngamePanelFaunaHunt extends TemplateElement {
 	// message service, this quietly does nothing and the helper runs the game.
 	showVersion() {
 		const el = this.querySelector("#panelVersion");
-		if (el) el.textContent = "Version " + PANEL_VERSION;
+		if (!el) return;
+		// The tick count is a heartbeat. If it climbs, the panel's loop is
+		// alive and any fault is further down; if it sticks, the loop is dead
+		// and nothing else in here means anything. That distinction has cost
+		// several test flights to establish by other means.
+		const s = this.inSim;
+		el.textContent = "Version " + PANEL_VERSION
+			+ "  ticks " + (this.pollTicks || 0)
+			+ (s ? ("  asked " + (s.polls || 0) + "  answered " + (s.replies || 0)
+				+ "  rows " + (s.lastRowCount || 0)) : "  no module");
 	}
 
 	startInSim() {
@@ -454,6 +514,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 				this.updateStatusLine();
 			}
 			this.panelError = null;
+			this.showVersion();
 		} catch (err) {
 			this.panelError = (err && err.message) ? err.message : String(err);
 			// Keep the ticks going regardless. A panel that reports a fault

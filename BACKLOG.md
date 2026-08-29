@@ -583,3 +583,33 @@ lives for the session and a rebuilt panel picks up the one already working.
 
 If the counts come back as "Asked many, answered 1", the module is dying after
 its first reply and the next place to look is the developer console.
+
+## 2.0.9 -- the real cause: eight helpers deleted by a range edit
+
+The panel had been showing "no contacts" for several builds while the module
+was working perfectly. The heartbeat proved it: Settings showed
+`ticks 25 asked 25 answered 23 rows 250` -- 250 animals arriving every second --
+while the Hunt page showed `asked 2, answered 1` from a snapshot built long
+before and never replaced.
+
+When the helper program was removed, a range deletion took `httpGetJson` and
+everything after it up to the next section comment: **eight functions**, not
+one. `sectorOf`, `quantise`, `distanceBracket`, `roundTo`, `plural`, `shuffle`,
+`haversineM` and `todayIso`. The translator calls `haversineM` on every herd.
+
+Why nothing caught it:
+
+* The panel still PARSED -- the functions were called, not declared, so it is
+  valid JavaScript right up until it runs.
+* The bench tests passed, because the harness defines its own `haversineM`.
+* The sim's console showed no error, because the failure happens inside a
+  message callback where the exception is swallowed.
+* With no animals nearby the code path never runs, so it looked fine.
+
+`probe/check_js.py` now reports any function called in the panel but defined
+nowhere. Verified both ways: silent on the current build, and it names all
+eight on the broken one.
+
+**Lesson: never delete by range.** Delete the named thing. And when a fault
+survives several fixes, stop fixing and instrument -- the heartbeat found in
+one flight what four builds of reasoning had not.
