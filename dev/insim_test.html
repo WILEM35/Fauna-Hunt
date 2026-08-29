@@ -40,7 +40,6 @@ function near(name, got, want, tol) {
 
 // The sim's variables, faked. Cockpit view, looking 30 degrees left of the nose.
 var CAMERA = { state: 2, pitch: 0, yaw: 30 };
-var CAM = { ok: false, h: 0, p: 0, fov: 0 };
 window.SimVar = {
 	GetSimVarValue: function (name) {
 		if (name === "CAMERA STATE") return CAMERA.state;
@@ -87,7 +86,6 @@ function reply(source, chunks) {
 			last: i === chunks.length - 1,
 			haveUser: true,
 			user: USER,
-			cam: CAM,
 			returned: HERD.length + ZEBRA.length + JUNK.length,
 			rows: chunks[i]
 		}));
@@ -177,7 +175,6 @@ try {
 	// mean flying AT an animal to identify it, which is not the game. So in VR
 	// the rule is switched off, and 2D keeps it exactly as it was.
 
-	CAM = { ok: true, h: 0, p: 59, fov: 1.5708, rotRef: 2 };
 	CAMERA.state = 2; CAMERA.yaw = 0; CAMERA.pitch = 0;
 
 	src.vr = true;
@@ -186,7 +183,6 @@ try {
 	check("VR: readout says so", src.snapshot.view_debug.using, "none");
 
 	// Looking nowhere near it, in VR, must still be identifiable.
-	CAM = { ok: true, h: 180, p: 0, fov: 1.5708, rotRef: 2 };
 	CAMERA.yaw = 180;
 	reply(src, [HERD]);
 	check("VR: looking away is still allowed",
@@ -213,7 +209,6 @@ try {
 	check("2D: outside the cockpit disables the rule",
 		src.snapshot.contacts[0].off_view_deg, null);
 	CAMERA.state = 2;
-	CAM = { ok: false, h: 0, p: 0, fov: 0 };
 
 	// A torn reply must be dropped, not shown half-built.
 	var before = src.snapshot.contacts.length;

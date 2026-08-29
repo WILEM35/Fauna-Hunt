@@ -11,6 +11,8 @@
   range, sharper as you close in - and it never tells you what
   the animal is. Working that out by looking at it is the game.
 
+  Works in 2D and in VR.
+
 
 ---------------------------------------------------------------
   WHAT YOU NEED
@@ -18,11 +20,11 @@
 
   * Microsoft Flight Simulator 2024
 
-  That is all. Nothing to install, no accounts, no internet.
+  That is all. Nothing to run, no accounts, no internet.
 
 
 ---------------------------------------------------------------
-  STEP 1 - INSTALL THE ADD-ON
+  INSTALL
 ---------------------------------------------------------------
 
   Inside this zip there is a folder called:
@@ -53,64 +55,22 @@
 
       Community\wilem35-fauna-hunt\manifest.json
       Community\wilem35-fauna-hunt\html_ui\...
-      Community\wilem35-fauna-hunt\Service\...
+      Community\wilem35-fauna-hunt\modules\...
 
   If you ended up with Community\wilem35-fauna-hunt\wilem35-fauna-hunt\
   you have gone one folder too deep - move it up a level.
 
-
----------------------------------------------------------------
-  STEP 2 - START THE HELPER
----------------------------------------------------------------
-
-  Fauna Hunt has a small helper program that reads animal
-  positions out of the simulator. It has to be running for
-  the game to work.
-
-  Go into the folder you just copied, open the "Service"
-  folder, and double-click:
-
-      FaunaHuntService.exe
-
-  Leave it where it is - do not drag it out to your desktop.
-  It needs the files sitting next to it in that folder.
-
-  A black window opens and says it is waiting for the
-  simulator. LEAVE THIS WINDOW OPEN while you fly.
-  Minimise it if it is in the way.
-
-  ** WINDOWS WILL WARN YOU THE FIRST TIME **
-
-  Because this is a small hobby program and not signed with
-  an expensive certificate, Windows shows a blue box saying
-  "Windows protected your PC".
-
-      Click "More info", then click "Run anyway".
-
-  Your antivirus may also flag it for the same reason. This
-  is normal for programs built this way. If you would rather
-  not, tell me and I will send you the plain source code to
-  run instead - it does exactly the same thing.
-
-  You can start this before or after the simulator - it
-  waits, and it reconnects on its own if you restart the sim.
-
-  It only talks to your own PC. Nothing is sent anywhere,
-  and no internet connection is needed.
+  Then start the simulator. That is the whole installation.
 
 
 ---------------------------------------------------------------
-  STEP 3 - PLAY
+  PLAY
 ---------------------------------------------------------------
 
   1. Start Flight Simulator 2024 and load a flight.
 
   2. In the toolbar at the top of the screen, click the paw
      print icon.
-
-     NOTE: the icon is currently very dark and is hard to see
-     at night. This is a known bug. It sits with the other
-     toolbar icons - hover along them and you will find it.
 
   3. Fly low and slow over open country. Animals only appear
      within a few kilometres of you near the ground, and much
@@ -130,6 +90,11 @@
   5. When you can actually SEE the animals out of the window,
      tap that line in the panel.
 
+     In a 2D cockpit view you have to be looking roughly at
+     them. In VR you can identify from any direction - the
+     simulator does not tell add-ons where your head is
+     pointing, so there is no way to check.
+
   6. You get four possible species. Pick the one you think it
      is. Getting it right first time is worth the most.
 
@@ -139,10 +104,13 @@
      - "I can't tell - show me" tells you the answer, but
        you score nothing.
 
-  7. The Lifelist tab tracks every species you have found,
-     out of all 107. Most of them are African, so a bush trip
-     over the Serengeti is worth far more than a lap of the
-     local farmland.
+  7. Once identified, fly within 150 m of the nearest animal
+     to CAPTURE it. That is worth the identification again,
+     and it is what gets you down among them.
+
+  8. The Lifelist tab tracks every species you have found,
+     out of all 107. Animals you have not found yet show
+     where in the world to look for them.
 
 
 ---------------------------------------------------------------
@@ -152,10 +120,17 @@
   Text size    Five sizes. Start on Medium. VR users will
                probably want Large or Extra Large.
 
+  Background   How much of the world shows through the panel.
+               Solid is the easiest to read in VR.
+
   Difficulty   Explorer  - details arrive early, easier
                Tracker   - the intended balance
                Expert    - you stay in the dark much longer,
                            but everything scores 50% more
+
+  Known        Whether a species you have already identified
+  species      is named on sight anywhere, or has to be
+               worked out again at every new herd.
 
   Reset        Wipes your score and lifelist. Cannot be undone.
 
@@ -171,22 +146,27 @@
   Anywhere with farmland will give you cattle, sheep and
   horses to practise on.
 
+  TIP: the simulator has its own setting for how many animals
+  it puts in the world - Graphics settings, "Fauna". Turning
+  it up gives you noticeably more to hunt. It is set
+  separately for normal and VR modes, so check both.
+
 
 ---------------------------------------------------------------
   IF SOMETHING IS WRONG
 ---------------------------------------------------------------
 
-  Panel says "Data service not running"
-     The black helper window is not open. Go back to Step 2.
-     If Windows blocked it, click "More info" then "Run anyway".
-
   Panel says "Waiting for the simulator"
-     Normal before a flight has loaded. It will connect by
-     itself once you are in the aircraft.
+     Normal before a flight has loaded. It fills in by itself
+     once you are in the aircraft.
+
+  Panel says "Add-on not fully installed"
+     Part of the folder did not copy. Delete it and copy the
+     whole thing across again, then restart the simulator.
 
   No paw print icon in the toolbar
-     The folder is in the wrong place. Check Step 1 again -
-     you should see manifest.json directly inside
+     The folder is in the wrong place. Check the install step
+     again - you should see manifest.json directly inside
      Community\wilem35-fauna-hunt\
 
   No animals anywhere
@@ -197,8 +177,12 @@
      That is genuinely all there is in most of Europe and
      North America. The interesting animals are in Africa.
 
+  Birds
+     There are none. The simulator keeps its flying animals
+     somewhere add-ons cannot reach.
+
 
 ---------------------------------------------------------------
 
-  This is a test build. Tell me what breaks, what is confusing,
-  and whether the difficulty feels right.
+  Tell me what breaks, what is confusing, and whether the
+  difficulty feels right.

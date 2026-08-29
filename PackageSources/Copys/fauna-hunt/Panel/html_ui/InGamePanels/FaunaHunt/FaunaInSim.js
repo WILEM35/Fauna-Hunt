@@ -9,10 +9,10 @@
 // produced, field for field. Everything downstream in the panel then works
 // untouched, and swapping data sources cannot change how the game plays.
 //
-// If you change a rule here, change it in Service/fauna_service.py too, or the
-// two sources will quietly disagree. That is the cost of keeping the helper
-// working as a fallback, and it is worth paying until the in-sim path has been
-// flown enough to trust.
+// The helper program it replaced has been removed, so this is the only source
+// of contacts. Its output still matches the shape the helper produced, because
+// the rest of the panel was written against that and there is no reason to
+// churn it.
 
 const INSIM_EVENT_POLL = "FaunaHunt.Poll";
 const INSIM_EVENT_DATA = "FaunaHunt.Data";
@@ -81,64 +81,25 @@ function round(value, places) {
 
 // -------------------------------------------------------------- view angle
 //
-// TWO sources, because neither covers both cases.
+// The "are you looking at it" rule is decided by ONE reading: the gameplay
+// pitch/yaw variables, in a 2D cockpit view. They are correct there, covering
+// mouse look, the built-in views and joystick-mapped views alike.
 //
-// 1. The module's camera reading. Used IN VR, where it is the only reading
-//    that can follow the headset.
-// 2. The gameplay pitch/yaw variables. These track the 2D camera perfectly,
-//    including custom and joystick-mapped views. But IN VR THEY ARE USELESS:
-//    tested in a headset, they report the aircraft's direction and take no
-//    notice of where the player's head is pointing. Fallback only.
+// Everywhere else the rule is switched OFF rather than replaced:
 //
-// Which one is used is decided by the MODE, not by which happens to be
-// available. 1.3.1 preferred the module's camera everywhere and broke 2D --
-// animals at 200 m dead ahead could not be identified. Getting this wrong is
-// worse than a crash: the "look at the animal" rule silently judges the wrong
-// direction, and the game just feels random.
+//   * IN VR, because the sim does not tell add-ons where the player's head is
+//     pointing. Every reading available -- these variables, and the camera call
+//     at all five of its reference points -- reports the AIRCRAFT. Proven by
+//     turning the helicopter 90 degrees while looking at the same animals
+//     throughout: the answer moved with the nose and ignored the head. Gating
+//     on the nose would mean flying AT an animal to identify it, which is not
+//     the game.
+//   * In external and drone views, because there is no reading at all.
+//
+// A rule the player cannot see, steering by the wrong thing, is worse than no
+// rule. So when we cannot tell where they are looking, we do not pretend to.
 
 const CAMERA_STATE_COCKPIT = 2;
-
-// The field of view is the only value that arrives in radians.
-const RADIANS_IF_FOV_BELOW = 6.3;
-
-// What the camera reports, measured in the sim rather than assumed. Two
-// surprises, both of which produced nonsense while they were being guessed at:
-//
-//   * The field of view is in RADIANS but the angles are in DEGREES. Reading
-//     all three as one unit turned a 23 degree pitch into 1341, and geometry
-//     built on that is meaningless -- which is why VR behaved randomly rather
-//     than merely being offset.
-//   * The heading is measured FROM THE NOSE even though the reading claims to
-//     be world-referenced. So the referential it reports cannot be trusted,
-//     and is deliberately ignored.
-//
-// Both were settled by taking a 2D reading beside the known-good one: aircraft
-// on 331.6, view on 331.6, camera reporting 0.31. That is straight ahead in
-// degrees and nothing else.
-function readModuleView(cam, aircraftHeading) {
-	if (!cam || !cam.ok) return null;
-	if (typeof cam.fov !== "number" || cam.fov <= 0) return null;
-	if (typeof aircraftHeading !== "number") return null;
-
-	const fov = cam.fov <= RADIANS_IF_FOV_BELOW ? cam.fov * 180 / Math.PI : cam.fov;
-	// An absurd field of view means the reading is not what we think it is,
-	// and a wrong view direction is worse than none.
-	if (fov < 20 || fov > 170) return null;
-	// Degrees, so these stay small. Anything larger means the same thing.
-	if (Math.abs(cam.p) > 180 || Math.abs(cam.h) > 360) return null;
-
-	return {
-		heading: (((aircraftHeading + cam.h) % 360) + 360) % 360,
-		// Positive reads as nose-down, matching the sim's own convention for
-		// aircraft pitch, so it is flipped to the "positive is up" this file
-		// works in. UNCONFIRMED: needs a reading taken while looking clearly
-		// down at the ground.
-		pitch: -cam.p,
-		fov: fov,
-		source: "module",
-		rotRef: cam.rotRef,
-	};
-}
 
 // Whether the player is in a headset. The gameplay pitch/yaw variables are
 // perfect in 2D and useless in VR, so this decides which reading to trust
@@ -311,7 +272,6 @@ class FaunaInSimSource {
 		//
 		// Preferring the module everywhere broke 2D in 1.3.1, so the choice is
 		// made by which mode the player is in, not by which reading exists.
-		const moduleView = readModuleView(head.cam, user.hdg);
 		const varView = readView(user.hdg);
 		const vr = (this.vr === null || this.vr === undefined) ? inVrMode : this.vr;
 		// IN VR THERE IS NO VIEW RULE. The sim does not tell add-ons where the
@@ -334,18 +294,8 @@ class FaunaInSimSource {
 		const view = vr ? null : varView;
 		const fovDeg = (view && view.fov) || ASSUMED_FOV_DEG;
 
-		// Kept so the panel can show what it is actually steering by. Working
-		// this out by guessing has cost two flights already.
-		this.viewDebug = {
-			vr: vr,
-			using: view ? (view.source || "variables") : "none",
-			cam: head.cam || null,
-			refs: head.refs || null,
-			viewHeading: view ? round(view.heading, 1) : null,
-			viewPitch: view ? round(view.pitch, 1) : null,
-			aircraftHeading: round(user.hdg, 1),
-			fov: round(fovDeg, 1),
-		};
+		this.viewDebug = { using: view ? (view.source || "variables") : "none" };
+
 		const byRoot = {};
 		kept.forEach((m) => {
 			(byRoot[m.root] = byRoot[m.root] || []).push(m);

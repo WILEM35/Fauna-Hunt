@@ -14,45 +14,43 @@ species. Working out what you are looking at is the game.
 
 ## Installing
 
-Grab the latest zip from [Releases](../../releases) and follow the README
-inside. Short version: copy the `wilem35-fauna-hunt` folder into your MSFS
-Community folder, run `Service\FaunaHuntService.exe`, and open the paw print
-icon in the sim's toolbar.
+Grab the latest zip from [Releases](../../releases), copy the
+`wilem35-fauna-hunt` folder into your MSFS Community folder, and start the sim.
+Open the paw print icon in the toolbar.
 
-## Is it safe?
+That is the whole installation. Nothing to run, no executable, no accounts, no
+internet. The download is under a tenth of a megabyte.
 
-The helper program is not code-signed, so Windows SmartScreen will warn you the
-first time you run it. That is what happens to any unsigned hobby program; it
-is not a judgement about the file.
-
-If you would rather not trust the executable, don't — everything it does is in
-this repository, and you can run the Python source directly instead:
-
-```
-cd wilem35-fauna-hunt\Service
-python fauna_service.py
-```
-
-Both do exactly the same thing. The service opens a socket on `127.0.0.1`,
-reads animal positions out of the simulator through SimConnect, and serves them
-to the panel. It makes no internet connections and writes nothing outside its
-own folder.
+Works in 2D and in VR.
 
 ## How it works
 
-Three pieces:
+Two pieces, both inside the simulator:
 
 ```
   toolbar panel (HTML/JS)      UI, range fuzzing, scoring, lifelist
-            |  HTTP on 127.0.0.1
-  data service (Python)        SimConnect polling, herd grouping, filtering
+            |  CommBus
+  module (WebAssembly)         asks the sim what animals are nearby
             |  SimConnect
   the simulator
 ```
 
-The service sends the panel *exact* positions. All of the deliberate vagueness
-is applied in the panel, in `describeContact()`, so difficulty can be retuned
-without touching the service or the sim.
+The module hands over exact positions and does nothing else. All of the
+deliberate vagueness is applied in the panel, in `describeContact()`, so
+difficulty can be retuned by editing one file.
+
+Up to version 1.2.2 this needed a separate program running alongside the sim,
+because the call that finds animals cannot be made from a panel. It can be made
+from a module inside the sim, which is what 2.0.0 does — and that removed the
+executable, the antivirus warnings, and 20 MB of bundled Python runtime.
+
+### Building it
+
+No Visual Studio needed: the MSFS SDK ships its own compiler. `build.ps1` does
+everything. Four linker settings are load-bearing and fail *silently* if wrong
+— they are documented in `wasm/build-wasm.ps1`, and the one that cost the most
+time is that a module must export `malloc` and `free` or the sim refuses to
+load it, reporting nothing except one line in the developer console.
 
 ### Things learned the hard way
 
@@ -98,11 +96,12 @@ already running.
 
 ```
 PackageSources/Copys/fauna-hunt/Panel/     the toolbar panel
-PackageSources/Copys/fauna-hunt/Service/   the data service
+PackageSources/Copys/fauna-hunt/Modules/   the compiled module
+wasm/                                      the module's source and build
 PackageSources/SPBs/                       toolbar registration
 probe/                                     recon tools used to work out how
                                            the sim reports fauna
-dev/                                       browser test harness for the panel
+dev/                                       browser tests for the panel
 ```
 
 ## Licence

@@ -3,7 +3,7 @@
 # Layout:
 #   C:\Tools\fauna-hunt                      working folder, all source lives here
 #     PackageSources\Copys\...\Panel         the panel (canonical -- edit in place)
-#     PackageSources\Copys\...\Service       the Python service, shipped in the package
+#     wasm\fauna_module.cpp                   the module that reads the sim
 #     probe\                                 dev-only recon tools, never shipped
 #     dev\                                   dev-only test harness, never shipped
 #   C:\FS2020\Add-ons\Utilities\wilem35-fauna-hunt
@@ -45,25 +45,8 @@ if (-not (Test-Path $PackageTool)) {
 Get-ChildItem -Path "$ProjectDir\PackageSources" -Filter "__pycache__" -Recurse -Directory -ErrorAction SilentlyContinue |
     ForEach-Object { Remove-Item $_.FullName -Recurse -Force }
 
-# The service ships as a compiled exe. Nothing here used to rebuild it, so a
-# change to fauna_service.py shipped as source only and the exe silently stayed
-# behind -- which is how a crash on the very first animal reached a release.
-$serviceDir = "$ProjectDir\PackageSources\Copys\fauna-hunt\Service"
-$exe = "$serviceDir\FaunaHuntService.exe"
-$newestSource = Get-ChildItem "$serviceDir\*.py", "$serviceDir\species.json" -ErrorAction SilentlyContinue |
-    Sort-Object LastWriteTime -Descending | Select-Object -First 1
-if ($newestSource -and (-not (Test-Path $exe) -or
-        $newestSource.LastWriteTime -gt (Get-Item $exe).LastWriteTime)) {
-    Write-Host "Service source is newer than the exe - rebuilding it first..." -ForegroundColor Yellow
-    & "$ProjectDir\build-service-exe.ps1"
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "Service exe rebuild failed." -ForegroundColor Red
-        exit 1
-    }
-}
-
-# The panel carries its own copy of the species table now, so it works without
-# the helper program. Regenerated every build so the two can never drift.
+# The panel carries its own copy of the species table. Regenerated every
+# build so it can never drift from data/species.json.
 Write-Host "Generating the panel's species table..." -ForegroundColor Cyan
 & python "$ProjectDir\probe\make_species_js.py"
 if ($LASTEXITCODE -ne 0) {
@@ -71,9 +54,6 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# A syntax error in ANY panel script takes the whole panel down -- the sim
-# shows bare tabs and a zero score, which reads as lost save data rather
-# than a broken build. Nothing checked this until one shipped.
 Write-Host "Checking the panel scripts..." -ForegroundColor Cyan
 & python "$ProjectDir\probe\check_js.py"
 if ($LASTEXITCODE -ne 0) {
@@ -126,36 +106,18 @@ if (Test-Path $spb) {
     $problems++
 }
 
-# The exe, the DLL and the species table are what a tester actually needs --
-# none of them have Python or the MSFS SDK installed.
-foreach ($needed in @("Service\FaunaHuntService.exe", "Service\SimConnect.dll",
-                      "Service\species.json", "modules\FaunaHunt.wasm",
+# What a player actually needs: the module that reads the sim, and the panel
+# that shows it. There is no program to run any more.
+foreach ($needed in @("modules\FaunaHunt.wasm",
                       "html_ui\InGamePanels\FaunaHunt\FaunaSpeciesData.js",
-                      "html_ui\InGamePanels\FaunaHunt\FaunaInSim.js")) {
+                      "html_ui\InGamePanels\FaunaHunt\FaunaInSim.js",
+                      "html_ui\InGamePanels\FaunaHunt\FaunaHunt.js")) {
     if (Test-Path (Join-Path $BuiltPkg $needed)) {
         Write-Host "Included: $needed" -ForegroundColor Green
     } else {
         Write-Host "WARNING: missing from package: $needed" -ForegroundColor Yellow
         $problems++
     }
-}
-
-# The delivered folder holds a running-able exe. If a copy of the service is
-# running from there it locks the file, and robocopy's DEFAULT behaviour is a
-# million retries thirty seconds apart -- so the script appears to hang forever
-# rather than failing. Check first, and cap the retries regardless.
-$svc = Get-Process -Name "FaunaHuntService" -ErrorAction SilentlyContinue
-if ($svc) {
-    # It only reads the sim and serves the panel, so closing it costs nothing
-    # but a restart -- and leaving it running silently blocks the whole build.
-    Write-Host "Closing $($svc.Count) running FaunaHuntService instance(s)..." -ForegroundColor Yellow
-    Stop-Process -Name "FaunaHuntService" -Force -ErrorAction SilentlyContinue
-    Start-Sleep -Seconds 2
-    if (Get-Process -Name "FaunaHuntService" -ErrorAction SilentlyContinue) {
-        Write-Host "Could not close it. Close the window by hand and re-run." -ForegroundColor Red
-        exit 1
-    }
-    Write-Host "  closed - restart it after the build" -ForegroundColor Yellow
 }
 
 Write-Host "Delivering to $DeliverTo ..." -ForegroundColor Cyan
@@ -174,8 +136,6 @@ if ($problems -eq 0) {
     Write-Host "Delivered with $problems warning(s):" -ForegroundColor Yellow
 }
 Write-Host "  $DeliverTo"
-Write-Host "Run the service from:" -ForegroundColor Green
-Write-Host "  $DeliverTo\Service\fauna_service.py"
 Write-Host ""
 Write-Host "Link it with Add-on Linker if it is not linked already, then FULLY" -ForegroundColor Yellow
 Write-Host "close and reopen the sim (the SDK build breaks the next launch)." -ForegroundColor Yellow

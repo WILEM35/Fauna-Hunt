@@ -460,3 +460,38 @@ identification is now range-only.
 * Remove the View direction readout from Settings -- it was for diagnosis.
 * Remove the "service not running" message and the Service address setting.
 * Delete `wilem35-fauna-probe`.
+
+## 2.0.0 -- the helper is gone
+
+The package is now nine files and 0.27 MB, down from 20.2 MB. No executable, no
+bundled Python runtime, nothing to run. Install is one folder copy.
+
+Removed in this pass:
+
+* The helper program and everything that built, shipped or referenced it.
+* The View direction readout, which existed to settle the VR question.
+* The "service not running" message and the Service address setting.
+* The probe add-on.
+
+The tester README lost its longest section -- "start the helper", the
+SmartScreen warning, and the offer to send plain source instead.
+
+**Caught during cleanup: deleting the Service folder also deleted
+`species.json`, the source of all 107 species.** The generated copy in the
+panel was fine, so nothing broke visibly -- the next build would have failed
+instead. Restored from git to `data/species.json`, which is where it should
+always have been: it is data the game is built from, not part of the helper.
+
+Also caught: the earlier surgery on `build.ps1` had silently removed the
+species-generation step, so the table would have gone stale without warning.
+Restored and verified by a full rebuild.
+
+### Still open
+
+* Push to GitHub -- 20-odd commits behind, and the repo still carries the
+  helper's bundled Python runtime in its history.
+* An old `fauna-hunt` source folder is still sitting in the Utilities folder
+  from 26 Aug. Not linked, no manifest, so the sim ignores it -- but it does
+  not belong there.
+* Add-on Linker still has a link for `wilem35-fauna-probe`, whose target is
+  deleted. Needs unlinking by hand.

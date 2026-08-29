@@ -24,7 +24,6 @@
 
 #include <MSFS/MSFS.h>
 #include <MSFS/MSFS_WindowsTypes.h>
-#include <MSFS/MSFS_Camera.h>
 #include <MSFS/MSFS_CommBus.h>
 #include <SimConnect.h>
 
@@ -69,48 +68,6 @@ static bool g_haveUser = false;
 static int  g_returned = 0;      // how many the sim offered, before our cap
 
 static char g_out[CHUNK_CHARS + 1024];
-
-// The camera reading, kept only for the diagnostic readout in Settings.
-//
-// It does NOT give the player's head direction. Every referential this call
-// offers was sampled side by side in a headset and all five follow the
-// AIRCRAFT. Proven by turning the helicopter 90 degrees while looking at the
-// same animals throughout: the answer moved with the nose.
-//
-// The field of view arrives in radians while the angles arrive in degrees, and
-// the heading is measured from the nose regardless of what referential the
-// reading claims. Reported raw; the panel does the interpreting.
-static bool   g_camOk = false;
-static double g_camH = 0.0;
-static double g_camP = 0.0;
-static double g_camFov = 0.0;
-static int    g_camRotRef = 0;
-static int    g_camPosRef = 0;
-
-// Kept only for the diagnostic readout. NOT used for the view rule in VR:
-// every referential this call offers -- none, aircraft, world, eyepoint,
-// datum -- was sampled side by side in a headset and all five follow the
-// AIRCRAFT, not the head.
-static void read_camera()
-{
-    FsCameraData cam;
-    if (fsCameraGet(FS_POSITION_REFERENTIAL_WORLD, &cam)) {
-        g_camOk = true;
-        g_camH = cam.pbh.h;
-        g_camP = cam.pbh.p;
-        g_camFov = cam.fov;
-        // The referential says what the angles are measured AGAINST, and it is
-        // not necessarily the one asked for: the argument above sets the
-        // POSITION referential, while rotation reports its own. Sent on so the
-        // panel can tell an absolute heading from one relative to the aircraft
-        // -- getting that wrong points the view rule in a direction that is
-        // wrong by the aircraft's heading, which reads as "randomly broken".
-        g_camRotRef = (int)cam.rotationReferential;
-        g_camPosRef = (int)cam.positionReferential;
-    } else {
-        g_camOk = false;
-    }
-}
 
 static void reset_batch()
 {
@@ -176,13 +133,9 @@ static void send_chunk(int seq, bool last, const char* rows)
     int n = snprintf(g_out, sizeof(g_out),
         "{\"seq\":%d,\"last\":%s,\"haveUser\":%s,"
         "\"user\":{\"lat\":%.7f,\"lon\":%.7f,\"alt_ft\":%.1f,\"hdg\":%.2f,\"gs_kt\":%.1f},"
-        "\"cam\":{\"ok\":%s,\"h\":%.4f,\"p\":%.4f,\"fov\":%.4f,"
-        "\"rotRef\":%d,\"posRef\":%d},"
         "\"returned\":%d,\"rows\":[%s]}",
         seq, last ? "true" : "false", g_haveUser ? "true" : "false",
         g_user.lat, g_user.lon, g_user.alt, g_user.hdg, g_user.gs,
-        g_camOk ? "true" : "false", g_camH, g_camP, g_camFov,
-        g_camRotRef, g_camPosRef,
         g_returned, rows);
     if (n > 0) {
         fsCommBusCall("FaunaHunt.Data", g_out, (unsigned int)strlen(g_out) + 1,
@@ -233,7 +186,6 @@ static void onPoll(const char*, unsigned int, void*)
 
     // Collect what the PREVIOUS poll asked for, report it, then ask again.
     drain();
-    read_camera();
     emit();
 
     SimConnect_RequestDataOnSimObjectType(g_sim, REQ_USER, DEF_ALL, 0,

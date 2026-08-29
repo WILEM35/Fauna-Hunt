@@ -17,15 +17,14 @@ import json
 import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SRC = os.path.join(HERE, os.pardir, "PackageSources", "Copys", "fauna-hunt",
-                   "Service", "species.json")
+SRC = os.path.join(HERE, os.pardir, "data", "species.json")
 DST = os.path.join(HERE, os.pardir, "PackageSources", "Copys", "fauna-hunt",
                    "Panel", "html_ui", "InGamePanels", "FaunaHunt",
                    "FaunaSpeciesData.js")
 
 HEADER = """// GENERATED FILE -- DO NOT EDIT.
 //
-// Built from Service/species.json by probe/make_species_js.py, which build.ps1
+// Built from data/species.json by probe/make_species_js.py, which build.ps1
 // runs on every build. Edit the JSON, not this.
 //
 // The panel needs the species table without the helper program to serve it.

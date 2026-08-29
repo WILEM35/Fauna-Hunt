@@ -1,6 +1,6 @@
 // GENERATED FILE -- DO NOT EDIT.
 //
-// Built from Service/species.json by probe/make_species_js.py, which build.ps1
+// Built from data/species.json by probe/make_species_js.py, which build.ps1
 // runs on every build. Edit the JSON, not this.
 //
 // The panel needs the species table without the helper program to serve it.

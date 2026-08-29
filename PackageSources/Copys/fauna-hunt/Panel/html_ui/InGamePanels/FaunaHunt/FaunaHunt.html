@@ -42,9 +42,8 @@
 
 					<div id="alert" class="alert hidden"></div>
 					<div id="offline" class="offline hidden">
-						<p class="offline-title">Data service not running</p>
-						<p class="offline-body">Start it in a terminal, then this panel connects on its own.</p>
-						<code class="offline-cmd">python fauna_service.py</code>
+						<p class="offline-title">Waiting for the simulator</p>
+						<p class="offline-body">Load a flight and this fills in on its own.</p>
 					</div>
 
 					<!-- ---------------------------------------------------- hunt -->
@@ -87,16 +86,6 @@
 							<label class="setting-label">Known species</label>
 							<div id="recognitionRow" class="seg"></div>
 							<p id="recognitionBlurb" class="setting-blurb"></p>
-						</div>
-						<div class="setting">
-							<label class="setting-label">Service address</label>
-							<input type="text" id="serviceUrl" class="text-input" spellcheck="false"/>
-							<p class="setting-blurb">Change only if you started the service on a different port.</p>
-						</div>
-						<div class="setting">
-							<label class="setting-label">View direction</label>
-							<pre id="viewDebug" class="debug-box">waiting...</pre>
-							<p class="setting-blurb">What the "are you looking at it" rule is steering by. Here so a wrong reading can be seen rather than guessed at.</p>
 						</div>
 						<div class="setting">
 							<label class="setting-label">Lifelist</label>

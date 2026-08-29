@@ -15,7 +15,6 @@
 
 const STORAGE_KEY = "FaunaHunt_State_v1";
 const POLL_INTERVAL_MS = 1000;
-const DEFAULT_SERVICE_URL = "http://127.0.0.1:8760";
 
 // How close you have to be before a contact can be identified at all.
 const IDENTIFY_RANGE_M = 1200;
@@ -151,89 +150,6 @@ const REGION_ORDER = ["Global", "Europe", "Africa", "Asia", "N.America",
 
 // ------------------------------------------------------------- utilities
 
-function httpGetJson(url, onOk, onFail) {
-	// XMLHttpRequest rather than fetch: it is the more reliable of the two
-	// inside the sim's Coherent browser.
-	let request;
-	try {
-		request = new XMLHttpRequest();
-	} catch (err) {
-		onFail(err);
-		return;
-	}
-	request.open("GET", url, true);
-	request.timeout = 3000;
-	request.onreadystatechange = () => {
-		if (request.readyState !== 4) return;
-		if (request.status >= 200 && request.status < 300) {
-			try {
-				onOk(JSON.parse(request.responseText));
-			} catch (err) {
-				onFail(err);
-			}
-		} else {
-			onFail(new Error("HTTP " + request.status));
-		}
-	};
-	request.ontimeout = () => onFail(new Error("timeout"));
-	request.onerror = () => onFail(new Error("unreachable"));
-	try {
-		request.send();
-	} catch (err) {
-		onFail(err);
-	}
-}
-
-function sectorOf(bearing) {
-	return SECTORS[Math.round(bearing / 45) % 8];
-}
-
-function quantise(value, step) {
-	return Math.round(value / step) * step;
-}
-
-function distanceBracket(metres) {
-	if (metres < 1000) {
-		const low = Math.floor(metres / 250) * 250;
-		return low + " to " + (low + 250) + " m";
-	}
-	const km = metres / 1000;
-	return Math.floor(km) + " to " + Math.ceil(km === Math.floor(km) ? km + 1 : km) + " km";
-}
-
-function roundTo(value, step) {
-	return Math.round(value / step) * step;
-}
-
-function plural(count, one, many) {
-	return count === 1 ? one : many;
-}
-
-function shuffle(list) {
-	const out = list.slice();
-	for (let i = out.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		const swap = out[i];
-		out[i] = out[j];
-		out[j] = swap;
-	}
-	return out;
-}
-
-function haversineM(lat1, lon1, lat2, lon2) {
-	const toRad = Math.PI / 180;
-	const p1 = lat1 * toRad, p2 = lat2 * toRad;
-	const dp = p2 - p1;
-	const dl = (lon2 - lon1) * toRad;
-	const a = Math.sin(dp / 2) * Math.sin(dp / 2)
-		+ Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) * Math.sin(dl / 2);
-	return 2 * EARTH_RADIUS_M * Math.asin(Math.min(1, Math.sqrt(a)));
-}
-
-function todayIso() {
-	return new Date().toISOString().slice(0, 10);
-}
-
 // --------------------------------------------------------------- element
 
 class IngamePanelFaunaHunt extends TemplateElement {
@@ -245,7 +161,6 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			textSize: DEFAULT_TEXT_SIZE,
 			background: DEFAULT_BACKGROUND,
 			recognition: DEFAULT_RECOGNITION,
-			serviceUrl: DEFAULT_SERVICE_URL,
 			lifelist: {},   // species root -> { first, lat, lon, best, count }
 			logged: {},     // contact key -> {species, lat, lon} once identified
 			captured: {},   // contact key -> true once you got close enough
@@ -312,7 +227,6 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			offline: pick("offline"),
 			offlineTitle: this.querySelector(".offline-title"),
 			offlineBody: this.querySelector(".offline-body"),
-			offlineCmd: this.querySelector(".offline-cmd"),
 			viewHunt: pick("viewHunt"),
 			viewLifelist: pick("viewLifelist"),
 			viewSettings: pick("viewSettings"),
@@ -329,9 +243,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			backgroundRow: pick("backgroundRow"),
 			recognitionRow: pick("recognitionRow"),
 			recognitionBlurb: pick("recognitionBlurb"),
-			serviceUrl: pick("serviceUrl"),
 			resetBtn: pick("resetBtn"),
-			viewDebug: pick("viewDebug"),
 			quizOverlay: pick("quizOverlay"),
 			quizPrompt: pick("quizPrompt"),
 			quizOptions: pick("quizOptions"),
@@ -374,14 +286,6 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.nodes.quizCancel.addEventListener("click", () => this.cancelQuiz());
 		this.nodes.resultClose.addEventListener("click", () => {
 			this.nodes.resultOverlay.classList.add("hidden");
-		});
-		this.nodes.serviceUrl.addEventListener("change", () => {
-			const value = this.nodes.serviceUrl.value.trim().replace(/\/+$/, "");
-			this.state.serviceUrl = value || DEFAULT_SERVICE_URL;
-			this.nodes.serviceUrl.value = this.state.serviceUrl;
-			this.species = null;
-			this.saveState();
-			this.fetchSpecies();
 		});
 		this.nodes.resetBtn.addEventListener("click", () => this.handleReset());
 	}
@@ -455,9 +359,6 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		if (!this.state.captured) this.state.captured = {};
 		if (!this.state.lifelist) this.state.lifelist = {};
 		if (!this.state.logged) this.state.logged = {};
-		if (this.nodes && this.nodes.serviceUrl) {
-			this.nodes.serviceUrl.value = this.state.serviceUrl;
-		}
 	}
 
 	// Only reached when a retry found data after the panel had already drawn
@@ -497,40 +398,27 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		if (!this.inSim.start()) this.inSim = null;
 	}
 
+	// The species table ships with the panel, so it is simply read.
 	fetchSpecies() {
-		// The table ships with the panel now. Reading it locally means the
-		// lifelist works before any data source has answered -- and the fetch
-		// below is only still here for installs running the old helper.
-		if (typeof FAUNA_SPECIES_DATA !== "undefined" && FAUNA_SPECIES_DATA) {
-			this.species = FAUNA_SPECIES_DATA.species || {};
-			if (this.view === "lifelist") this.renderLifelist();
-			return;
-		}
-		httpGetJson(this.state.serviceUrl + "/species",
-			(data) => {
-				this.species = data.species || {};
-				if (this.view === "lifelist") this.renderLifelist();
-			},
-			() => { this.species = null; });
+		this.species = (typeof FAUNA_SPECIES_DATA !== "undefined" && FAUNA_SPECIES_DATA)
+			? (FAUNA_SPECIES_DATA.species || {})
+			: null;
+		if (this.view === "lifelist") this.renderLifelist();
 	}
 
 	poll() {
-		// Ask the in-sim module first. It only takes over once it has actually
-		// answered, so a broken or missing module costs nothing.
-		if (this.inSim) {
-			this.inSim.poll();
-			if (this.inSim.available && this.inSim.snapshot) {
-				this.applySnapshot(this.inSim.snapshot);
-				return;
-			}
+		if (!this.inSim) {
+			this.setStatus("nomodule");
+			this.updateStatusLine();
+			return;
 		}
-		httpGetJson(this.state.serviceUrl + "/contacts",
-			(data) => this.applySnapshot(data),
-			() => {
-				this.snapshot = null;
-				this.setStatus("noservice");
-				this.updateStatusLine();
-			});
+		this.inSim.poll();
+		if (this.inSim.available && this.inSim.snapshot) {
+			this.applySnapshot(this.inSim.snapshot);
+		} else {
+			this.setStatus("nosim");
+			this.updateStatusLine();
+		}
 	}
 
 	applySnapshot(data) {
@@ -545,50 +433,6 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.renderAlert(contacts);
 		if (this.view === "hunt") this.renderHunt();
 		this.updateStatusLine();
-		this.renderViewDebug();
-	}
-
-	// Shows what the view rule is actually steering by. Two flights have been
-	// spent guessing at this; the numbers are cheaper.
-	renderViewDebug() {
-		const box = this.nodes.viewDebug;
-		if (!box) return;
-		const d = this.snapshot && this.snapshot.view_debug;
-		if (!d) {
-			box.textContent = this.snapshot && this.snapshot.source === "insim"
-				? "no reading yet"
-				: "helper app in use (no module)";
-			return;
-		}
-		const nearest = (this.snapshot.contacts || [])[0];
-		const cam = d.cam || {};
-		box.textContent = [
-			"mode      " + (d.vr ? "VR" : "2D") + "   using: " + d.using,
-			"view      heading " + d.viewHeading + "   pitch " + d.viewPitch,
-			"aircraft  heading " + d.aircraftHeading + "   fov " + d.fov,
-			"camera    ok=" + (cam.ok === true) + " h=" + cam.h + " p=" + cam.p
-				+ " fov=" + cam.fov + " rotRef=" + cam.rotRef,
-			nearest
-				? "nearest   bearing " + nearest.bearing_deg + "   off view "
-					+ nearest.off_view_deg + "   (cone " + this.snapshot.view_cone_deg + ")"
-				: "nearest   none",
-			this.refsLine(d.refs),
-		].join("\n");
-	}
-
-	// Every reference point the camera call offers, side by side. Asked for
-	// the world it returns the AIRCRAFT's direction, not the headset's. If any
-	// of these follows the head, its numbers will move when you look around
-	// without turning the aircraft -- and that one becomes the VR reading.
-	refsLine(refs) {
-		if (!refs || !refs.length) return "refs      none";
-		const names = ["none", "aircraft", "world", "eyepoint", "datum"];
-		const parts = [];
-		for (let i = 0; i < refs.length; i++) {
-			const r = refs[i];
-			parts.push(names[i] + (r[0] ? " h" + r[1] + " p" + r[2] : " --"));
-		}
-		return "refs      " + parts.join("  ");
 	}
 
 	setStatus(status) {
@@ -600,13 +444,13 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		if (status === "nosim") {
 			this.nodes.offlineTitle.textContent = "Waiting for the simulator";
 			this.nodes.offlineBody.textContent =
-				"The data service is running. Contacts appear once you are in a flight.";
-			this.nodes.offlineCmd.classList.add("hidden");
-		} else if (status === "noservice") {
-			this.nodes.offlineTitle.textContent = "Data service not running";
+				"Load a flight and contacts appear on their own.";
+		} else if (status === "nomodule") {
+			// Only reachable if the add-on is half-installed: the panel is
+			// there but the part that reads the sim is not.
+			this.nodes.offlineTitle.textContent = "Add-on not fully installed";
 			this.nodes.offlineBody.textContent =
-				"Start it in a terminal, then this panel connects on its own.";
-			this.nodes.offlineCmd.classList.remove("hidden");
+				"Reinstall Fauna Hunt, then restart the simulator.";
 		}
 	}
 

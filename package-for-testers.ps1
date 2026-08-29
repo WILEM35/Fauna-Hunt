@@ -34,11 +34,10 @@ if (-not (Test-Path $Delivered)) {
     exit 1
 }
 
-# The service must be in the delivered copy, or testers get a game with no
-# data behind it.
-foreach ($needed in @("manifest.json", "Service\FaunaHuntService.exe",
-                      "Service\SimConnect.dll", "Service\species.json",
-                      "InGamePanels\InGamePanel_FaunaHunt.spb")) {
+# The module and the panel are the whole add-on now. There is no program.
+foreach ($needed in @("manifest.json", "modules\FaunaHunt.wasm",
+                      "InGamePanels\InGamePanel_FaunaHunt.spb",
+                      "html_ui\InGamePanels\FaunaHunt\FaunaHunt.js")) {
     if (-not (Test-Path (Join-Path $Delivered $needed))) {
         Write-Host "Delivered package is missing $needed - rebuild first." -ForegroundColor Red
         exit 1
@@ -47,24 +46,6 @@ foreach ($needed in @("manifest.json", "Service\FaunaHuntService.exe",
 
 if (Test-Path $Staging) { Remove-Item $Staging -Recurse -Force }
 New-Item -ItemType Directory -Path $Staging -Force | Out-Null
-
-# The delivered folder holds a running-able exe. If a copy of the service is
-# running from there it locks the file, and robocopy's DEFAULT behaviour is a
-# million retries thirty seconds apart -- so the script appears to hang forever
-# rather than failing. Check first, and cap the retries regardless.
-$svc = Get-Process -Name "FaunaHuntService" -ErrorAction SilentlyContinue
-if ($svc) {
-    # It only reads the sim and serves the panel, so closing it costs nothing
-    # but a restart -- and leaving it running silently blocks the whole build.
-    Write-Host "Closing $($svc.Count) running FaunaHuntService instance(s)..." -ForegroundColor Yellow
-    Stop-Process -Name "FaunaHuntService" -Force -ErrorAction SilentlyContinue
-    Start-Sleep -Seconds 2
-    if (Get-Process -Name "FaunaHuntService" -ErrorAction SilentlyContinue) {
-        Write-Host "Could not close it. Close the window by hand and re-run." -ForegroundColor Red
-        exit 1
-    }
-    Write-Host "  closed - restart it after the build" -ForegroundColor Yellow
-}
 
 Write-Host "Staging..." -ForegroundColor Cyan
 Copy-Item $Readme (Join-Path $Staging "README - Read Me First.txt") -Force
