@@ -764,3 +764,27 @@ no icon at all.
 The version that works is a single neutral four-legged silhouette drawn at four
 sizes, so it says "this big" without saying "this animal". That is honest, and
 it is genuinely faster to read at a glance.
+
+## 2.1.3 -- size silhouettes and the sort toggle
+
+**Silhouette.** One neutral four-legged shape at four sizes, stacked under the
+arrow in a single left-hand column. Deliberately not a recognisable species:
+naming the animal is the one thing the game must not do, and a bear outline
+against an elephant would be a wrong answer given away for free.
+
+Two columns of furniture was too many -- rendered at the default text size in a
+430 px panel, "very large animal, 5 of them" wrapped to three lines. Stacking
+the arrow and silhouette into one column gave the words their width back.
+Checked by rendering the real markup and CSS in a browser and looking at it,
+rather than guessing.
+
+**Sort toggle**, in the bar above the list: Nearest, or Ahead.
+
+Ahead lifts the 180-degree arc in front of the nose to the top of the list. It
+SORTS rather than hides -- something legendary behind you should never silently
+disappear, it just stops being first. Measured against the aircraft, not the
+view: it is the flight path that decides whether a contact is worth turning
+for, and the view is unavailable in VR anyway.
+
+Choosing a sort releases the list hold, since reordering is exactly what was
+just asked for.

@@ -16,7 +16,7 @@
 // Rewritten by build.ps1 from the package version, so it cannot drift.
 // Shown in Settings: without it there is no way to tell which build is
 // actually running, and a stale one looks exactly like a bug that will not die.
-const PANEL_VERSION = "2.1.2";
+const PANEL_VERSION = "2.1.3";
 
 const STORAGE_KEY = "FaunaHunt_State_v1";
 const POLL_INTERVAL_MS = 1000;
@@ -38,6 +38,17 @@ const LIST_HOLD_MS = 4000;
 // pointers jitter constantly, so this only expires once the pointer has
 // genuinely gone -- or has stopped telling us it is there.
 const POINTER_STUCK_MS = 2500;
+
+// How the contact list is ordered. In a helicopter anything is reachable, so
+// nearest is right. In an aeroplane a contact behind you means a circuit, and
+// by the time you are back the herd has moved -- so "ahead" lifts the
+// 180-degree arc in front of the nose to the top. It SORTS rather than hides:
+// something legendary behind you should never silently disappear.
+const SORT_MODES = {
+	near:  { label: "Nearest", blurb: "closest first" },
+	ahead: { label: "Ahead",   blurb: "what you can fly at without turning" },
+};
+const DEFAULT_SORT = "near";
 // The sim's stored data is not always readable the instant a panel opens.
 // Keep looking for this long before concluding that nothing is saved.
 const LOAD_RETRIES = 12;
@@ -147,6 +158,11 @@ const ALERT_TIER = "legendary";
 const SECTORS = ["north", "north-east", "east", "south-east",
 	"south", "south-west", "west", "north-west"];
 
+// Four steps of silhouette, matching the four size words.
+const SIZE_ICON_CLASS = {
+	huge: "is-huge", large: "is-large", medium: "is-medium", small: "is-small",
+};
+
 const SIZE_WORDS = {
 	huge: "very large animal",
 	large: "large animal",
@@ -158,6 +174,28 @@ const REGION_ORDER = ["Global", "Europe", "Africa", "Asia", "N.America",
 	"S.America", "Arctic", "Australia", "Ocean"];
 
 // ------------------------------------------------------------- utilities
+
+
+// A neutral four-legged silhouette, drawn bigger for bigger animals.
+//
+// Deliberately NOT a recognisable species. The game is built on not naming the
+// animal, and a bear outline sitting against an elephant would be worse than
+// no picture at all -- it would be a wrong answer given away for free. This
+// says "about this big" and nothing else, which is exactly what the words
+// beside it already say, only faster.
+function sizeIcon(sizeClass) {
+	const cls = SIZE_ICON_CLASS[sizeClass] || "is-medium";
+	return "<span class=\"contact-size\"><svg class=\"size-icon " + cls + "\" "
+		+ "viewBox=\"0 0 32 20\" aria-hidden=\"true\">"
+		+ "<rect x=\"6\" y=\"6\" width=\"15\" height=\"7\" rx=\"3.4\"/>"
+		+ "<rect x=\"8\" y=\"12\" width=\"2.1\" height=\"6\" rx=\"1.05\"/>"
+		+ "<rect x=\"11.6\" y=\"12\" width=\"2.1\" height=\"6\" rx=\"1.05\"/>"
+		+ "<rect x=\"15.6\" y=\"12\" width=\"2.1\" height=\"6\" rx=\"1.05\"/>"
+		+ "<rect x=\"19.2\" y=\"12\" width=\"2.1\" height=\"6\" rx=\"1.05\"/>"
+		+ "<path d=\"M19.5 7.6 L24.6 4.2 C25.1 3.9 25.7 4.1 25.9 4.7 "
+		+ "L26.4 6.3 C26.6 6.9 26.2 7.5 25.6 7.6 L20.9 8.5 Z\"/>"
+		+ "</svg></span>";
+}
 
 // A small arrow pointing where the animal is, relative to the nose.
 //
@@ -239,6 +277,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			textSize: DEFAULT_TEXT_SIZE,
 			background: DEFAULT_BACKGROUND,
 			recognition: DEFAULT_RECOGNITION,
+			sortMode: DEFAULT_SORT,
 			lifelist: {},   // species root -> { first, lat, lon, best, count }
 			logged: {},     // contact key -> {species, lat, lon} once identified
 			captured: {},   // contact key -> true once you got close enough
@@ -280,6 +319,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.applyBackground();
 		this.renderRecognition();
 		this.renderScore();
+		this.renderSort();
 		this.showVersion();
 		this.startInSim();
 		this.fetchSpecies();
@@ -339,6 +379,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			recognitionRow: pick("recognitionRow"),
 			recognitionBlurb: pick("recognitionBlurb"),
 			resetBtn: pick("resetBtn"),
+			sortToggle: pick("sortToggle"),
 			quizOverlay: pick("quizOverlay"),
 			quizPrompt: pick("quizPrompt"),
 			quizOptions: pick("quizOptions"),
@@ -384,6 +425,19 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.nodes.resultClose.addEventListener("click", () => {
 			this.nodes.resultOverlay.classList.add("hidden");
 		});
+		if (this.nodes.sortToggle) {
+			this.nodes.sortToggle.addEventListener("click", (event) => {
+				const btn = event.target.closest ? event.target.closest(".sort-btn") : null;
+				if (!btn || !SORT_MODES[btn.dataset.sort]) return;
+				this.state.sortMode = btn.dataset.sort;
+				this.saveState();
+				this.renderSort();
+				// Reordering under a held list would be the one time the hold
+				// is unwanted: the player just asked for a different order.
+				this.listHeldUntil = 0;
+				this.renderHunt();
+			});
+		}
 		this.nodes.resetBtn.addEventListener("click", () => this.handleReset());
 	}
 
@@ -487,6 +541,14 @@ class IngamePanelFaunaHunt extends TemplateElement {
 	// The module inside the sim, if this install has one. Everything here is
 	// optional: if the module is missing, or the sim is too old to have the
 	// message service, this quietly does nothing and the helper runs the game.
+	renderSort() {
+		const row = this.nodes.sortToggle;
+		if (!row) return;
+		Array.prototype.forEach.call(row.querySelectorAll(".sort-btn"), (btn) => {
+			btn.classList.toggle("is-active", btn.dataset.sort === this.state.sortMode);
+		});
+	}
+
 	showVersion() {
 		const el = this.querySelector("#panelVersion");
 		if (el) el.textContent = "Version " + PANEL_VERSION;
@@ -674,9 +736,27 @@ class IngamePanelFaunaHunt extends TemplateElement {
 	//   2. Reordering is HELD while the pointer is over the list, and for a
 	//      moment after any tap. Text inside each row still updates -- only
 	//      the running order is frozen, so nothing moves while you aim.
+	// Ahead of the AIRCRAFT, not the view: it is the flight path that decides
+	// whether a contact is worth turning for, and the view is unavailable in VR
+	// anyway.
+	isAhead(contact) {
+		const rel = contact.relative_bearing_deg;
+		if (typeof rel !== "number") return true;
+		return rel <= 90 || rel >= 270;
+	}
+
+	orderContacts(contacts) {
+		if (this.state.sortMode !== "ahead") return contacts;
+		const ahead = [];
+		const behind = [];
+		contacts.forEach((c) => (this.isAhead(c) ? ahead : behind).push(c));
+		return ahead.concat(behind);
+	}
+
 	renderHunt() {
 		const list = this.nodes.contactList;
-		const contacts = (this.snapshot && this.snapshot.contacts) || [];
+		const contacts = this.orderContacts(
+			(this.snapshot && this.snapshot.contacts) || []);
 
 		// Re-derive the row map from what is ACTUALLY in the list, and drop any
 		// duplicate for a key we have already seen. Previously this map was the
@@ -780,7 +860,13 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		row.className = "contact" + (near ? " is-near" : "")
 			+ (logged ? " is-logged" : "")
 			+ (clickable ? " is-clickable" : "");
-		row.innerHTML = "<span class=\"contact-arrow\">" + (described.arrow || "") + "</span>"
+		// Arrow above, size below, in ONE column. Two separate columns of
+		// furniture left too little room for the words in a narrow panel --
+		// "very large animal, 5 of them" wrapped to three lines at the default
+		// text size.
+		row.innerHTML = "<span class=\"contact-glance\">"
+			+ "<span class=\"contact-arrow\">" + (described.arrow || "") + "</span>"
+			+ sizeIcon(contact.size) + "</span>"
 			+ "<div class=\"contact-desc\">"
 			+ "<span class=\"contact-what\">" + described.what + "</span>"
 			+ "<span class=\"contact-where\">" + described.where + "</span>"
