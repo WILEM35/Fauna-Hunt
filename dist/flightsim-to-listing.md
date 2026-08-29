@@ -1,6 +1,6 @@
 # flightsim.to listing — first post
 
-Everything below is ready to paste. Nothing needs editing.
+Ready to paste.
 
 ---
 
@@ -10,22 +10,18 @@ Everything below is ready to paste. Nothing needs editing.
 
 ## SHORT DESCRIPTION / SUMMARY
 
-    MSFS 2024 has 107 species of animal wandering the world and almost
-    nobody notices. Fauna Hunt turns finding them into the point of the
-    flight - a spotter calls vague contacts, you fly out and work out what
-    you are looking at.
+    There is wildlife all over Microsoft Flight Simulator 2024 and you have
+    been flying straight over it. Fauna Hunt is a hunting game - track them
+    down, work out what you are looking at, and get close enough for the
+    shot.
 
 ## CATEGORY
 
-Utilities & Tools → In-Game Panels (or Miscellaneous if that is not offered).
-It is a toolbar panel.
+Utilities & Tools → In-Game Panels (or Miscellaneous). It is a toolbar panel.
 
 ## COMPATIBILITY
 
-**Microsoft Flight Simulator 2024 only.** It relies on an animal-finding
-capability that does not exist in 2020.
-
-Works in 2D and in VR. No dependencies.
+Microsoft Flight Simulator 2024. Works in 2D and in VR.
 
 ## VERSION
 
@@ -35,106 +31,99 @@ Works in 2D and in VR. No dependencies.
 
 ## DESCRIPTION
 
-**There are 107 species of animal in Microsoft Flight Simulator 2024.**
-Elephants, wildebeest, camels, bison, kangaroos, snow leopards. Most people
-fly over all of them and never look down.
+**There is wildlife all over Flight Simulator 2024, and you have been flying
+straight over it for years.** Elephants, wildebeest, camels, bison, kangaroos,
+snow leopards. Fauna Hunt makes finding them the reason for the flight.
 
-Fauna Hunt turns finding them into the reason for the flight.
+### The hunt
 
-### It does not tell you where they are
+A spotter calls contacts over the intercom, and he is not very helpful.
 
-That is the whole design. Developer mode can already draw boxes around every
-animal, and doing that removes the game entirely.
+> *something very large, on its own — bearing 230 — 1100 m*
 
-Instead the panel behaves like a spotter on the intercom. At long range you get
-a compass sector and a vague size — *"something very large, on its own,
-bearing 230"*. As you close in it sharpens to an o'clock position and a herd
-count — *"15 animals, your 7 o'clock, low, 900 m"*. It never tells you the
-species. Working that out by looking out of the window is the game.
+Fly out that way and he gets more specific.
 
-### Two stages
+> *15 animals — your 7 o'clock, low — 900 m*
 
-**Identify** a contact from up to 1200 m. You get a shortlist of four species
-and have to pick. First time right is worth the most; you can back out for a
-small penalty, but your four choices are remembered, so there is no re-rolling
-for easier options. If you genuinely cannot tell, you can ask - and score
-nothing.
+That is as much as you get. **He never tells you what they are.** Getting close
+enough to see for yourself is the whole game.
 
-**Capture** it by flying within 150 m of the nearest animal in the group. Worth
-the identification over again. This is the part that gets you down onto the
-deck, low and slow, where the simulator looks its best and the flying is
-actually interesting.
+### Identify it
 
-### 107 species, five tiers of rarity
+Once you can see the animals, tap the contact. You get **four species to choose
+from** — and that is where it gets interesting, because a Grant's gazelle and a
+Thomson's gazelle look an awful lot alike at 400 metres in a helicopter that
+will not sit still.
 
-From everyday cattle and sheep, through regional animals, up to eight
-**legendary** species that exist in only a few places on Earth. Rarer animals
-are worth far more, and an alert appears when a legendary one is near you.
+Get it right and the animal joins your collection. First guess is worth the
+most, so it pays to have a proper look before you commit.
 
-The **lifelist** tracks everything you have found. Species you have not found
-yet show where in the world to go looking - *"Himalaya: Ladakh, Nepal, Bhutan,
-Tibet"*. Most of the interesting animals are African, so a bush trip across the
-Serengeti is worth many times a lap of the local farmland.
+### Then go and get the shot
+
+Identifying it is only half of it. Fly **within 150 metres** of the herd and you
+capture it, for the points all over again. This is the part that puts you down
+on the deck, low and slow, drifting over a river full of hippos — which is
+where this simulator is at its absolute best anyway.
+
+### 61 animals to find
+
+From cattle and sheep in the local fields, up to **seven legendary animals**
+that live in only a handful of places on Earth. Snow leopards. Giant pandas.
+Orcas. Rarer animals are worth far more, and you get a heads-up when a
+legendary one is close.
+
+Plenty of them have subspecies to sort out too — there are eight different
+giraffes and seven different brown bears out there, and they all count
+separately.
+
+### The lifelist
+
+Your lifelist keeps track of everything you have caught. **The ones you are
+still missing tell you where to go looking** — *"Himalaya: Ladakh, Nepal,
+Bhutan, Tibet"* — which is how a quiet evening turns into planning a trip to
+Mongolia to find a wild horse.
+
+Most of the good stuff is African. A bush flight across the Serengeti is worth
+a hundred laps of the local farmland.
 
 ### Difficulty
 
-Three settings that change how much the panel gives away and how early:
+Three settings that change how much the spotter gives away and how early:
 
-* **Explorer** - detail arrives early. Good for learning what a distant giraffe
+* **Explorer** — detail arrives early. Good for learning what a distant giraffe
   actually looks like.
-* **Tracker** - the intended balance.
-* **Expert** - you stay in the dark until you are nearly on top of it, and
+* **Tracker** — the intended balance.
+* **Expert** — you stay in the dark until you are nearly on top of it, and
   everything scores 50% more.
 
-### Nothing to install and nothing to run
-
-No executable. No helper program. No account, no internet connection, no
-dependencies. Copy one folder into Community and start the simulator.
-
-**The whole download is under a tenth of a megabyte.**
-
 ---
 
-## HOW TO USE
+## INSTALLATION
 
-1. Copy the `wilem35-fauna-hunt` folder into your Community folder.
-2. Start MSFS 2024 and load a flight.
-3. Click the paw print icon in the toolbar.
-4. Fly low and slow over open country.
+Drop the `wilem35-fauna-hunt` folder into your Community folder and start the
+simulator. Click the paw print in the toolbar.
 
-Animals appear within a few kilometres near the ground and much further out
-with altitude - so climb to search a wide area, then descend to get a proper
-look at what you found.
-
-**Good places to start:** HTSN Seronera (Serengeti), HKAM Amboseli, FASZ
-Skukuza (Kruger). Farmland anywhere gives you cattle, sheep and horses to
+**Where to start:** HTSN Seronera in the Serengeti, HKAM Amboseli, or FASZ
+Skukuza in Kruger. Anywhere with farmland will give you cattle and horses to
 practise on.
 
-**Worth doing:** the simulator has its own **Fauna** slider in its graphics
-settings that controls how many animals exist in the world. Turning it up gives
-you noticeably more to hunt. It is set separately for normal and VR modes, so
-check both.
+**One tip:** the simulator has its own **Fauna** slider in its graphics
+settings. Turn it up and there is a great deal more to hunt. It is set
+separately for normal and VR, so check both.
 
 ---
 
-## KNOWN LIMITATIONS
+## GOOD TO KNOW
 
-Stated plainly, because they are properties of the simulator rather than bugs:
-
-* **There are no birds.** MSFS keeps its flying animals in a place add-ons
-  cannot reach. Ground animals only.
-* **In VR, identification does not check where you are looking.** The simulator
-  does not tell add-ons where a headset is pointing - every reading available
-  reports the aircraft instead. Rather than force you to point the aircraft at
-  an animal to identify it, that rule is simply switched off in VR. In a 2D
-  cockpit view it works normally.
-* **MSFS 2024 only.** The animal data does not exist in 2020.
+* **No birds.** The simulator keeps its flying animals somewhere add-ons cannot
+  reach. Ground animals only.
+* **In VR you can identify from any direction.** The simulator will not tell
+  add-ons where your head is pointing, so rather than make you aim the aircraft
+  at a zebra, that check is off in VR.
 
 ---
 
 ## TAGS
-
-Paste as many as the form accepts, most important first:
 
     wildlife
     animals
@@ -156,7 +145,6 @@ Paste as many as the form accepts, most important first:
     scoring
     lifelist
     utility
-    no exe
     2024
 
 ---
@@ -165,22 +153,19 @@ Paste as many as the form accepts, most important first:
 
     https://github.com/WILEM35/Fauna-Hunt
 
-Worth linking on the listing. It shows there is nothing hidden in the download,
-which matters for anything people copy into their Community folder.
+Worth linking - it shows there is nothing hidden in something people are
+copying into their Community folder.
 
 ---
 
 ## SCREENSHOTS TO UPLOAD
 
-In rough order of usefulness:
-
-1. **The contact list with several herds at different ranges** - shows what the
-   game actually is at a glance.
-2. **Animals out of the window with the panel beside them** - shows what it is
+1. **The contact list with several herds at different ranges** — shows the game
+   at a glance.
+2. **Animals out of the window with the panel beside them** — shows what it is
    for.
-3. **The identification shortlist open** - shows the decision the player makes.
-4. **The lifelist**, showing found species and location hints for the rest.
+3. **The four-way identification prompt open** — shows the decision you make.
+4. **The lifelist**, with found animals and location hints for the rest.
 5. A wide shot over the Serengeti with contacts listed.
 
-Avoid the diagnostic screenshots from testing - the ones with tick counts and
-view-direction readouts.
+Avoid the diagnostic screenshots from testing.
