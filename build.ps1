@@ -45,6 +45,16 @@ if (-not (Test-Path $PackageTool)) {
 Get-ChildItem -Path "$ProjectDir\PackageSources" -Filter "__pycache__" -Recurse -Directory -ErrorAction SilentlyContinue |
     ForEach-Object { Remove-Item $_.FullName -Recurse -Force }
 
+# Stamp the package version into the panel so Settings can show which build
+# is actually running. Without it, a stale build is indistinguishable from
+# a bug that will not die -- which cost a test cycle.
+$verXml = [xml](Get-Content "$ProjectDir\PackageDefinitions\wilem35-fauna-hunt.xml")
+$version = $verXml.AssetPackage.Version
+$panelJs = "$ProjectDir\PackageSources\Copys\fauna-hunt\Panel\html_ui\InGamePanels\FaunaHunt\FaunaHunt.js"
+(Get-Content $panelJs -Raw) -replace 'const PANEL_VERSION = "[^"]*";', "const PANEL_VERSION = ""$version"";" |
+    Set-Content $panelJs -NoNewline -Encoding utf8
+Write-Host "Panel stamped as version $version" -ForegroundColor Cyan
+
 # The panel carries its own copy of the species table. Regenerated every
 # build so it can never drift from data/species.json.
 Write-Host "Generating the panel's species table..." -ForegroundColor Cyan

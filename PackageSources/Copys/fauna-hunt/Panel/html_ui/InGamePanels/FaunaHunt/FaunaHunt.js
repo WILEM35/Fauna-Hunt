@@ -13,6 +13,11 @@
 // is applied here, in describeContact(). That means difficulty can be retuned
 // by editing this file alone -- the service and the sim never need to change.
 
+// Rewritten by build.ps1 from the package version, so it cannot drift.
+// Shown in Settings: without it there is no way to tell which build is
+// actually running, and a stale one looks exactly like a bug that will not die.
+const PANEL_VERSION = "2.0.7";
+
 const STORAGE_KEY = "FaunaHunt_State_v1";
 const POLL_INTERVAL_MS = 1000;
 
@@ -201,10 +206,21 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.applyBackground();
 		this.renderRecognition();
 		this.renderScore();
+		this.showVersion();
 		this.startInSim();
 		this.fetchSpecies();
 		this.pollTimer = setInterval(() => this.poll(), POLL_INTERVAL_MS);
 		this.poll();
+		// If the timer stops for any reason, start it again. Cheap insurance
+		// against a silent freeze, which is the worst failure to diagnose.
+		this.watchdog = setInterval(() => {
+			const ticks = this.pollTicks || 0;
+			if (ticks === this.lastSeenTicks) {
+				clearInterval(this.pollTimer);
+				this.pollTimer = setInterval(() => this.poll(), POLL_INTERVAL_MS);
+			}
+			this.lastSeenTicks = ticks;
+		}, 5000);
 	}
 
 	disconnectedCallback() {
@@ -215,6 +231,10 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		if (this.pollTimer) {
 			clearInterval(this.pollTimer);
 			this.pollTimer = undefined;
+		}
+		if (this.watchdog) {
+			clearInterval(this.watchdog);
+			this.watchdog = undefined;
 		}
 		super.disconnectedCallback();
 	}
@@ -391,6 +411,11 @@ class IngamePanelFaunaHunt extends TemplateElement {
 	// The module inside the sim, if this install has one. Everything here is
 	// optional: if the module is missing, or the sim is too old to have the
 	// message service, this quietly does nothing and the helper runs the game.
+	showVersion() {
+		const el = this.querySelector("#panelVersion");
+		if (el) el.textContent = "Version " + PANEL_VERSION;
+	}
+
 	startInSim() {
 		if (typeof FaunaInSimSource !== "function") return;
 		const table = (typeof FAUNA_SPECIES_DATA !== "undefined") ? FAUNA_SPECIES_DATA : null;
@@ -409,18 +434,34 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		if (this.view === "lifelist") this.renderLifelist();
 	}
 
+	// Everything here is wrapped, because an error thrown out of a timer tick
+	// can stop the timer -- and then the panel simply freezes on whatever it
+	// last drew, with no clue as to why. That is exactly how this looked:
+	// "asked 2, answered 1", for ever.
 	poll() {
-		if (!this.inSim) {
-			this.setStatus("nomodule");
-			this.updateStatusLine();
-			return;
-		}
-		this.inSim.poll();
-		if (this.inSim.available && this.inSim.snapshot) {
-			this.applySnapshot(this.inSim.snapshot);
-		} else {
-			this.setStatus("nosim");
-			this.updateStatusLine();
+		try {
+			this.pollTicks = (this.pollTicks || 0) + 1;
+			if (!this.inSim) {
+				this.setStatus("nomodule");
+				this.updateStatusLine();
+				return;
+			}
+			this.inSim.poll();
+			if (this.inSim.available && this.inSim.snapshot) {
+				this.applySnapshot(this.inSim.snapshot);
+			} else {
+				this.setStatus("nosim");
+				this.updateStatusLine();
+			}
+			this.panelError = null;
+		} catch (err) {
+			this.panelError = (err && err.message) ? err.message : String(err);
+			// Keep the ticks going regardless. A panel that reports a fault
+			// every second is far better than one that quietly stops.
+			try {
+				const note = this.nodes && this.nodes.huntEmptyNote;
+				if (note) note.textContent = "Panel error: " + this.panelError;
+			} catch (ignored) { /* nothing more we can do */ }
 		}
 	}
 
@@ -718,6 +759,10 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		const snap = this.snapshot;
 		if (!snap) {
 			note.textContent = "No reply from the simulator yet.";
+			return;
+		}
+		if (this.panelError) {
+			note.textContent = "Panel error: " + this.panelError;
 			return;
 		}
 		const m = snap.module || {};
