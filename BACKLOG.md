@@ -613,3 +613,33 @@ eight on the broken one.
 **Lesson: never delete by range.** Delete the named thing. And when a fault
 survives several fixes, stop fixing and instrument -- the heartbeat found in
 one flight what four builds of reasoning had not.
+
+## Sorting: by distance, or by what is ahead of you
+
+Requested 2026-08-29. **Not built.**
+
+The list is sorted by distance today, and that is all it can do. In a
+helicopter that is fine -- you can stop, slip sideways and turn on the spot, so
+a contact behind you is as reachable as one ahead. In an aeroplane it is not:
+committing to something behind you means a circuit to get back, and by then the
+herd has moved.
+
+So the panel needs a choice of how the list is ordered:
+
+* **By distance** -- what it does now, and the right default for helicopters.
+* **What is ahead** -- restricted to the 180-degree arc in front of the
+  aircraft, so the list only offers things you can fly at without turning
+  round.
+
+Points worth settling when it is built:
+
+* Ahead of the AIRCRAFT, not the view. The view is unavailable in VR anyway,
+  and in an aeroplane it is the flight path that matters.
+* Whether "ahead" HIDES what is behind or just sorts it lower. Hiding is
+  cleaner to read; sorting keeps the option of turning round if something
+  legendary is back there. Probably sort rather than hide, with the alert for
+  legendary animals unaffected either way.
+* The relative bearing is already worked out for the o'clock position, so the
+  arc test is only a comparison -- no new data needed from the module.
+* Where the control lives. A third tab would be heavy for two options; more
+  likely a small toggle in the contact list's own header.
