@@ -565,3 +565,21 @@ one-shot event. Prefer doing the thing and letting it fail harmlessly.
 
 Also fixed: two messages still said "waiting for the data service", which no
 longer exists.
+
+## 2.0.5 -- one connection per session, and honest counters
+
+Symptom: "The module answered 1 time(s)" with animals in view. One reply, ever,
+however long the panel was open.
+
+Two possible causes that look identical from outside and need opposite fixes:
+the panel stopped ASKING, or the module stopped ANSWERING. The note now shows
+both counts -- "Asked 60, answered 1" means the module died; "Asked 1,
+answered 1" means the panel is being restarted.
+
+The fix in this build addresses the second: the sim tears the panel's element
+down and rebuilds it -- opening the toolbar menu is enough -- and every rebuild
+was creating a fresh connection with counters back at zero. The connection now
+lives for the session and a rebuilt panel picks up the one already working.
+
+If the counts come back as "Asked many, answered 1", the module is dying after
+its first reply and the next place to look is the developer console.

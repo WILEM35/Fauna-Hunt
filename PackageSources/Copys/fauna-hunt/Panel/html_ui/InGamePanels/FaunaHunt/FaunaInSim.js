@@ -184,6 +184,7 @@ class FaunaInSimSource {
 		this.lastError = null;
 		this.attached = false;
 		this.polls = 0;
+		this.callError = null;
 		// null means "ask the sim". The tests set it directly so both modes
 		// can be exercised without a headset.
 		this.vr = null;
@@ -235,8 +236,12 @@ class FaunaInSimSource {
 		try {
 			this.bus.callWasm(INSIM_EVENT_POLL, "{}");
 			this.polls++;
+			this.callError = null;
 		} catch (err) {
-			/* the module may not be loaded yet */
+			// Counted rather than swallowed: "the panel stopped asking" and
+			// "the module stopped answering" need opposite fixes, and they
+			// look identical from the outside.
+			this.callError = String(err);
 		}
 	}
 
@@ -317,9 +322,10 @@ class FaunaInSimSource {
 				user: user, contacts: [], stats: stats, updated: Date.now() / 1000,
 				view_cone_deg: null, fov_deg: null, source: "insim",
 				module: {
+					polls: this.polls,
 					replies: this.replies,
 					rows: this.lastRowCount,
-					error: this.lastError || null,
+					error: this.lastError || this.callError || null,
 				},
 			};
 		}
@@ -396,9 +402,10 @@ class FaunaInSimSource {
 			connected: true,
 			status: "connected",
 			module: {
+				polls: this.polls,
 				replies: this.replies,
 				rows: this.lastRowCount,
-				error: this.lastError || null,
+				error: this.lastError || this.callError || null,
 			},
 			// Half the field of view is the cone that counts as looking at
 			// something. Measured when the module gives us one -- so it adapts
@@ -501,4 +508,23 @@ class FaunaInSimSource {
 			above: alt > user.alt_ft + 100,
 		};
 	}
+}
+
+// ONE source per session, not one per panel.
+//
+// The sim tears the panel's element down and builds it again -- opening the
+// toolbar menu is enough. Each rebuild used to create a fresh connection to
+// the module and start its counters from zero, so the panel could never get
+// past the first exchange and there was no way to tell that from the module
+// having died.
+//
+// Keeping it here means a rebuilt panel picks up the connection that is
+// already working, along with everything it has already received.
+function faunaInSimSource(speciesData) {
+	if (!window.__faunaInSimSource) {
+		const source = new FaunaInSimSource(speciesData);
+		if (!source.start()) return null;
+		window.__faunaInSimSource = source;
+	}
+	return window.__faunaInSimSource;
 }

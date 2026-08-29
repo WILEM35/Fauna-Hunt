@@ -395,8 +395,10 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		if (typeof FaunaInSimSource !== "function") return;
 		const table = (typeof FAUNA_SPECIES_DATA !== "undefined") ? FAUNA_SPECIES_DATA : null;
 		if (!table) return;
-		this.inSim = new FaunaInSimSource(table);
-		if (!this.inSim.start()) this.inSim = null;
+		// Reuses the connection across panel rebuilds -- see faunaInSimSource().
+		this.inSim = (typeof faunaInSimSource === "function")
+			? faunaInSimSource(table)
+			: null;
 	}
 
 	// The species table ships with the panel, so it is simply read.
@@ -740,9 +742,10 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			note.textContent = "The module has not answered yet.";
 			return;
 		}
-		// The module is answering and the sim is offering nothing at all.
-		note.textContent = "The module answered " + m.replies
-			+ " time(s) and the simulator listed no animals nearby.";
+		// Asked vs answered separates "the panel stopped asking" from "the
+		// module stopped answering". They look the same and need opposite fixes.
+		note.textContent = "Asked " + (m.polls || 0) + ", answered " + m.replies
+			+ ". The simulator listed no animals nearby.";
 	}
 
 	updateHoldNote() {
