@@ -93,6 +93,16 @@ if ($buildExit -ne 0) {
 
 if (-not (Test-Path $BuiltPkg)) {
     Write-Host "No package was produced at $BuiltPkg" -ForegroundColor Red
+    # The sim is checked before the build starts, but it can be LAUNCHED while
+    # the build runs -- the tool then attaches to it and silently builds
+    # nothing. That looks identical to a real failure, so say which it was.
+    $now = Get-Process -Name @("FlightSimulator2024", "FlightSimulator") -ErrorAction SilentlyContinue
+    if ($now) {
+        Write-Host ""
+        Write-Host "Microsoft Flight Simulator started WHILE this was building." -ForegroundColor Yellow
+        Write-Host "The build tool attached to it and produced nothing. Close the" -ForegroundColor Yellow
+        Write-Host "sim and run this again - nothing is wrong with the project." -ForegroundColor Yellow
+    }
     exit 1
 }
 
