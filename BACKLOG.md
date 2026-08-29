@@ -731,3 +731,36 @@ inside a Python string literal is the cause every single time: `\f`, `\b` and
 `\t` are escape sequences and vanish silently. Edit paths at byte level, or
 build them from a backslash constant, and never trust a path that came out of a
 scripted edit without checking the bytes.
+
+## 2.1.2 -- bigger arrow, aligned text, and the list-hold bug fixed
+
+The arrow now has the left of each row to itself at 2.5em, and both lines of
+text start beside it so the animal and the bearing line up. The articles are
+gone: "medium-sized animal", not "a medium-sized animal".
+
+**The list-hold bug is understood and fixed.** Hovering the list deliberately
+stops it reordering, and it was released by `mouseleave` -- which in VR often
+never arrives when the pointer leaves the panel. The flag latched on and the
+list froze for the rest of the flight. Waving the pointer over it again and off
+released it, which is why it looked like it recovered on its own.
+
+A hover is now only believed while the pointer keeps proving it is there, and
+expires 2.5 seconds after it stops. VR pointers jitter constantly so a real
+hover holds fine; a pointer that has silently gone releases by itself.
+
+Also removed: a stray `this.alertFor = null` that had been sitting inside the
+mouseleave handler since 1.2.0, wrongly indented. It made the legendary alert
+re-fire every time the pointer left the list.
+
+### Open question: pictograms for the size class
+
+Asked 2026-08-29. Not built, and worth thinking about before it is.
+
+The appeal is obvious -- a shape reads faster than "medium-sized animal". The
+risk is that a recognisable silhouette names the animal, and the entire game is
+built on NOT naming it. A bear outline against an elephant would be worse than
+no icon at all.
+
+The version that works is a single neutral four-legged silhouette drawn at four
+sizes, so it says "this big" without saying "this animal". That is honest, and
+it is genuinely faster to read at a glance.

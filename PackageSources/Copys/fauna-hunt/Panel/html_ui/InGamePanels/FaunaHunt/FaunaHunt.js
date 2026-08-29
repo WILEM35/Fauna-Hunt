@@ -16,7 +16,7 @@
 // Rewritten by build.ps1 from the package version, so it cannot drift.
 // Shown in Settings: without it there is no way to tell which build is
 // actually running, and a stale one looks exactly like a bug that will not die.
-const PANEL_VERSION = "2.1.1";
+const PANEL_VERSION = "2.1.2";
 
 const STORAGE_KEY = "FaunaHunt_State_v1";
 const POLL_INTERVAL_MS = 1000;
@@ -34,6 +34,10 @@ const HINT_HOLD_MS = 6000;
 // How long the contact list stops reordering after you touch it. Long enough
 // to look up at the window, find the animal and tap the right row.
 const LIST_HOLD_MS = 4000;
+// How long a hover is believed without further sign of the pointer. VR
+// pointers jitter constantly, so this only expires once the pointer has
+// genuinely gone -- or has stopped telling us it is there.
+const POINTER_STUCK_MS = 2500;
 // The sim's stored data is not always readable the instant a panel opens.
 // Keep looking for this long before concluding that nothing is saved.
 const LOAD_RETRIES = 12;
@@ -144,10 +148,10 @@ const SECTORS = ["north", "north-east", "east", "south-east",
 	"south", "south-west", "west", "north-west"];
 
 const SIZE_WORDS = {
-	huge: "something very large",
-	large: "a large animal",
-	medium: "a medium-sized animal",
-	small: "something small",
+	huge: "very large animal",
+	large: "large animal",
+	medium: "medium-sized animal",
+	small: "small animal",
 };
 
 const REGION_ORDER = ["Global", "Europe", "Africa", "Asia", "N.America",
@@ -248,6 +252,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.hintHeldUntil = 0;
 		this.listHeldUntil = 0;
 		this.pointerOverList = false;
+		this.pointerSeenAt = 0;
 		this.alertFor = null;
 		this.rows = {};
 		this.cappedNote = null;
@@ -363,13 +368,15 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		});
 		// Hovering holds the order. Mouse events are what the sim's VR
 		// pointer generates too, so this works in the headset.
-		this.nodes.contactList.addEventListener("mouseenter", () => {
+		const pointerHere = () => {
 			this.pointerOverList = true;
+			this.pointerSeenAt = Date.now();
 			this.updateHoldNote();
-		});
+		};
+		this.nodes.contactList.addEventListener("mouseenter", pointerHere);
+		this.nodes.contactList.addEventListener("mousemove", pointerHere);
 		this.nodes.contactList.addEventListener("mouseleave", () => {
 			this.pointerOverList = false;
-		this.alertFor = null;
 			this.updateHoldNote();
 		});
 		this.nodes.quizGiveUp.addEventListener("click", () => this.resolveQuiz(null));
@@ -773,10 +780,10 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		row.className = "contact" + (near ? " is-near" : "")
 			+ (logged ? " is-logged" : "")
 			+ (clickable ? " is-clickable" : "");
-		row.innerHTML = "<div class=\"contact-desc\">"
+		row.innerHTML = "<span class=\"contact-arrow\">" + (described.arrow || "") + "</span>"
+			+ "<div class=\"contact-desc\">"
 			+ "<span class=\"contact-what\">" + described.what + "</span>"
-			+ "<span class=\"contact-where\">"
-			+ (described.arrow || "") + described.where + "</span>"
+			+ "<span class=\"contact-where\">" + described.where + "</span>"
 			+ "</div>"
 			+ "<span class=\"contact-range\">" + described.range + "</span>"
 			+ (logged
@@ -818,7 +825,12 @@ class IngamePanelFaunaHunt extends TemplateElement {
 	}
 
 	listHeld() {
-		return this.pointerOverList || Date.now() < this.listHeldUntil;
+		// The hover flag is only trusted while the pointer keeps proving it is
+		// there. In VR, leaving the panel often raises no event at all, and a
+		// latched flag freezes the list for the rest of the flight.
+		const hovering = this.pointerOverList
+			&& (Date.now() - (this.pointerSeenAt || 0)) < POINTER_STUCK_MS;
+		return hovering || Date.now() < this.listHeldUntil;
 	}
 
 	holdList() {
@@ -1140,6 +1152,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.hintHeldUntil = 0;
 		this.listHeldUntil = 0;
 		this.pointerOverList = false;
+		this.pointerSeenAt = 0;
 		this.alertFor = null;
 		this.rows = {};
 		this.cappedNote = null;

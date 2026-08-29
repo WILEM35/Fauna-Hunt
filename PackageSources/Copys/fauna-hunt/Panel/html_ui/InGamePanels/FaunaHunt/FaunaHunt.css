@@ -163,7 +163,7 @@ ingame-ui#FaunaHunt .ingameUiContent {
 
 .contact {
 	display: flex;
-	align-items: baseline;
+	align-items: center;
 	/* Generous vertical padding: this is the tap target in VR, where a
 	   thin row is very hard to hit. */
 	padding: 0.55em 0.6em;
@@ -697,12 +697,23 @@ ingame-ui#FaunaHunt .ingameUiContent {
 /* Direction arrow beside the o'clock or bearing text. Points where the animal
    is relative to the nose, and is deliberately no more precise than the words
    it sits next to. Scales with the text so it works at XS and in VR. */
+.contact-arrow {
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.5em;
+	height: 2.5em;
+	margin-right: 0.6em;
+	color: var(--fh-dim);
+}
+
+.contact.is-near .contact-arrow { color: var(--fh-accent); }
+.contact.is-logged .contact-arrow { color: var(--fh-faint); }
+
 .dir-arrow {
-	display: inline-block;
-	width: 0.82em;
-	height: 0.82em;
-	margin-right: 0.4em;
-	vertical-align: -0.09em;
+	width: 100%;
+	height: 100%;
 	fill: currentColor;
-	opacity: 0.8;
+	opacity: 0.9;
 }
