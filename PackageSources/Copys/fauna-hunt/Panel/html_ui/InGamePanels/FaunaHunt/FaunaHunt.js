@@ -9,7 +9,7 @@
 // sharpening to an o'clock position up close, and never naming the species.
 // Working out what you are looking at is your job.
 //
-// Positions arrive from the local data service exactly; ALL of the vagueness
+// Positions arrive from the in-sim module exactly; ALL of the vagueness
 // is applied here, in describeContact(). That means difficulty can be retuned
 // by editing this file alone -- the service and the sim never need to change.
 
@@ -929,7 +929,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		if (this.quiz) return;
 		this.setSpotHint(this.online
 			? "Tap a contact to identify it."
-			: "Waiting for the data service.", false);
+			: "Waiting for the simulator.", false);
 	}
 
 	setSpotHint(text, isMiss, hold) {
@@ -1144,7 +1144,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			this.nodes.lifelistStats.innerHTML = "";
 			this.nodes.lifelistBody.innerHTML =
 				"<p class=\"region-head\">Species list unavailable — "
-				+ "waiting for the data service.</p>";
+				+ "waiting for the simulator.</p>";
 			return;
 		}
 

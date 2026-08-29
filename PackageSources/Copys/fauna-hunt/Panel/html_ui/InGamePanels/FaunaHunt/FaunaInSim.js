@@ -182,6 +182,8 @@ class FaunaInSimSource {
 		this.replies = 0;
 		this.lastRowCount = 0;
 		this.lastError = null;
+		this.attached = false;
+		this.polls = 0;
 		// null means "ask the sim". The tests set it directly so both modes
 		// can be exercised without a headset.
 		this.vr = null;
@@ -195,24 +197,57 @@ class FaunaInSimSource {
 
 	start() {
 		if (typeof RegisterCommBusListener !== "function") return false;
+		const attach = () => {
+			if (this.attached || !this.bus) return;
+			try {
+				this.bus.on(INSIM_EVENT_DATA, (payload) => this.onData(payload));
+				this.attached = true;
+			} catch (err) {
+				/* try again on the next poll */
+			}
+		};
 		try {
+			// The "ready" callback fires when the listener first connects. Close
+			// and reopen the panel and it may never fire again, because the
+			// connection is already up -- which left a reopened panel waiting
+			// for the simulator forever with animals in plain view.
+			//
+			// So the handler is attached immediately as well, and polling does
+			// not wait for a signal that may already have been and gone.
 			this.bus = RegisterCommBusListener(() => {
 				this.busReady = true;
-				this.bus.on(INSIM_EVENT_DATA, (payload) => this.onData(payload));
+				attach();
 			});
 		} catch (err) {
 			this.bus = null;
 			return false;
 		}
+		attach();
 		return true;
 	}
 
 	poll() {
-		if (!this.busReady || !this.bus) return;
+		if (!this.bus) return;
+		// Deliberately NOT gated on the ready signal -- see start(). Asking
+		// early is harmless; waiting for a signal that has already fired is
+		// not.
+		if (!this.attached) this.attach();
 		try {
 			this.bus.callWasm(INSIM_EVENT_POLL, "{}");
+			this.polls++;
 		} catch (err) {
-			/* the module may not be loaded; the panel falls back on its own */
+			/* the module may not be loaded yet */
+		}
+	}
+
+	// Re-attaching is safe and idempotent; start() sets this up too.
+	attach() {
+		if (this.attached || !this.bus) return;
+		try {
+			this.bus.on(INSIM_EVENT_DATA, (payload) => this.onData(payload));
+			this.attached = true;
+		} catch (err) {
+			/* try again next poll */
 		}
 	}
 

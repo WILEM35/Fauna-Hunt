@@ -545,3 +545,23 @@ matches, rather than reasoning about which difference matters.
 
 Also in this build, an empty list reports which step produced nothing --
 module error, no position, objects offered but rejected, or genuinely none.
+
+## 2.0.4 -- reopening the panel broke it permanently
+
+Close the panel and open it again and it sat on "Waiting for the simulator"
+with animals in plain view, and never recovered.
+
+The panel waited for a "ready" signal from the simulator's message service
+before it would talk to the module. That signal fires when the connection is
+first made. On a reopened panel the connection is already up, so it never fires
+again -- and the panel waited for something that had already happened.
+
+Now the handler is attached immediately as well as on the signal, and polling
+does not wait for it at all. Asking too early is harmless; waiting forever is
+not.
+
+Worth remembering: this is the second bug tonight caused by waiting for a
+one-shot event. Prefer doing the thing and letting it fail harmlessly.
+
+Also fixed: two messages still said "waiting for the data service", which no
+longer exists.
