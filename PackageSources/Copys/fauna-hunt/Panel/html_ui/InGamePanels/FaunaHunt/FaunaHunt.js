@@ -718,18 +718,31 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			note.textContent = "No reply from the simulator yet.";
 			return;
 		}
-		const stats = snap.stats || {};
-		const rejected = stats.rejected || {};
-		const offered = snap.stats ? (rejected.not_huntable || 0) + (rejected.streaming_in || 0)
-			+ (stats.raw_returned || 0) : 0;
+		const m = snap.module || {};
+		if (m.error) {
+			note.textContent = "The module could not reach the simulator: " + m.error;
+			return;
+		}
 		if (!snap.user) {
 			note.textContent = "Waiting for your aircraft's position.";
-		} else if (offered > 0 && !stats.contacts) {
+			return;
+		}
+		const stats = snap.stats || {};
+		const rejected = stats.rejected || {};
+		const offered = (rejected.not_huntable || 0) + (rejected.streaming_in || 0)
+			+ (stats.raw_returned || 0);
+		if (offered > 0) {
 			note.textContent = "The simulator offered " + offered
 				+ " nearby object(s), none of them huntable animals.";
-		} else {
-			note.textContent = "";
+			return;
 		}
+		if (!m.replies) {
+			note.textContent = "The module has not answered yet.";
+			return;
+		}
+		// The module is answering and the sim is offering nothing at all.
+		note.textContent = "The module answered " + m.replies
+			+ " time(s) and the simulator listed no animals nearby.";
 	}
 
 	updateHoldNote() {

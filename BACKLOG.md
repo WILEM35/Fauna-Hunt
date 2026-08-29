@@ -517,3 +517,31 @@ position is ordinary variables, and the panel reads them directly.
 Also in this build: when the list is empty the panel says WHY -- no reply yet,
 no position, or objects offered but none huntable. "No contacts in range" is
 now only said when it is actually true.
+
+## 2.0.3 -- make the module ask for exactly what the probe proved works
+
+The module was answering, the position was known, and the sim listed no animals
+at all. Meanwhile the throwaway probe had found 246 on the same machine.
+
+The difference was in what was asked for:
+
+| | probe (worked) | module (returned nothing) |
+|---|---|---|
+| values per object | 4 | 6 |
+| requests per poll | 1 | 3 (animals, user, aircraft) |
+
+The two extra values were heading and ground speed, which an animal may simply
+not have -- and one bad value can cost the whole request rather than that
+field. The extra requests were for the user's own position (now read by the
+panel) and for aircraft (for the single eagle the sim ships).
+
+So the module now matches the probe exactly: four values, one request. The
+eagle is the price, and it can come back later as its OWN request rather than
+sharing one -- added one at a time, each verified.
+
+The lesson is the same one as the malloc export: when a small thing is proven
+to work and a bigger thing does not, make the bigger thing smaller until it
+matches, rather than reasoning about which difference matters.
+
+Also in this build, an empty list reports which step produced nothing --
+module error, no position, objects offered but rejected, or genuinely none.

@@ -30,12 +30,20 @@
 #include <stdio.h>
 #include <string.h>
 
-// Mirrors the helper's data definition exactly, so the panel receives the same
-// numbers it always did.
-static const int DEF_ALL = 1;
-static const int REQ_USER = 100;
+// Deliberately the SMALLEST request that is known to work.
+//
+// An earlier version asked for six values per object and made three requests a
+// poll -- the animals, the user's own position, and aircraft (for the one
+// eagle the sim ships). It returned nothing at all. The throwaway probe that
+// proved this approach worked asked for four values and made ONE request, and
+// found 246 animals on the same machine.
+//
+// So this now matches the probe exactly. The user's position comes from the
+// panel, which reads it directly and never had trouble. Aircraft are not asked
+// for at all, which costs the eagle -- worth revisiting once this is trusted,
+// one request at a time.
+static const int DEF_ANIMAL = 1;
 static const int REQ_ANIMAL = 200;
-static const int REQ_AIRCRAFT = 201;
 
 static const DWORD SEARCH_RADIUS_M = 60000;
 
@@ -53,8 +61,6 @@ struct Row
     double lat;
     double lon;
     double alt;
-    double hdg;
-    double gs;
     char   title[256];
 };
 
@@ -63,8 +69,6 @@ static bool   g_open = false;
 
 static Row  g_rows[MAX_ROWS];
 static int  g_count = 0;
-static Row  g_user;
-static bool g_haveUser = false;
 static int  g_returned = 0;      // how many the sim offered, before our cap
 
 static char g_out[CHUNK_CHARS + 1024];
@@ -75,15 +79,9 @@ static void reset_batch()
     g_returned = 0;
 }
 
-static void take(const SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE* obj, bool isUser)
+static void take(const SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE* obj)
 {
     const Row* row = (const Row*)&obj->dwData;
-    if (isUser) {
-        g_user = *row;
-        g_user.title[sizeof(g_user.title) - 1] = 0;
-        g_haveUser = true;
-        return;
-    }
     g_returned++;
     if (g_count < MAX_ROWS) {
         g_rows[g_count] = *row;
@@ -100,15 +98,12 @@ static void drain()
         if (data->dwID == SIMCONNECT_RECV_ID_SIMOBJECT_DATA_BYTYPE) {
             const SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE* obj =
                 (const SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE*)data;
-            if (obj->dwRequestID == REQ_USER) {
-                take(obj, true);
-            } else if (obj->dwRequestID == REQ_ANIMAL ||
-                       obj->dwRequestID == REQ_AIRCRAFT) {
-                // A fresh batch starts at the first entry of an animal reply.
-                if (obj->dwentrynumber <= 1 && obj->dwRequestID == REQ_ANIMAL) {
+            if (obj->dwRequestID == REQ_ANIMAL) {
+                // A fresh batch starts at the first entry of a reply.
+                if (obj->dwentrynumber <= 1) {
                     reset_batch();
                 }
-                take(obj, false);
+                take(obj);
             }
         }
         data = 0;
@@ -131,12 +126,9 @@ static void safe_title(const char* in, char* out, int cap)
 static void send_chunk(int seq, bool last, const char* rows)
 {
     int n = snprintf(g_out, sizeof(g_out),
-        "{\"seq\":%d,\"last\":%s,\"haveUser\":%s,"
-        "\"user\":{\"lat\":%.7f,\"lon\":%.7f,\"alt_ft\":%.1f,\"hdg\":%.2f,\"gs_kt\":%.1f},"
+        "{\"seq\":%d,\"last\":%s,\"haveUser\":false,"
         "\"returned\":%d,\"rows\":[%s]}",
-        seq, last ? "true" : "false", g_haveUser ? "true" : "false",
-        g_user.lat, g_user.lon, g_user.alt, g_user.hdg, g_user.gs,
-        g_returned, rows);
+        seq, last ? "true" : "false", g_returned, rows);
     if (n > 0) {
         fsCommBusCall("FaunaHunt.Data", g_out, (unsigned int)strlen(g_out) + 1,
                       FsCommBusBroadcast_JS);
@@ -188,26 +180,19 @@ static void onPoll(const char*, unsigned int, void*)
     drain();
     emit();
 
-    SimConnect_RequestDataOnSimObjectType(g_sim, REQ_USER, DEF_ALL, 0,
-                                          SIMCONNECT_SIMOBJECT_TYPE_USER);
-    SimConnect_RequestDataOnSimObjectType(g_sim, REQ_ANIMAL, DEF_ALL,
+    SimConnect_RequestDataOnSimObjectType(g_sim, REQ_ANIMAL, DEF_ANIMAL,
                                           SEARCH_RADIUS_M,
                                           SIMCONNECT_SIMOBJECT_TYPE_ANIMAL);
-    SimConnect_RequestDataOnSimObjectType(g_sim, REQ_AIRCRAFT, DEF_ALL,
-                                          SEARCH_RADIUS_M,
-                                          SIMCONNECT_SIMOBJECT_TYPE_AIRCRAFT);
 }
 
 extern "C" MSFS_CALLBACK void module_init(void)
 {
     if (SUCCEEDED(SimConnect_Open(&g_sim, "FaunaHunt", nullptr, 0, 0, 0))) {
         g_open = true;
-        SimConnect_AddToDataDefinition(g_sim, DEF_ALL, "PLANE LATITUDE", "degrees");
-        SimConnect_AddToDataDefinition(g_sim, DEF_ALL, "PLANE LONGITUDE", "degrees");
-        SimConnect_AddToDataDefinition(g_sim, DEF_ALL, "PLANE ALTITUDE", "feet");
-        SimConnect_AddToDataDefinition(g_sim, DEF_ALL, "PLANE HEADING DEGREES TRUE", "degrees");
-        SimConnect_AddToDataDefinition(g_sim, DEF_ALL, "GROUND VELOCITY", "knots");
-        SimConnect_AddToDataDefinition(g_sim, DEF_ALL, "TITLE", nullptr,
+        SimConnect_AddToDataDefinition(g_sim, DEF_ANIMAL, "PLANE LATITUDE", "degrees");
+        SimConnect_AddToDataDefinition(g_sim, DEF_ANIMAL, "PLANE LONGITUDE", "degrees");
+        SimConnect_AddToDataDefinition(g_sim, DEF_ANIMAL, "PLANE ALTITUDE", "feet");
+        SimConnect_AddToDataDefinition(g_sim, DEF_ANIMAL, "TITLE", nullptr,
                                        SIMCONNECT_DATATYPE_STRING256);
     }
     fsCommBusRegister("FaunaHunt.Poll", onPoll, nullptr);

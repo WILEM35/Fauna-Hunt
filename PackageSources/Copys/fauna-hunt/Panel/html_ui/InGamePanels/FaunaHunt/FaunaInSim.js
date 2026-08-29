@@ -179,6 +179,9 @@ class FaunaInSimSource {
 		this.snapshot = null;
 		this.lastReplyAt = 0;
 		this.everReplied = false;
+		this.replies = 0;
+		this.lastRowCount = 0;
+		this.lastError = null;
 		// null means "ask the sim". The tests set it directly so both modes
 		// can be exercised without a headset.
 		this.vr = null;
@@ -241,6 +244,9 @@ class FaunaInSimSource {
 		const head = this.pending[this.pending.length - 1];
 		this.pending = [];
 		this.everReplied = true;
+		this.replies++;
+		this.lastRowCount = rows.length;
+		this.lastError = head.error || null;
 		this.lastReplyAt = Date.now();
 		this.snapshot = this.build(head, rows);
 	}
@@ -275,6 +281,11 @@ class FaunaInSimSource {
 				status: this.table ? "waiting for the simulator" : "no species table",
 				user: user, contacts: [], stats: stats, updated: Date.now() / 1000,
 				view_cone_deg: null, fov_deg: null, source: "insim",
+				module: {
+					replies: this.replies,
+					rows: this.lastRowCount,
+					error: this.lastError || null,
+				},
 			};
 		}
 
@@ -349,6 +360,11 @@ class FaunaInSimSource {
 		return {
 			connected: true,
 			status: "connected",
+			module: {
+				replies: this.replies,
+				rows: this.lastRowCount,
+				error: this.lastError || null,
+			},
 			// Half the field of view is the cone that counts as looking at
 			// something. Measured when the module gives us one -- so it adapts
 			// between 2D and VR on its own -- and assumed otherwise.
