@@ -98,36 +98,42 @@ function round(value, places) {
 
 const CAMERA_STATE_COCKPIT = 2;
 
-// The camera call reports raw numbers and the SDK does not say in what units.
-// The field of view settles it for all three: no sane view is 60 RADIANS wide,
-// and no sane one is 1 DEGREE wide, so a small value means the set is radians.
+// The field of view is the only value that arrives in radians.
 const RADIANS_IF_FOV_BELOW = 6.3;
 
-// What the camera's angles are measured against. Only WORLD is an absolute
-// compass heading; the rest are relative to the aircraft, and treating one as
-// the other puts the view rule out by the aircraft's heading -- which is not
-// obviously broken, it is just wrong in a way that changes as you turn.
-const ROT_REF_WORLD = 2;
-
+// What the camera reports, measured in the sim rather than assumed. Two
+// surprises, both of which produced nonsense while they were being guessed at:
+//
+//   * The field of view is in RADIANS but the angles are in DEGREES. Reading
+//     all three as one unit turned a 23 degree pitch into 1341, and geometry
+//     built on that is meaningless -- which is why VR behaved randomly rather
+//     than merely being offset.
+//   * The heading is measured FROM THE NOSE even though the reading claims to
+//     be world-referenced. So the referential it reports cannot be trusted,
+//     and is deliberately ignored.
+//
+// Both were settled by taking a 2D reading beside the known-good one: aircraft
+// on 331.6, view on 331.6, camera reporting 0.31. That is straight ahead in
+// degrees and nothing else.
 function readModuleView(cam, aircraftHeading) {
 	if (!cam || !cam.ok) return null;
 	if (typeof cam.fov !== "number" || cam.fov <= 0) return null;
-	const toDeg = cam.fov <= RADIANS_IF_FOV_BELOW ? (180 / Math.PI) : 1;
-	const fov = cam.fov * toDeg;
-	// A camera claiming an absurd field of view means the reading is not what
-	// we think it is, and a wrong view direction is worse than none.
-	if (fov < 20 || fov > 170) return null;
+	if (typeof aircraftHeading !== "number") return null;
 
-	let heading = cam.h * toDeg;
-	if (cam.rotRef !== ROT_REF_WORLD) {
-		// Relative to the aircraft, so it has to be added to the aircraft's
-		// own heading to become a compass direction.
-		if (typeof aircraftHeading !== "number") return null;
-		heading = aircraftHeading + heading;
-	}
+	const fov = cam.fov <= RADIANS_IF_FOV_BELOW ? cam.fov * 180 / Math.PI : cam.fov;
+	// An absurd field of view means the reading is not what we think it is,
+	// and a wrong view direction is worse than none.
+	if (fov < 20 || fov > 170) return null;
+	// Degrees, so these stay small. Anything larger means the same thing.
+	if (Math.abs(cam.p) > 180 || Math.abs(cam.h) > 360) return null;
+
 	return {
-		heading: ((heading % 360) + 360) % 360,
-		pitch: cam.p * toDeg,
+		heading: (((aircraftHeading + cam.h) % 360) + 360) % 360,
+		// Positive reads as nose-down, matching the sim's own convention for
+		// aircraft pitch, so it is flipped to the "positive is up" this file
+		// works in. UNCONFIRMED: needs a reading taken while looking clearly
+		// down at the ground.
+		pitch: -cam.p,
 		fov: fov,
 		source: "module",
 		rotRef: cam.rotRef,
