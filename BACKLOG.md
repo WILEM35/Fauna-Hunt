@@ -643,3 +643,65 @@ Points worth settling when it is built:
   arc test is only a comparison -- no new data needed from the module.
 * Where the control lives. A third tab would be heavy for two options; more
   likely a small toggle in the contact list's own header.
+
+## BUG: the list goes stale until the panel is closed and reopened
+
+Reported 2026-08-29, on 2.1.0. **Not investigated.**
+
+Symptoms: contacts stop updating, and everything left in the list is four or
+five miles away with nothing close, even while flying over animals. Closing the
+panel from the toolbar and opening it again brings them back.
+
+This is the same shape as the fault that produced "asked 2, answered 1" -- the
+panel stops refreshing and sits on what it last drew. A watchdog was added in
+2.0.7 to restart the loop if it stops, so either it is not catching this case or
+the loop is running and something further down has stopped.
+
+Distinguishing the two on the next flight: **Settings shows the version** but no
+longer shows the tick counter, which was removed in 2.1.0. Put a temporary
+counter back before hunting for this -- a live tick count separates "the loop
+stopped" from "the loop is fine and the data is stale", and those need opposite
+fixes. That distinction cost several flights last time.
+
+Two other candidates worth checking before assuming it is the loop:
+
+* **The list hold.** The list deliberately stops reordering for 4 seconds after
+  you touch it, and for as long as the pointer is over it. In VR a controller
+  ray resting on the panel may be holding it indefinitely -- which would look
+  exactly like this, and closing the panel would clear it.
+* **The identified-herd anchor**, which keeps a logged sighting attached to a
+  herd as it moves. If that is holding stale positions, old contacts would
+  persist at increasing distance while new ones nearby never appear.
+
+The list hold is the first thing to rule out: it is the only mechanism in the
+panel that deliberately freezes the list, and it is released by reopening.
+
+## Direction arrows on each contact
+
+Requested 2026-08-29. **Not built.** Estimate: small.
+
+An arrow per row, pointing where the animal is relative to the aircraft's nose,
+instead of or alongside "your 4 o'clock, low".
+
+Cheap because the number already exists: `relative_bearing_deg` is computed for
+every contact to produce the o'clock position. An arrow is that number applied
+as a rotation to one small shape -- no new data from the module, no new maths.
+
+The real question is not difficulty, it is **how precise the arrow is allowed
+to be.** The whole design rests on not marking the animal exactly: the text is
+deliberately coarse, a compass sector at long range sharpening to an o'clock
+position up close. An arrow drawn from the exact bearing would quietly hand
+back the precision the text withholds, and at long range it would be a marker.
+
+So the arrow must be quantised to the SAME steps the text uses -- 45 degrees
+while it is only giving a sector, 30 degrees once it is giving an o'clock
+position. Same information, better to read at a glance in VR, no more.
+
+Also worth settling:
+
+* It rotates as the aircraft turns, so it updates every second like everything
+  else -- fine, but it must not fight the list hold.
+* It has to stay legible at XS and in VR, so a simple solid triangle rather
+  than a thin drawn arrow.
+* Whether it replaces the o'clock text or sits beside it. Beside, probably:
+  the words work when read aloud on a group flight, the arrow works at a glance.
