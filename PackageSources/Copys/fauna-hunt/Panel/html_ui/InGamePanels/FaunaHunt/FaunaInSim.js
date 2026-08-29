@@ -314,7 +314,24 @@ class FaunaInSimSource {
 		const moduleView = readModuleView(head.cam, user.hdg);
 		const varView = readView(user.hdg);
 		const vr = (this.vr === null || this.vr === undefined) ? inVrMode : this.vr;
-		const view = vr ? (moduleView || varView) : (varView || moduleView);
+		// IN VR THERE IS NO VIEW RULE. The sim does not tell add-ons where the
+		// player's head is pointing -- every reading available, from the
+		// gameplay variables to the camera call at all five of its reference
+		// points, reports the AIRCRAFT. Proven by turning the helicopter 90
+		// degrees while looking at the same animals throughout: the answer
+		// moved with the nose and ignored the head.
+		//
+		// Gating on the nose instead would mean flying at an animal to
+		// identify it, which is not the game -- the whole point is looking out
+		// of the window. So in VR the rule is switched off rather than
+		// silently replaced with a different one.
+		// ONE reading is ever allowed to gate: the 2D cockpit variables. The
+		// module's camera is kept for the readout but never steers the rule,
+		// because it reports the aircraft rather than the player -- and an
+		// external or drone view has no reading at all. In every case where we
+		// cannot tell where the player is looking, the rule is switched off
+		// rather than replaced by a different one they cannot see.
+		const view = vr ? null : varView;
 		const fovDeg = (view && view.fov) || ASSUMED_FOV_DEG;
 
 		// Kept so the panel can show what it is actually steering by. Working

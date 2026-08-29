@@ -171,76 +171,49 @@ try {
 	CAMERA.pitch = 0; CAMERA.yaw = 0;
 
 
-	// ---------------------------------------------------------- VR camera
-	// The module's camera is the only reading that follows the headset, so it
-	// is used in VR and must NOT be used in 2D, where the variables are known
-	// good. Its convention was measured in the sim, not assumed:
-	//   fov in radians, angles in DEGREES, heading measured from the nose,
-	//   pitch positive when looking down.
+	// ------------------------------------------------------------ VR rule
+	// The sim does not tell add-ons where the player's head is pointing --
+	// every available reading follows the aircraft. Gating on the nose would
+	// mean flying AT an animal to identify it, which is not the game. So in VR
+	// the rule is switched off, and 2D keeps it exactly as it was.
 
-	src.vr = true;
-	// Looking straight ahead and 59 degrees down, at a herd that is dead ahead
-	// and 59 degrees below. That is looking right at it.
 	CAM = { ok: true, h: 0, p: 59, fov: 1.5708, rotRef: 2 };
 	CAMERA.state = 2; CAMERA.yaw = 0; CAMERA.pitch = 0;
-	reply(src, [HERD]);
-	var vr = src.snapshot;
-	near("VR: radian fov read as 90 degrees", vr.fov_deg, 90, 1);
-	near("VR: cone is half the fov", vr.view_cone_deg, 45, 1);
-	near("VR: looking down at the herd is in view", vr.contacts[0].off_view_deg, 0, 6);
 
-	// Looking level while the herd is far below: steeply out of view.
-	CAM = { ok: true, h: 0, p: 0, fov: 1.5708, rotRef: 2 };
+	src.vr = true;
 	reply(src, [HERD]);
-	near("VR: looking level is out of view", src.snapshot.contacts[0].off_view_deg, 58, 6);
+	check("VR: no view rule at all", src.snapshot.contacts[0].off_view_deg, null);
+	check("VR: readout says so", src.snapshot.view_debug.using, "none");
 
-	// The heading is measured from the NOSE, so turning the aircraft must move
-	// the view with it. Herd is due north; aircraft on 090 looking 90 left is
-	// looking due north.
-	var saved = USER;
-	USER = { lat: saved.lat, lon: saved.lon, alt_ft: saved.alt_ft, hdg: 90, gs_kt: 90 };
-	CAM = { ok: true, h: -90, p: 59, fov: 1.5708, rotRef: 2 };
+	// Looking nowhere near it, in VR, must still be identifiable.
+	CAM = { ok: true, h: 180, p: 0, fov: 1.5708, rotRef: 2 };
+	CAMERA.yaw = 180;
 	reply(src, [HERD]);
-	near("VR: heading is relative to the nose", src.snapshot.contacts[0].off_view_deg, 0, 8);
-	USER = saved;
+	check("VR: looking away is still allowed",
+		src.snapshot.contacts[0].off_view_deg, null);
 
-	// The same reading in 2D must NOT win -- preferring the module everywhere
-	// is exactly what broke 2D.
-	CAM = { ok: true, h: 0, p: 59, fov: 1.5708, rotRef: 2 };
+	// 2D keeps the rule, unchanged.
 	src.vr = false;
 	CAMERA.yaw = 0; CAMERA.pitch = 0;
 	reply(src, [HERD]);
-	near("2D: variables beat the module camera",
+	near("2D: rule still applies, looking level", 
 		src.snapshot.contacts[0].off_view_deg, 58, 6);
-
-	// 23 degrees of pitch is ordinary, and used. It only looked like nonsense
-	// while it was being converted as if it were radians.
-	src.vr = true;
-	CAM = { ok: true, h: 0, p: 23.409, fov: 1.5708, rotRef: 2 };
-	reply(src, [HERD]);
-	check("an ordinary pitch is used", src.snapshot.view_debug.using, "module");
-	near("and points 23 degrees below level", src.snapshot.view_debug.viewPitch, -23.4, 0.2);
-
-	// A pitch that cannot be degrees means the reading is not what we think.
-	// Steering by it is what made VR feel random, so it must be refused.
-	CAM = { ok: true, h: 0, p: 1341.2, fov: 1.5708, rotRef: 2 };
-	reply(src, [HERD]);
-	check("impossible pitch refused, falls back",
+	check("2D: readout names the source",
 		src.snapshot.view_debug.using, "variables");
 
-	// An absurd field of view, likewise.
-	CAM = { ok: true, h: 0, p: 10, fov: 900, rotRef: 2 };
+	CAMERA.pitch = -59;
 	reply(src, [HERD]);
-	near("absurd fov ignored, falls back", src.snapshot.fov_deg, 90, 1);
+	near("2D: looking down at it is in view",
+		src.snapshot.contacts[0].off_view_deg, 0, 6);
+	CAMERA.pitch = 0;
 
-	// No camera at all: 2D behaviour, unchanged.
-	CAM = { ok: false, h: 0, p: 0, fov: 0 };
-	src.vr = false;
+	// 2D outside the cockpit: no reading, so no rule.
 	CAMERA.state = 3;
 	reply(src, [HERD]);
-	check("no camera and outside cockpit still disables the rule",
+	check("2D: outside the cockpit disables the rule",
 		src.snapshot.contacts[0].off_view_deg, null);
 	CAMERA.state = 2;
+	CAM = { ok: false, h: 0, p: 0, fov: 0 };
 
 	// A torn reply must be dropped, not shown half-built.
 	var before = src.snapshot.contacts.length;

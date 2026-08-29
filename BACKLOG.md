@@ -433,3 +433,30 @@ is between gating on the aircraft's nose in VR, or not gating there at all.
 Fauna density is set PER PROFILE and they differ: 2D is on 1 (lowest), VR on 3.
 More fauna is a straight improvement to the game, and the 2D setting is costing
 contacts for no reason. It is in the sim's graphics settings, not ours to change.
+
+## 1.4.0 -- the view rule, decided
+
+Only ONE reading is ever allowed to decide whether the player is looking at an
+animal: the gameplay pitch/yaw variables, in a 2D cockpit view, where they are
+correct and were never in doubt.
+
+Everywhere else the rule is switched OFF rather than replaced:
+
+* **In VR** -- the sim does not expose head direction. Gating on the nose would
+  mean flying AT an animal to identify it, which is not the game.
+* **In external and drone views** -- there is no reading at all.
+
+The module's camera is still read and still shown in the diagnostic, but it
+never steers the rule. It reports the aircraft, and a rule the player cannot
+see steering by the wrong thing is worse than no rule.
+
+The game is a minor version up because this changes how it plays: in VR,
+identification is now range-only.
+
+### Still to do before flightsim.to
+
+* Remove the helper program from the package (20 MB, and the whole reason for
+  the antivirus problem).
+* Remove the View direction readout from Settings -- it was for diagnosis.
+* Remove the "service not running" message and the Service address setting.
+* Delete `wilem35-fauna-probe`.
