@@ -50,9 +50,17 @@ Get-ChildItem -Path "$ProjectDir\PackageSources" -Filter "__pycache__" -Recurse 
 # a bug that will not die -- which cost a test cycle.
 $verXml = [xml](Get-Content "$ProjectDir\PackageDefinitions\wilem35-fauna-hunt.xml")
 $version = $verXml.AssetPackage.Version
-$panelJs = "$ProjectDir\PackageSources\Copys\fauna-hunt\Panel\html_ui\InGamePanels\FaunaHunt\FaunaHunt.js"
-(Get-Content $panelJs -Raw) -replace 'const PANEL_VERSION = "[^"]*";', "const PANEL_VERSION = ""$version"";" |
-    Set-Content $panelJs -NoNewline -Encoding utf8
+$panelJs = "$ProjectDir\PackageSources\Copysauna-hunt\Panel\html_ui\InGamePanels\FaunaHunt\FaunaHunt.js"
+# Read and write as UTF-8 explicitly, with no byte order mark.
+#
+# Get-Content reads a file with no BOM as ANSI, which turns every degree sign
+# and em dash into mojibake, and Set-Content -Encoding utf8 then writes the
+# damage back and adds a BOM. That shipped in 2.1.0: bearings read "070Â°" in
+# the panel and seven em dashes were destroyed.
+$text = [System.IO.File]::ReadAllText($panelJs, [System.Text.UTF8Encoding]::new($false))
+$text = [regex]::Replace($text, 'const PANEL_VERSION = "[^"]*";',
+                         'const PANEL_VERSION = "' + $version + '";')
+[System.IO.File]::WriteAllText($panelJs, $text, [System.Text.UTF8Encoding]::new($false))
 Write-Host "Panel stamped as version $version" -ForegroundColor Cyan
 
 # The panel carries its own copy of the species table. Regenerated every
