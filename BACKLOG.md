@@ -495,3 +495,25 @@ Restored and verified by a full rebuild.
   not belong there.
 * Add-on Linker still has a link for `wilem35-fauna-probe`, whose target is
   deleted. Needs unlinking by hand.
+
+## 2.0.2 -- the module could not get the aircraft's own position
+
+Symptom: "No contacts in range" with giraffes filling the windscreen.
+
+The module asked the sim for the user's position alongside the animals, using
+the same call. The animal half worked; the user half never came back, so the
+panel had positions for the animals and nothing to measure them from. It had
+been reporting "no contacts" -- which sends someone looking for animals instead
+of reporting a fault.
+
+This was invisible until 2.0.0 because the panel fell back to the helper
+whenever the module fell short. **The helper had been doing this work all
+along**, and removing it is what exposed the gap. Worth remembering: a fallback
+that silently covers for a broken path means the broken path never gets found.
+
+The fix removes the round trip rather than debugging it. The aircraft's
+position is ordinary variables, and the panel reads them directly.
+
+Also in this build: when the list is empty the panel says WHY -- no reply yet,
+no position, or objects offered but none huntable. "No contacts in range" is
+now only said when it is actually true.

@@ -232,6 +232,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			viewSettings: pick("viewSettings"),
 			contactList: pick("contactList"),
 			huntEmpty: pick("huntEmpty"),
+			huntEmptyNote: pick("huntEmptyNote"),
 			spotHint: pick("spotHint"),
 			listHold: pick("listHold"),
 			alert: pick("alert"),
@@ -592,6 +593,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			list.innerHTML = "";
 			this.cappedNote = null;
 			this.nodes.huntEmpty.classList.toggle("hidden", !this.online);
+			this.explainEmpty();
 			this.updateHoldNote();
 			return;
 		}
@@ -702,6 +704,32 @@ class IngamePanelFaunaHunt extends TemplateElement {
 
 	holdList() {
 		this.listHeldUntil = Date.now() + LIST_HOLD_MS;
+	}
+
+	// "No contacts in range" is only true if the sim actually answered and had
+	// nothing to offer. It is a bad thing to say when the sim returned plenty
+	// and we discarded all of it, or when no reply has arrived at all -- that
+	// sends people looking for animals instead of reporting a fault.
+	explainEmpty() {
+		const note = this.nodes.huntEmptyNote;
+		if (!note) return;
+		const snap = this.snapshot;
+		if (!snap) {
+			note.textContent = "No reply from the simulator yet.";
+			return;
+		}
+		const stats = snap.stats || {};
+		const rejected = stats.rejected || {};
+		const offered = snap.stats ? (rejected.not_huntable || 0) + (rejected.streaming_in || 0)
+			+ (stats.raw_returned || 0) : 0;
+		if (!snap.user) {
+			note.textContent = "Waiting for your aircraft's position.";
+		} else if (offered > 0 && !stats.contacts) {
+			note.textContent = "The simulator offered " + offered
+				+ " nearby object(s), none of them huntable animals.";
+		} else {
+			note.textContent = "";
+		}
 	}
 
 	updateHoldNote() {

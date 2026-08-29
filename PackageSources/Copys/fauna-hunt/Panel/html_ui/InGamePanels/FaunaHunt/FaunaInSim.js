@@ -113,6 +113,40 @@ try {
 	/* no VR signal available; 2D behaviour is the safe default */
 }
 
+// Where the aircraft is. Read HERE, in the panel, rather than asked of the
+// module.
+//
+// The module used to ask the sim for the user's own position alongside the
+// animals, and that request never came back -- the panel sat on "waiting for
+// your aircraft's position" while animals were plainly in view. The animal
+// request through the same call works, so whatever the cause, it is specific
+// to asking for the user that way.
+//
+// There was never any need to. These are ordinary variables and the panel can
+// read them itself, with no round trip and nothing in between to fail.
+function readAircraft() {
+	try {
+		const lat = SimVar.GetSimVarValue("PLANE LATITUDE", "degrees");
+		const lon = SimVar.GetSimVarValue("PLANE LONGITUDE", "degrees");
+		const alt = SimVar.GetSimVarValue("PLANE ALTITUDE", "feet");
+		const hdg = SimVar.GetSimVarValue("PLANE HEADING DEGREES TRUE", "degrees");
+		const gs = SimVar.GetSimVarValue("GROUND VELOCITY", "knots");
+		if (typeof lat !== "number" || typeof lon !== "number") return null;
+		if (!isFinite(lat) || !isFinite(lon)) return null;
+		if (Math.abs(lat) > 90 || Math.abs(lon) > 180) return null;
+		// 0,0 is in the Atlantic: the flight has not loaded yet.
+		if (Math.abs(lat) < 1e-6 && Math.abs(lon) < 1e-6) return null;
+		return {
+			lat: lat, lon: lon,
+			alt_ft: (typeof alt === "number" && isFinite(alt)) ? alt : 0,
+			hdg: (typeof hdg === "number" && isFinite(hdg)) ? hdg : 0,
+			gs_kt: (typeof gs === "number" && isFinite(gs)) ? gs : 0,
+		};
+	} catch (err) {
+		return null;
+	}
+}
+
 function readView(aircraftHeading) {
 	let state = 0;
 	let pitch = 0;
@@ -231,7 +265,7 @@ class FaunaInSimSource {
 	}
 
 	build(head, rows) {
-		const user = head.haveUser ? head.user : null;
+		const user = readAircraft() || (head.haveUser ? head.user : null);
 		const stats = { raw_returned: 0, individuals: 0, contacts: 0,
 			capped: false, rejected: {} };
 

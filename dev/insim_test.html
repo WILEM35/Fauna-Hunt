@@ -40,11 +40,19 @@ function near(name, got, want, tol) {
 
 // The sim's variables, faked. Cockpit view, looking 30 degrees left of the nose.
 var CAMERA = { state: 2, pitch: 0, yaw: 30 };
+var PLANE = null;   // null = the panel cannot read a position
 window.SimVar = {
 	GetSimVarValue: function (name) {
 		if (name === "CAMERA STATE") return CAMERA.state;
 		if (name === "CAMERA GAMEPLAY PITCH YAW:0") return CAMERA.pitch;
 		if (name === "CAMERA GAMEPLAY PITCH YAW:1") return CAMERA.yaw;
+		if (PLANE) {
+			if (name === "PLANE LATITUDE") return PLANE.lat;
+			if (name === "PLANE LONGITUDE") return PLANE.lon;
+			if (name === "PLANE ALTITUDE") return PLANE.alt_ft;
+			if (name === "PLANE HEADING DEGREES TRUE") return PLANE.hdg;
+			if (name === "GROUND VELOCITY") return PLANE.gs_kt;
+		}
 		return 0;
 	}
 };
@@ -209,6 +217,35 @@ try {
 	check("2D: outside the cockpit disables the rule",
 		src.snapshot.contacts[0].off_view_deg, null);
 	CAMERA.state = 2;
+
+
+	// ------------------------------------------- position read by the panel
+	// The module's request for the user's own position never came back, which
+	// left the game showing nothing while animals were in view. The panel
+	// reads it directly now, and must work even when the module supplies none.
+
+	PLANE = { lat: USER.lat, lon: USER.lon, alt_ft: USER.alt_ft, hdg: USER.hdg, gs_kt: 90 };
+	src.vr = false;
+	CAMERA.state = 2; CAMERA.yaw = 0; CAMERA.pitch = 0;
+	src.onData(JSON.stringify({
+		seq: 0, last: true,
+		haveUser: false,                   // module could not supply it
+		user: { lat: 0, lon: 0, alt_ft: 0, hdg: 0, gs_kt: 0 },
+		returned: HERD.length, rows: HERD
+	}));
+	check("contacts found from the panel's own position",
+		src.snapshot.contacts.length, 1);
+	near("and the distance is right", src.snapshot.contacts[0].distance_m, 222, 25);
+
+	// With neither, it must say so rather than claim an empty area.
+	PLANE = null;
+	src.onData(JSON.stringify({
+		seq: 0, last: true, haveUser: false,
+		user: { lat: 0, lon: 0, alt_ft: 0, hdg: 0, gs_kt: 0 },
+		returned: HERD.length, rows: HERD
+	}));
+	check("no position anywhere is reported honestly", src.snapshot.user, null);
+	PLANE = { lat: USER.lat, lon: USER.lon, alt_ft: USER.alt_ft, hdg: USER.hdg, gs_kt: 90 };
 
 	// A torn reply must be dropped, not shown half-built.
 	var before = src.snapshot.contacts.length;
