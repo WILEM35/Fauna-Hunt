@@ -788,3 +788,14 @@ for, and the view is unavailable in VR anyway.
 
 Choosing a sort releases the list hold, since reordering is exactly what was
 just asked for.
+
+## 2.1.4 -- silhouettes removed
+
+Tried in 2.1.3 and rejected on sight: at the size they have to be, a neutral
+four-legged shape reads as a stick figure rather than an animal. Making it
+recognisable was never an option -- that would name the animal, which is the
+one thing the game must not do. So there is no version of this idea that works,
+and it is not worth revisiting.
+
+Back to the arrow on the left and the words. The size words keep their new
+form: "medium-sized animal", no article.

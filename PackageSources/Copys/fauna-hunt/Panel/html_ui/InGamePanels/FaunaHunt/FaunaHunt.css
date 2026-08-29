@@ -697,27 +697,19 @@ ingame-ui#FaunaHunt .ingameUiContent {
 /* Direction arrow beside the o'clock or bearing text. Points where the animal
    is relative to the nose, and is deliberately no more precise than the words
    it sits next to. Scales with the text so it works at XS and in VR. */
-.contact-glance {
+.contact-arrow {
 	flex: 0 0 auto;
 	display: flex;
-	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	width: 2.2em;
+	width: 2em;
+	height: 2em;
 	margin-right: 0.5em;
-}
-
-.contact-arrow {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 1.4em;
-	height: 1.4em;
 	color: var(--fh-dim);
 }
 
-.contact.is-near .contact-glance { color: var(--fh-accent); }
-.contact.is-logged .contact-glance { color: var(--fh-faint); }
+.contact.is-near .contact-arrow { color: var(--fh-accent); }
+.contact.is-logged .contact-arrow { color: var(--fh-faint); }
 
 .dir-arrow {
 	width: 100%;
@@ -725,24 +717,6 @@ ingame-ui#FaunaHunt .ingameUiContent {
 	fill: currentColor;
 	opacity: 0.9;
 }
-
-/* Size silhouette. Four steps, bottom-aligned so the heights can be compared
-   down the list at a glance. Deliberately not a recognisable animal. */
-.contact-size {
-	display: flex;
-	align-items: flex-end;
-	justify-content: center;
-	width: 2.1em;
-	height: 1.25em;
-	margin-top: 0.12em;
-	color: var(--fh-dim);
-}
-
-.size-icon { fill: currentColor; opacity: 0.95; height: auto; }
-.size-icon.is-small  { width: 0.95em; }
-.size-icon.is-medium { width: 1.3em; }
-.size-icon.is-large  { width: 1.65em; }
-.size-icon.is-huge   { width: 2em; }
 
 /* Sort toggle, in the bar above the list. Small: it is a preference you set
    once per aircraft, not a control you work. */

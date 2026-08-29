@@ -16,7 +16,7 @@
 // Rewritten by build.ps1 from the package version, so it cannot drift.
 // Shown in Settings: without it there is no way to tell which build is
 // actually running, and a stale one looks exactly like a bug that will not die.
-const PANEL_VERSION = "2.1.3";
+const PANEL_VERSION = "2.1.4";
 
 const STORAGE_KEY = "FaunaHunt_State_v1";
 const POLL_INTERVAL_MS = 1000;
@@ -158,11 +158,6 @@ const ALERT_TIER = "legendary";
 const SECTORS = ["north", "north-east", "east", "south-east",
 	"south", "south-west", "west", "north-west"];
 
-// Four steps of silhouette, matching the four size words.
-const SIZE_ICON_CLASS = {
-	huge: "is-huge", large: "is-large", medium: "is-medium", small: "is-small",
-};
-
 const SIZE_WORDS = {
 	huge: "very large animal",
 	large: "large animal",
@@ -175,27 +170,6 @@ const REGION_ORDER = ["Global", "Europe", "Africa", "Asia", "N.America",
 
 // ------------------------------------------------------------- utilities
 
-
-// A neutral four-legged silhouette, drawn bigger for bigger animals.
-//
-// Deliberately NOT a recognisable species. The game is built on not naming the
-// animal, and a bear outline sitting against an elephant would be worse than
-// no picture at all -- it would be a wrong answer given away for free. This
-// says "about this big" and nothing else, which is exactly what the words
-// beside it already say, only faster.
-function sizeIcon(sizeClass) {
-	const cls = SIZE_ICON_CLASS[sizeClass] || "is-medium";
-	return "<span class=\"contact-size\"><svg class=\"size-icon " + cls + "\" "
-		+ "viewBox=\"0 0 32 20\" aria-hidden=\"true\">"
-		+ "<rect x=\"6\" y=\"6\" width=\"15\" height=\"7\" rx=\"3.4\"/>"
-		+ "<rect x=\"8\" y=\"12\" width=\"2.1\" height=\"6\" rx=\"1.05\"/>"
-		+ "<rect x=\"11.6\" y=\"12\" width=\"2.1\" height=\"6\" rx=\"1.05\"/>"
-		+ "<rect x=\"15.6\" y=\"12\" width=\"2.1\" height=\"6\" rx=\"1.05\"/>"
-		+ "<rect x=\"19.2\" y=\"12\" width=\"2.1\" height=\"6\" rx=\"1.05\"/>"
-		+ "<path d=\"M19.5 7.6 L24.6 4.2 C25.1 3.9 25.7 4.1 25.9 4.7 "
-		+ "L26.4 6.3 C26.6 6.9 26.2 7.5 25.6 7.6 L20.9 8.5 Z\"/>"
-		+ "</svg></span>";
-}
 
 // A small arrow pointing where the animal is, relative to the nose.
 //
@@ -860,13 +834,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		row.className = "contact" + (near ? " is-near" : "")
 			+ (logged ? " is-logged" : "")
 			+ (clickable ? " is-clickable" : "");
-		// Arrow above, size below, in ONE column. Two separate columns of
-		// furniture left too little room for the words in a narrow panel --
-		// "very large animal, 5 of them" wrapped to three lines at the default
-		// text size.
-		row.innerHTML = "<span class=\"contact-glance\">"
-			+ "<span class=\"contact-arrow\">" + (described.arrow || "") + "</span>"
-			+ sizeIcon(contact.size) + "</span>"
+		row.innerHTML = "<span class=\"contact-arrow\">" + (described.arrow || "") + "</span>"
 			+ "<div class=\"contact-desc\">"
 			+ "<span class=\"contact-what\">" + described.what + "</span>"
 			+ "<span class=\"contact-where\">" + described.where + "</span>"
