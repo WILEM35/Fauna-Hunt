@@ -464,16 +464,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 	// message service, this quietly does nothing and the helper runs the game.
 	showVersion() {
 		const el = this.querySelector("#panelVersion");
-		if (!el) return;
-		// The tick count is a heartbeat. If it climbs, the panel's loop is
-		// alive and any fault is further down; if it sticks, the loop is dead
-		// and nothing else in here means anything. That distinction has cost
-		// several test flights to establish by other means.
-		const s = this.inSim;
-		el.textContent = "Version " + PANEL_VERSION
-			+ "  ticks " + (this.pollTicks || 0)
-			+ (s ? ("  asked " + (s.polls || 0) + "  answered " + (s.replies || 0)
-				+ "  rows " + (s.lastRowCount || 0)) : "  no module");
+		if (el) el.textContent = "Version " + PANEL_VERSION;
 	}
 
 	startInSim() {
@@ -514,7 +505,6 @@ class IngamePanelFaunaHunt extends TemplateElement {
 				this.updateStatusLine();
 			}
 			this.panelError = null;
-			this.showVersion();
 		} catch (err) {
 			this.panelError = (err && err.message) ? err.message : String(err);
 			// Keep the ticks going regardless. A panel that reports a fault
@@ -822,6 +812,8 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			note.textContent = "No reply from the simulator yet.";
 			return;
 		}
+		// Kept: if the panel ever faults again, saying so beats a blank list
+		// that sends someone hunting for animals that were never the problem.
 		if (this.panelError) {
 			note.textContent = "Panel error: " + this.panelError;
 			return;
@@ -840,18 +832,15 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		const offered = (rejected.not_huntable || 0) + (rejected.streaming_in || 0)
 			+ (stats.raw_returned || 0);
 		if (offered > 0) {
-			note.textContent = "The simulator offered " + offered
-				+ " nearby object(s), none of them huntable animals.";
+			note.textContent = "Nothing huntable nearby - the simulator has "
+				+ "people and vehicles here, but no animals.";
 			return;
 		}
 		if (!m.replies) {
-			note.textContent = "The module has not answered yet.";
+			note.textContent = "Starting up.";
 			return;
 		}
-		// Asked vs answered separates "the panel stopped asking" from "the
-		// module stopped answering". They look the same and need opposite fixes.
-		note.textContent = "Asked " + (m.polls || 0) + ", answered " + m.replies
-			+ ". The simulator listed no animals nearby.";
+		note.textContent = "";
 	}
 
 	updateHoldNote() {
