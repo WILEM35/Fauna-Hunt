@@ -799,3 +799,93 @@ and it is not worth revisiting.
 
 Back to the arrow on the left and the words. The size words keep their new
 form: "medium-sized animal", no article.
+
+# ============================================================
+# USER FEEDBACK from the flightsim.to release (2026-09-02)
+# 87 downloads, 5.0 from 2 reviews, 4 comments. NOT worked on.
+# ============================================================
+
+## BUG: the four choices do not match the animal people are looking at
+
+Reported by users and confirmed by the author. The most important item here --
+it strikes at the core mechanic. Someone is looking at an animal, taps it, and
+none of the four options obviously matches what is out of the window.
+
+**Strong hypothesis, untested:** the shortlist is drawn from the 107 SPECIES
+ENTRIES rather than the 61 headline animals. Twenty-two of those animals have
+subspecies -- Giraffe has eight, Brown Bear seven, Wildebeest five. If the four
+options can be four subspecies of the same animal, no amount of looking out of
+the window will separate them, because they are not visually distinct in the
+sim.
+
+Check `buildShortlist()` first: what pool does it draw distractors from? If it
+is the species table's roots rather than the `group` field, that is the bug and
+it is a small fix.
+
+Second candidate, also worth checking: whether the NAME shown on a correct
+answer is a subspecies ("E. White-bearded Wildebeest") when the player is
+thinking "wildebeest". That would feel wrong even when the answer is right.
+
+The author's own guess was the same territory: mixed animals nearby, or the
+sim's naming convention.
+
+## Requested: filter the list
+
+Two people, independently -- the most requested thing after the shortlist bug.
+
+* **Hide animals already found or captured**, so the list shows only what is
+  new. Note this is close to the existing "Recognise on sight" setting but not
+  the same: that names them, this would remove them.
+* **Filter to a single species**, so you can hunt one animal deliberately --
+  "only show me snow leopards".
+
+Both are list operations on data the panel already has, and both fit the
+existing settings pattern.
+
+## Requested: a radar-style view
+
+"A 'radar' view which shows where the animal sightings are. It will be easier
+to hone into that area."
+
+**Careful.** This is the one request that runs straight at the central design
+rule: never mark the animal precisely. A radar sweep with dots IS a map.
+
+There is a version that works -- a radar showing the SAME vagueness the text
+does, arcs and sectors rather than points, coarser the further out. That is
+worth considering. A literal position plot is not, and no amount of demand
+should change that: it deletes the game.
+
+## Requested: EFB integration
+
+Two people. One of them was emphatic about the condition:
+
+> "If you integrate into the EFB please keep the standalone toolbar widget
+> though. There's use cases for both, and not having to pull up the large EFB
+> which takes a huge amount of real estate makes the toolbar addon more useable
+> in a lot of cases, especially if you have other toolbar addons up as well."
+
+So: an EFB app IN ADDITION TO the toolbar panel, never instead of it.
+
+## Requested: herd behaviour and mustering
+
+"Any chance of some settings for bigger herds so we can do some herd mustering?
+Different animal speeds and herd behavior would add some challenges."
+
+**Probably not possible.** We do not control the animals -- the sim spawns and
+moves them, and nothing in the SDK exposes herd size or speed. Injecting our
+own animals was researched and looks feasible (`AICreateSimulatedObject`), but
+a planted animal likely stands still, because the walking comes from the sim's
+own fauna system. Worth answering honestly rather than leaving it open.
+
+The one real lever the player already has: the sim's own Fauna slider.
+
+## Context worth keeping
+
+One reviewer's framing is the best description of what this add-on is for, and
+is worth remembering when weighing the requests above:
+
+> "Real-world wildlife photographers go with guides and much more data than the
+> very uninformative heatmaps we're given in the sim, and your tool does a great
+> job providing that extra detail."
+
+The World Photographer missions are the use case people found on their own.
