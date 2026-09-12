@@ -23,6 +23,14 @@ PANEL = os.path.join(HERE, os.pardir, "PackageSources", "Copys", "fauna-hunt",
 
 SCRIPTS = ["FaunaSpeciesData.js", "FaunaInSim.js", "FaunaHunt.js"]
 
+# The EFB app lives in its own tree and is loaded by the simulator, not by our
+# page, so a syntax error in it never reaches the panel -- the app just never
+# appears in the EFB, with nothing said. Checked here for exactly that reason.
+EFB = os.path.join(HERE, os.pardir, "PackageSources", "Copys", "fauna-hunt",
+                   "Panel", "html_ui", "efb_ui", "efb_apps", "FaunaHuntApp")
+
+EFB_SCRIPTS = ["FaunaHuntApp.js"]
+
 
 # Functions that are called but defined nowhere.
 #
@@ -82,8 +90,10 @@ def main():
         return 1
 
     bad = 0
-    for name in SCRIPTS:
-        path = os.path.join(PANEL, name)
+    targets = ([(PANEL, name) for name in SCRIPTS]
+               + [(EFB, name) for name in EFB_SCRIPTS])
+    for folder, name in targets:
+        path = os.path.join(folder, name)
         if not os.path.exists(path):
             print("  MISSING  %s" % name)
             bad += 1

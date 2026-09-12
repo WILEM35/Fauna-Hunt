@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fauna Hunt</title>
+	<!-- GENERATED FILE - do not edit.
+	     Written by probe/make_efb_page.py from FaunaHunt.html on every build.
+	     Change the panel there; this follows. -->
+		<meta charset="utf-8"/>
+		<link rel="stylesheet" href="/SCSS/common.css"/>
+		<link rel="stylesheet" href="FaunaHunt.css"/>
+		<script type="text/javascript" src="/JS/coherent.js"></script>
+		<script type="text/javascript" src="/JS/common.js"></script>
+		<script type="text/javascript" src="/JS/buttons.js"></script>
+		<script type="text/javascript" src="/JS/dataStorage.js"></script>
+		<script type="text/javascript" src="/JS/simvar.js"></script>
+		<script type="text/javascript" src="/JS/Services/CommBus.js"></script>
+		<script type="text/javascript" src="/JS/Services/ToolBarPanels.js"></script>
+		<script type="text/javascript" src="/Pages/VCockpit/Instruments/Shared/BaseInstrument.js"></script>
+		<link rel="import" href="/templates/NewPushButton/NewPushButton.html"/>
+		<link rel="import" href="/templates/ingameUi/ingameUi.html"/>
+		<link rel="import" href="/templates/ingameUiHeader/ingameUiHeader.html"/>
+		<!-- Generated from Service/species.json; the panel reads the species
+		     table locally now instead of asking the helper program. -->
+		<script type="text/javascript" src="FaunaSpeciesData.js"></script>
+		<script type="text/javascript" src="FaunaInSim.js"></script>
+		<script type="text/javascript" src="FaunaHunt.js"></script>
+			<style>
+			/* The EFB gives the iframe a rectangle; the panel has to fill it.
+			   In the toolbar this comes from the sim's window frame, which is
+			   not here. */
+			html, body {
+				height: 100%;
+				margin: 0;
+				overflow: hidden;
+			}
+			ingamepanel-fauna-hunt {
+				display: block;
+				height: 100%;
+				min-height: 0;
+			}
+		</style>
+	</head>
+	<body class="border-box">
+	<ingamepanel-fauna-hunt>
+		<!-- EXPERIMENT (1.0.3): ingameUiFrame is the sim's own window-frame class.
+		     Two installed third-party panels set it; ours never did. It did NOT
+		     bring a close or pop-out control, and on its own it added an opaque
+		     backing that made even the clearest background setting look like
+		     frosted glass. panelInvisible is what removes that backing -- the
+		     panel paints its own background anyway, so the frame's is only ever
+		     in the way. -->
+			<section id="mainSection" class="main-sect">
+
+				<nav id="tabs" class="tabs">
+					<button type="button" class="tab is-active" data-view="hunt">Hunt</button>
+					<button type="button" class="tab" data-view="lifelist">Lifelist</button>
+					<button type="button" class="tab" data-view="settings">Settings</button>
+					<span id="scoreChip" class="score-chip">0</span>
+				</nav>
+
+				<div id="alert" class="alert hidden"></div>
+				<div id="offline" class="offline hidden">
+					<p class="offline-title">Waiting for the simulator</p>
+					<p class="offline-body">Load a flight and this fills in on its own.</p>
+				</div>
+
+				<!-- ---------------------------------------------------- hunt -->
+				<div id="viewHunt" class="view">
+					<!-- Drawn entirely from JS. Kept above the list so the
+					     shape of what is around you is read first and the
+					     detail second. -->
+					<div id="radarWrap" class="radar-wrap hidden">
+						<svg id="radar" class="radar" viewBox="0 0 240 240" aria-hidden="true"></svg>
+					</div>
+					<div class="spot-bar">
+						<span id="spotHint" class="spot-hint"></span>
+						<span id="listHold" class="list-hold hidden">list held</span>
+						<div id="sortToggle" class="sort-toggle">
+							<button type="button" class="sort-btn is-active" data-sort="near">Nearest</button>
+							<button type="button" class="sort-btn" data-sort="ahead">Ahead</button>
+						</div>
+					</div>
+					<div id="contactList" class="contact-list"></div>
+					<div id="huntEmpty" class="empty hidden">
+						<p>No contacts in range.</p>
+						<p class="hint">Fauna streams in closer to the ground, and further out with altitude. Try farmland, or climb to search wider.</p>
+						<p id="huntEmptyNote" class="hint"></p>
+					</div>
+				</div>
+
+				<!-- ------------------------------------------------ lifelist -->
+				<div id="viewLifelist" class="view hidden">
+					<div id="lifelistStats" class="lifelist-stats"></div>
+					<div id="lifelistBody" class="lifelist-body"></div>
+				</div>
+
+				<!-- ------------------------------------------------ settings -->
+				<div id="viewSettings" class="view hidden">
+					<div class="setting">
+						<label class="setting-label">Text size</label>
+						<div id="textSizeRow" class="seg"></div>
+						<p class="setting-blurb">Scales the whole panel. Medium matches a comfortable size in both 2D and VR.</p>
+					</div>
+					<div class="setting">
+						<label class="setting-label">Background</label>
+						<div id="backgroundRow" class="seg"></div>
+						<p class="setting-blurb">How much of the world shows through. Text gains a dark halo as the panel gets clearer, but Solid is still the easiest to read in VR.</p>
+					</div>
+					<div class="setting">
+						<label class="setting-label">Radar</label>
+						<div id="radarRow" class="seg"></div>
+						<p class="setting-blurb">A circular view at the top of the Hunt tab: you in the middle, nose up, each group a smudge sized by how many animals are in it. It is no more precise than the words in the list — you still have to go and find them.</p>
+					</div>
+					<div class="setting">
+						<label class="setting-label">Difficulty</label>
+						<div id="difficultyRow" class="seg"></div>
+						<p id="difficultyBlurb" class="setting-blurb"></p>
+					</div>
+					<div class="setting">
+						<label class="setting-label">Known species</label>
+						<div id="recognitionRow" class="seg"></div>
+						<p id="recognitionBlurb" class="setting-blurb"></p>
+					</div>
+					<div class="setting">
+						<label class="setting-label">Lifelist</label>
+						<button type="button" id="resetBtn" class="danger-btn">Reset all progress</button>
+						<p class="setting-blurb">Clears every sighting and your score. Cannot be undone.</p>
+					</div>
+					<p id="panelVersion" class="setting-blurb"></p>
+				</div>
+
+				<!-- --------------------------------------------------- quiz -->
+				<div id="quizOverlay" class="overlay hidden">
+					<div class="quiz">
+						<p class="quiz-kicker">You have eyes on something</p>
+						<p id="quizPrompt" class="quiz-prompt">What is it?</p>
+						<div id="quizOptions" class="quiz-options"></div>
+						<div class="quiz-actions">
+							<button type="button" id="quizCancel" class="link-btn">Back out (-5 pts)</button>
+							<button type="button" id="quizGiveUp" class="link-btn">I can't tell — show me</button>
+						</div>
+					</div>
+				</div>
+
+				<div id="resultOverlay" class="overlay hidden">
+					<div class="result">
+						<p id="resultTitle" class="result-title"></p>
+						<p id="resultSpecies" class="result-species"></p>
+						<p id="resultDetail" class="result-detail"></p>
+						<p id="resultPoints" class="result-points"></p>
+						<button type="button" id="resultClose" class="primary-btn">Continue</button>
+					</div>
+				</div>
+
+			</section>
+	</ingamepanel-fauna-hunt>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Fauna Hunt - state merge bench</title>
+<!-- Two panels can now run the same game at once: the toolbar window and the
+     EFB page, in separate JavaScript contexts, both writing to one storage key.
+     saveState() folds what is on disk into what the window holds before it
+     writes, so neither can delete the other's finds.
+
+     This exercises the SHIPPED saveState and mergeStoredInto. A lifelist is the
+     one thing in this game that cannot be earned back, so it gets a bench. -->
+<style>
+	body { margin: 0; padding: 18px; background: #1b2026; color: #e8eef2;
+		font-family: "Segoe UI", system-ui, sans-serif; }
+	h1 { font-size: 13px; letter-spacing: .12em; text-transform: uppercase;
+		color: #93a3ae; margin: 0 0 14px; font-weight: 600; }
+	#report { font-family: monospace; font-size: 12.5px; white-space: pre-wrap;
+		line-height: 1.65; }
+	.ok { color: #6fd08c; }
+	.bad { color: #d9694f; }
+</style>
+</head>
+<body>
+<h1>State merge bench</h1>
+<div id="report">running...</div>
+
+<script>
+var DISK = {};
+class TemplateElement extends HTMLElement {
+	connectedCallback() {}
+	disconnectedCallback() {}
+}
+window.TemplateElement = TemplateElement;
+window.checkAutoload = function () {};
+window.GetStoredData = function (k) { return Object.prototype.hasOwnProperty.call(DISK, k) ? DISK[k] : null; };
+window.SetStoredData = function (k, v) { DISK[k] = v; };
+</script>
+<script src="../PackageSources/Copys/fauna-hunt/Panel/html_ui/InGamePanels/FaunaHunt/FaunaHunt.js"></script>
+<script>
+(function () {
+	var results = [];
+	function check(name, condition, detail) {
+		results.push({ name: name, pass: !!condition, detail: detail || "" });
+	}
+
+	// A panel with just enough of itself to save and merge.
+	function panel(state) {
+		var el = document.createElement("ingamepanel-fauna-hunt");
+		el.loaded = true;
+		Object.keys(state).forEach(function (k) { el.state[k] = state[k]; });
+		return el;
+	}
+	function onDisk() {
+		var raw = DISK[Object.keys(DISK)[0]];
+		return raw ? JSON.parse(raw) : null;
+	}
+	function reset() { DISK = {}; }
+
+	// --- 1. the EFB finds something the toolbar never saw -------------------
+	reset();
+	panel({
+		score: 40,
+		lifelist: { Zebra: { first: "2026-09-10", lat: 1, lon: 2, best: 20, count: 1 } },
+		logged: { "z@1": { species: "Zebra" } },
+		captured: {}, attempts: {},
+	}).saveState();
+
+	var toolbar = panel({
+		score: 15,
+		lifelist: { Camel: { first: "2026-09-11", lat: 3, lon: 4, best: 15, count: 1 } },
+		logged: { "c@1": { species: "Camel" } },
+		captured: {}, attempts: {},
+	});
+	toolbar.saveState();
+
+	var saved = onDisk();
+	check("the other window's species survives", saved.lifelist.Zebra,
+		"Zebra should still be there after the toolbar saved");
+	check("this window's species is written", saved.lifelist.Camel);
+	check("both sightings are kept", saved.logged["z@1"] && saved.logged["c@1"]);
+	check("score takes the higher of the two", saved.score === 40, "got " + saved.score);
+
+	// --- 2. the same species found in both windows -------------------------
+	reset();
+	panel({
+		score: 0,
+		lifelist: { Giraffe: { first: "2026-09-01", lat: 10, lon: 20, best: 30, count: 4 } },
+		logged: {}, captured: {}, attempts: {},
+	}).saveState();
+
+	var second = panel({
+		score: 0,
+		lifelist: { Giraffe: { first: "2026-09-08", lat: 99, lon: 99, best: 12, count: 9 } },
+		logged: {}, captured: {}, attempts: {},
+	});
+	second.saveState();
+
+	var g = onDisk().lifelist.Giraffe;
+	check("the earliest sighting is the one kept", g.first === "2026-09-01", "got " + g.first);
+	check("the place goes with that first sighting", g.lat === 10 && g.lon === 20,
+		"got " + g.lat + "," + g.lon);
+	check("best score is the better of the two", g.best === 30, "got " + g.best);
+	check("count is the higher of the two", g.count === 9, "got " + g.count);
+
+	// --- 3. attempts: the longer record wins -------------------------------
+	reset();
+	panel({ score: 0, lifelist: {}, logged: {}, captured: {},
+		attempts: { "k1": { tries: 3, wrong: ["a", "b", "c"], options: [] } } }).saveState();
+	panel({ score: 0, lifelist: {}, logged: {}, captured: {},
+		attempts: { "k1": { tries: 1, wrong: ["a"], options: [] } } }).saveState();
+	check("guesses already spent are not handed back",
+		onDisk().attempts.k1.tries === 3, "got " + onDisk().attempts.k1.tries);
+
+	// --- 4. captures union both ways ---------------------------------------
+	reset();
+	panel({ score: 0, lifelist: {}, logged: {}, attempts: {},
+		captured: { "a": true } }).saveState();
+	panel({ score: 0, lifelist: {}, logged: {}, attempts: {},
+		captured: { "b": true } }).saveState();
+	var cap = onDisk().captured;
+	check("captures from both windows are kept", cap.a === true && cap.b === true);
+
+	// --- 5. RESET must actually reset --------------------------------------
+	// The trap in all of the above: if reset merged, it would read back
+	// everything it had just cleared and write it out again.
+	reset();
+	panel({
+		score: 500,
+		lifelist: { Zebra: { first: "2026-09-01", best: 20, count: 3 } },
+		logged: { "z@1": { species: "Zebra" } },
+		captured: { "z@1": true }, attempts: { "z@1": { tries: 2 } },
+	}).saveState();
+
+	var wiper = panel({ score: 0, lifelist: {}, logged: {}, captured: {}, attempts: {} });
+	wiper.saveState(false);
+
+	var after = onDisk();
+	check("reset clears the lifelist", Object.keys(after.lifelist).length === 0,
+		"left " + Object.keys(after.lifelist).length + " species");
+	check("reset clears the score", after.score === 0, "got " + after.score);
+	check("reset clears sightings and captures",
+		Object.keys(after.logged).length === 0 && Object.keys(after.captured).length === 0);
+
+	// --- 6. corrupt disk must not take the session with it -----------------
+	reset();
+	DISK[Object.keys(DISK)[0] || "FaunaHunt_State"] = "{not json";
+	var survivor = panel({
+		score: 77,
+		lifelist: { Bison: { first: "2026-09-11", best: 10, count: 1 } },
+		logged: {}, captured: {}, attempts: {},
+	});
+	var threw = false;
+	try { survivor.saveState(); } catch (err) { threw = true; }
+	check("a corrupt save does not throw", !threw);
+	check("this window's progress still writes", survivor.state.lifelist.Bison);
+
+	var bad = results.filter(function (r) { return !r.pass; });
+	var lines = results.map(function (r) {
+		return (r.pass ? "  ok    " : "  FAIL  ") + r.name
+			+ (r.pass || !r.detail ? "" : "   -- " + r.detail);
+	});
+	lines.push("");
+	lines.push(bad.length ? "FAIL (" + bad.length + " of " + results.length + ")"
+		: "PASS - " + results.length + " checks, nothing lost");
+	var report = document.getElementById("report");
+	report.className = bad.length ? "bad" : "ok";
+	report.textContent = lines.join("\n");
+})();
+</script>
+</body>
+</html>

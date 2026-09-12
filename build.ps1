@@ -72,6 +72,17 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
+# The EFB page is the same panel without the sim's toolbar window frame, so it
+# is generated from FaunaHunt.html rather than kept as a second hand-edited
+# copy. The test harness kept its own copy and quietly fell four features
+# behind; once was enough.
+Write-Host "Generating the EFB page..." -ForegroundColor Cyan
+& python "$ProjectDir\probe\make_efb_page.py"
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Could not generate the EFB page." -ForegroundColor Red
+    exit 1
+}
+
 Write-Host "Checking the panel scripts..." -ForegroundColor Cyan
 & python "$ProjectDir\probe\check_js.py"
 if ($LASTEXITCODE -ne 0) {

@@ -568,10 +568,81 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		if (this.view === "lifelist") this.renderLifelist();
 	}
 
-	saveState() {
+	// Fold whatever is on disk into what this window holds, so two windows
+	// cannot overwrite each other's finds.
+	//
+	// Since the EFB app appeared there can be TWO panels running the same game
+	// at once -- the toolbar window and the EFB page -- in separate JavaScript
+	// contexts, each with its own copy of the state and both writing to the same
+	// key. Without this, identifying an animal in one and then touching anything
+	// in the other would write a copy that had never heard of it, and the
+	// sighting would be gone. Lifelists are the one thing in here that cannot be
+	// earned back.
+	//
+	// Collections are unioned and never subtracted. Settings are NOT merged:
+	// this window just set them, so they win. Score takes the higher of the two,
+	// which can under-count by a few points if both windows are scoring in the
+	// same second -- a trade made knowingly against losing a species.
+	mergeStoredInto(state) {
+		let stored = null;
+		try {
+			const raw = GetStoredData(STORAGE_KEY);
+			if (!raw) return;
+			stored = JSON.parse(raw);
+		} catch (err) {
+			return;   // unreadable or corrupt: this window's copy stands
+		}
+		if (!stored || typeof stored !== "object") return;
+
+		if (typeof stored.score === "number") {
+			state.score = Math.max(state.score || 0, stored.score);
+		}
+
+		const lifelist = stored.lifelist || {};
+		Object.keys(lifelist).forEach((key) => {
+			const theirs = lifelist[key];
+			const mine = state.lifelist[key];
+			if (!mine) {
+				state.lifelist[key] = theirs;
+				return;
+			}
+			// Keep the FIRST sighting, wherever it happened, and the best of
+			// everything else.
+			if (theirs.first && (!mine.first || theirs.first < mine.first)) {
+				mine.first = theirs.first;
+				mine.lat = theirs.lat;
+				mine.lon = theirs.lon;
+			}
+			mine.best = Math.max(mine.best || 0, theirs.best || 0);
+			mine.count = Math.max(mine.count || 0, theirs.count || 0);
+		});
+
+		["logged", "captured"].forEach((field) => {
+			const theirs = stored[field] || {};
+			Object.keys(theirs).forEach((key) => {
+				if (!state[field][key]) state[field][key] = theirs[key];
+			});
+		});
+
+		const attempts = stored.attempts || {};
+		Object.keys(attempts).forEach((key) => {
+			const theirs = attempts[key];
+			const mine = state.attempts[key];
+			// More tries means more was learned about that contact; keeping the
+			// shorter record would hand back a guess the player already spent.
+			if (!mine || (theirs && (theirs.tries || 0) > (mine.tries || 0))) {
+				state.attempts[key] = theirs;
+			}
+		});
+	}
+
+	// `merge` is false only for Reset all progress: merging there would read
+	// back everything that was just cleared and put it straight in again.
+	saveState(merge = true) {
 		// Never write before the load has settled -- see loadState().
 		if (!this.loaded) return;
 		try {
+			if (merge) this.mergeStoredInto(this.state);
 			SetStoredData(STORAGE_KEY, JSON.stringify(this.state));
 		} catch (err) {
 			// Nothing useful to do -- the session still plays, it just won't persist.
@@ -1744,7 +1815,10 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.resetArmed = false;
 		this.nodes.resetBtn.textContent = "Reset all progress";
 		this.nodes.resetBtn.classList.remove("is-armed");
-		this.saveState();
+		// Without `false` the merge in saveState would read back everything
+		// just cleared and write it straight out again -- a reset that resets
+		// nothing.
+		this.saveState(false);
 		this.renderScore();
 		this.renderLifelist();
 		this.renderHunt();
