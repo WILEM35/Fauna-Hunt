@@ -889,3 +889,61 @@ is worth remembering when weighing the requests above:
 > job providing that extra detail."
 
 The World Photographer missions are the use case people found on their own.
+
+# Requests -- 11 September 2026
+
+Four items raised in one go. Nothing built yet; the session was stopped before
+any of it was started.
+
+## 1. Put the arrow and the distance together
+
+The direction arrow sits on the left of the contact box and the distance sits
+away from it, so reading one contact takes two glances. Move them so they sit
+beside each other and one look answers "which way, how far".
+
+Cosmetic -- mock-up first, per standing rule.
+
+## 2. Radar view
+
+Asked for by a user on flightsim.to, and now by Wilem, who wants to test it.
+
+A circular display, aircraft in the centre, each group of animals drawn as a
+circle. Distance from centre is relative range; **circle size is the number of
+animals**. The point is to fly toward the big herds instead of being pulled off
+course by a stray pair in an odd direction.
+
+**The concern, stated once:** a sweep with dots plotted at true positions is a
+map, and the whole design rests on markers being deliberately fuzzy. A version
+that keeps the rule would quantise the bearing into arcs and the range into
+bands -- the same vagueness the words already carry, drawn instead of spoken.
+Build that version, not a literal plot.
+
+Mock-up first.
+
+## 3. Pop-out is missing from the toolbar panel
+
+The panel offers only minimize and close -- no pop-out box, unlike other
+toolbar add-ons.
+
+**Cause found:** `InGamePanel_FaunaHunt.xml` declares `resizeDirections`, the
+sizes and the icon, and nothing else. No pop-out attribute. This is a panel
+definition change, not a code change. Same will apply to Vector Deck and
+VoiceDeck, whose definitions are written the same way.
+
+## 4. EFB integration
+
+How hard is it to also appear in the in-aircraft EFB, the way Navigraph and
+Little NavMap VR do.
+
+**Condition, from Wilem and from a commenter:** the standalone toolbar window
+stays. EFB *as well as*, never instead of.
+
+Three working examples are already installed and can be read rather than
+guessed at:
+
+* `bkiel-efb-lnm-vr` -- Little NavMap in the EFB
+* `navigraph-efb-simbriefapp` -- Navigraph / SimBrief
+* `fsdreamteam-gsx-efb` -- GSX
+
+All three sit in the Community folder, and the first two are also in
+`C:\FS2020\Add-ons\Utilities`.
