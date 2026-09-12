@@ -16,7 +16,7 @@
 // Rewritten by build.ps1 from the package version, so it cannot drift.
 // Shown in Settings: without it there is no way to tell which build is
 // actually running, and a stale one looks exactly like a bug that will not die.
-const PANEL_VERSION = "2.2.0";
+const PANEL_VERSION = "2.3.0";
 
 const STORAGE_KEY = "FaunaHunt_State_v1";
 const POLL_INTERVAL_MS = 1000;
@@ -702,6 +702,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 				this.applySnapshot(this.inSim.snapshot);
 			} else {
 				this.setStatus("nosim");
+				this.describeWaiting();
 				this.updateStatusLine();
 			}
 			this.panelError = null;
@@ -728,6 +729,39 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.renderAlert(contacts);
 		if (this.view === "hunt") this.renderHunt();
 		this.updateStatusLine();
+	}
+
+	// "Waiting for the simulator" is true but useless on its own: it looks the
+	// same whether nothing has been asked, nothing has come back, or the call
+	// itself failed. Those are three different faults with three different
+	// fixes, and the difference matters most in the EFB, where the panel can
+	// sit waiting while the toolbar window beside it is working perfectly.
+	//
+	// Counts rather than prose, because this ends up in a screenshot.
+	describeWaiting() {
+		const body = this.nodes.offlineBody;
+		if (!body || !this.inSim) return;
+		const asked = this.inSim.polls || 0;
+		const answered = this.inSim.replies || 0;
+		const fault = this.inSim.lastError || this.inSim.callError || null;
+
+		if (fault) {
+			body.textContent = "The simulator refused the request: " + fault;
+			return;
+		}
+		if (!asked) {
+			body.textContent = "Starting up.";
+			return;
+		}
+		if (!answered) {
+			body.textContent = "Asked the simulator " + asked + " "
+				+ plural(asked, "time", "times") + " and heard nothing back. "
+				+ "If another Fauna Hunt window is working, close it and see "
+				+ "whether this one starts.";
+			return;
+		}
+		body.textContent = "Load a flight and contacts appear on their own. "
+			+ "(asked " + asked + ", answered " + answered + ")";
 	}
 
 	setStatus(status) {

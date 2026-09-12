@@ -43,6 +43,15 @@ EFB_STYLE = """		<style>
 				margin: 0;
 				overflow: hidden;
 			}
+			/* The EFB paints its own bar across the top of the app area -- the
+			   notification bell and the clock -- and it sits OVER whatever the
+			   app draws. Navigraph's SimBrief app reserves exactly this much
+			   for it (pt-[40px] in their own markup); without it our tab row
+			   is half-hidden behind the bell. */
+			body {
+				padding-top: 40px;
+				box-sizing: border-box;
+			}
 			ingamepanel-fauna-hunt {
 				display: block;
 				height: 100%;
