@@ -947,3 +947,78 @@ guessed at:
 
 All three sit in the Community folder, and the first two are also in
 `C:\FS2020\Add-ons\Utilities`.
+
+# Test: is fauna placement deterministic? -- 12 September 2026
+
+Raised by another add-on developer asking whether his program could scan the
+simulator and build a database of where animals are. Worth settling, because
+the answer decides something about this add-on and not just about his.
+
+## What is already known
+
+There is no global query. `RequestDataOnSimObjectType` with
+`SIMCONNECT_SIMOBJECT_TYPE_ANIMAL` only ever returns what is currently
+streamed in -- roughly 3 km on the deck, out to about 30 km at altitude -- and
+caps at 250 objects. Nothing exists until you are near it, and the sim's own
+Fauna slider changes how much spawns, so two people at the same spot do not
+see the same thing.
+
+A global crawl is therefore arithmetic, not engineering: land surface is about
+150 million km2, and at the reliable on-deck radius that is millions of
+samples. Sampling from altitude covers more ground per stop but the 250 cap
+truncates exactly the dense places worth recording.
+
+A **targeted** crawl of a few hundred chosen places -- national parks, the
+airports people fly from, a spread of biomes -- is a weekend of automated
+flying and would produce something genuinely useful. Whether it is worth
+anything depends entirely on the test below.
+
+## The unknown
+
+Whether the same place yields the same SPECIES every time.
+
+Presence is clearly stable: loading at Seronera reliably produces ten or more
+groups within 2 km, every time. That is not the same claim as the species
+being stable.
+
+## The test
+
+At two or three fixed spots -- HTSN Seronera, somewhere temperate with
+livestock, and one mountain location -- load in ten times each and record the
+species list the panel reports. Keep the time of day, the season and the Fauna
+slider identical between runs, since all three plausibly feed the spawner.
+
+Compare the lists, not the counts or the positions. Individual herds drift and
+stream in and out; that is expected and already handled.
+
+## What each outcome means
+
+**Same species every time.** Placement is baked to biome or region. A
+species-by-place database is meaningful, a targeted crawl is worth doing, and
+-- importantly -- somebody else can build one. Fauna Hunt should assume that
+eventually happens and be built so it still has a point when it does.
+
+**Species vary between loads.** Only the broad regional statement survives,
+which is what the lifelist hints already give you. A database would add
+nothing the sim's own fauna heatmap does not, and the question is closed.
+
+## Why it matters here
+
+A public animal-location database is precisely the thing this add-on is built
+not to be. If one exists and is any good, finding the animals stops being the
+game.
+
+That is not a reason to discourage anyone -- the demand is real, and a
+reviewer called the sim's own heatmaps uninformative in as many words. It is a
+reason to know the answer before someone else does. Fauna Hunt's defence was
+never that the animals are hard to locate; it is that telling a Grant's
+gazelle from a Thomson's at 400 metres is hard. Worth remembering if this ever
+has to be argued.
+
+## Related, not done
+
+EFB integration is still investigation only -- nothing is built, which is why
+no Fauna Hunt icon appears in the EFB. The app list observed on 12 September
+(GSX, Little Navmap VR, Navigraph Charts, SayIntentions.AI, SimBrief Dispatch)
+confirms where the icon would sit and that third-party apps reach that screen
+normally.
