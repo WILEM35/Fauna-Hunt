@@ -213,20 +213,35 @@
 			// one. Loading the service here gives the iframe an outer window to
 			// borrow it from; see busCandidates() in FaunaInSim.js, which walks
 			// out to the parent before trusting its own.
+			const loader = (Container.instance && Container.instance.loadJs)
+				? Container.instance.loadJs.bind(Container.instance)
+				: null;
+
+			const need = [];
 			if (typeof window.RegisterCommBusListener !== "function") {
+				need.push("coui://html_ui/JS/Services/CommBus.js");
+			}
+			// Same story for the simulator variables. With the bus borrowed the
+			// panel started hearing from the module, then sat on "waiting for
+			// your aircraft's position" -- an iframe's SimVar answers nothing
+			// useful either, for the same reason.
+			if (typeof window.SimVar === "undefined") {
+				need.push("coui://html_ui/JS/simvar.js");
+			}
+
+			if (need.length) {
 				try {
-					const loader = (Container.instance && Container.instance.loadJs)
-						? Container.instance.loadJs.bind(Container.instance)
-						: null;
 					if (loader) {
-						await loader("coui://html_ui/JS/Services/CommBus.js");
+						for (const src of need) {
+							await loader(src);
+						}
 					}
 				} catch (err) {
 					// Not fatal here. The panel still loads and says plainly
 					// that it is asking and hearing nothing, which is a far
 					// better failure than a blank app.
-					console.error("Fauna Hunt EFB: could not load the message "
-						+ "bus service into the EFB page.", err);
+					console.error("Fauna Hunt EFB: could not load the simulator "
+						+ "services into the EFB page.", err);
 				}
 			}
 			return Promise.resolve();

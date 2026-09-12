@@ -121,13 +121,77 @@ const CAMERA_STATE_COCKPIT = 2;
 // perfect in 2D and useless in VR, so this decides which reading to trust
 // rather than guessing from the numbers themselves.
 let inVrMode = false;
-try {
-	if (typeof Coherent !== "undefined" && Coherent.on) {
-		Coherent.on("SwitchVRModeState", (state) => { inVrMode = !!state; });
+
+// Which windows might hold the simulator's own globals.
+//
+// Framed -- which means inside the EFB -- the outer windows come first, for the
+// same reason the message bus does: the iframe HAS a SimVar object, it simply
+// answers nothing useful, because these globals belong to the page the
+// simulator loaded. Unframed, which is every toolbar window, this is just
+// [window] and nothing outside is considered.
+function simHostWindows() {
+	const list = [];
+	if (window.parent !== window || window.top !== window) {
+		[window.parent, window.top].forEach((win) => {
+			try {
+				if (win && win !== window && list.indexOf(win) < 0) list.push(win);
+			} catch (err) {
+				/* cross-origin: not ours to use */
+			}
+		});
 	}
-} catch (err) {
-	/* no VR signal available; 2D behaviour is the safe default */
+	list.push(window);
+	return list;
 }
+
+// Cached only once a window has actually ANSWERED. Caching a failure would be
+// worse than not caching at all: before a flight loads, the right window
+// reports nothing useful either, and we would pin ourselves to the wrong one
+// for the whole session.
+let provenSimVarWindow = null;
+
+function simVars() {
+	if (provenSimVarWindow) {
+		try {
+			if (provenSimVarWindow.SimVar) return provenSimVarWindow.SimVar;
+		} catch (err) {
+			provenSimVarWindow = null;
+		}
+	}
+	const hosts = simHostWindows();
+	let firstAvailable = null;
+	for (let i = 0; i < hosts.length; i++) {
+		try {
+			const sv = hosts[i].SimVar;
+			if (!sv || typeof sv.GetSimVarValue !== "function") continue;
+			if (!firstAvailable) firstAvailable = sv;
+			const lat = sv.GetSimVarValue("PLANE LATITUDE", "degrees");
+			if (typeof lat === "number" && isFinite(lat) && Math.abs(lat) > 1e-6) {
+				provenSimVarWindow = hosts[i];
+				return sv;
+			}
+		} catch (err) {
+			/* try the next one */
+		}
+	}
+	// Nothing has proven itself yet -- on the menu screen nothing can. Hand
+	// back the first that exists so a cold start reads correctly the moment
+	// the flight loads.
+	return firstAvailable;
+}
+
+// Attached to every candidate window: the signal is harmless to hear twice and
+// costly to miss, since it decides whether the view rule applies at all.
+simHostWindows().forEach((win) => {
+	try {
+		const coherent = win.Coherent;
+		if (coherent && coherent.on) {
+			coherent.on("SwitchVRModeState", (state) => { inVrMode = !!state; });
+		}
+	} catch (err) {
+		/* no VR signal from this window; 2D behaviour is the safe default */
+	}
+});
 
 // Where the aircraft is. Read HERE, in the panel, rather than asked of the
 // module.
@@ -142,11 +206,13 @@ try {
 // read them itself, with no round trip and nothing in between to fail.
 function readAircraft() {
 	try {
-		const lat = SimVar.GetSimVarValue("PLANE LATITUDE", "degrees");
-		const lon = SimVar.GetSimVarValue("PLANE LONGITUDE", "degrees");
-		const alt = SimVar.GetSimVarValue("PLANE ALTITUDE", "feet");
-		const hdg = SimVar.GetSimVarValue("PLANE HEADING DEGREES TRUE", "degrees");
-		const gs = SimVar.GetSimVarValue("GROUND VELOCITY", "knots");
+		const sv = simVars();
+		if (!sv) return null;
+		const lat = sv.GetSimVarValue("PLANE LATITUDE", "degrees");
+		const lon = sv.GetSimVarValue("PLANE LONGITUDE", "degrees");
+		const alt = sv.GetSimVarValue("PLANE ALTITUDE", "feet");
+		const hdg = sv.GetSimVarValue("PLANE HEADING DEGREES TRUE", "degrees");
+		const gs = sv.GetSimVarValue("GROUND VELOCITY", "knots");
 		if (typeof lat !== "number" || typeof lon !== "number") return null;
 		if (!isFinite(lat) || !isFinite(lon)) return null;
 		if (Math.abs(lat) > 90 || Math.abs(lon) > 180) return null;
@@ -168,9 +234,11 @@ function readView(aircraftHeading) {
 	let pitch = 0;
 	let yaw = 0;
 	try {
-		state = SimVar.GetSimVarValue("CAMERA STATE", "number");
-		pitch = SimVar.GetSimVarValue("CAMERA GAMEPLAY PITCH YAW:0", "degree");
-		yaw = SimVar.GetSimVarValue("CAMERA GAMEPLAY PITCH YAW:1", "degree");
+		const sv = simVars();
+		if (!sv) return null;
+		state = sv.GetSimVarValue("CAMERA STATE", "number");
+		pitch = sv.GetSimVarValue("CAMERA GAMEPLAY PITCH YAW:0", "degree");
+		yaw = sv.GetSimVarValue("CAMERA GAMEPLAY PITCH YAW:1", "degree");
 	} catch (err) {
 		return null;
 	}
