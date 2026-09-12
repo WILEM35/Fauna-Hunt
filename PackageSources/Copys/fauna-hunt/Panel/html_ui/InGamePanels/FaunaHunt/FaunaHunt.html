@@ -13,6 +13,7 @@
 		<script type="text/javascript" src="/JS/Services/CommBus.js"></script>
 		<script type="text/javascript" src="/JS/Services/ToolBarPanels.js"></script>
 		<script type="text/javascript" src="/Pages/VCockpit/Instruments/Shared/BaseInstrument.js"></script>
+		<link rel="import" href="/templates/NewPushButton/NewPushButton.html"/>
 		<link rel="import" href="/templates/ingameUi/ingameUi.html"/>
 		<link rel="import" href="/templates/ingameUiHeader/ingameUiHeader.html"/>
 		<!-- Generated from Service/species.json; the panel reads the species
@@ -48,6 +49,12 @@
 
 					<!-- ---------------------------------------------------- hunt -->
 					<div id="viewHunt" class="view">
+						<!-- Drawn entirely from JS. Kept above the list so the
+						     shape of what is around you is read first and the
+						     detail second. -->
+						<div id="radarWrap" class="radar-wrap hidden">
+							<svg id="radar" class="radar" viewBox="0 0 240 240" aria-hidden="true"></svg>
+						</div>
 						<div class="spot-bar">
 							<span id="spotHint" class="spot-hint"></span>
 							<span id="listHold" class="list-hold hidden">list held</span>
@@ -81,6 +88,11 @@
 							<label class="setting-label">Background</label>
 							<div id="backgroundRow" class="seg"></div>
 							<p class="setting-blurb">How much of the world shows through. Text gains a dark halo as the panel gets clearer, but Solid is still the easiest to read in VR.</p>
+						</div>
+						<div class="setting">
+							<label class="setting-label">Radar</label>
+							<div id="radarRow" class="seg"></div>
+							<p class="setting-blurb">A circular view at the top of the Hunt tab: you in the middle, nose up, each group a smudge sized by how many animals are in it. It is no more precise than the words in the list — you still have to go and find them.</p>
 						</div>
 						<div class="setting">
 							<label class="setting-label">Difficulty</label>

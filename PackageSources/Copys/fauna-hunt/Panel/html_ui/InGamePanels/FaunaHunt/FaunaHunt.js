@@ -16,7 +16,7 @@
 // Rewritten by build.ps1 from the package version, so it cannot drift.
 // Shown in Settings: without it there is no way to tell which build is
 // actually running, and a stale one looks exactly like a bug that will not die.
-const PANEL_VERSION = "2.1.4";
+const PANEL_VERSION = "2.2.0";
 
 const STORAGE_KEY = "FaunaHunt_State_v1";
 const POLL_INTERVAL_MS = 1000;
@@ -49,6 +49,39 @@ const SORT_MODES = {
 	ahead: { label: "Ahead",   blurb: "what you can fly at without turning" },
 };
 const DEFAULT_SORT = "near";
+
+// The radar. A circular view at the top of the Hunt tab: you in the middle,
+// nose up, each herd a smudge. Asked for so that a big group pulls the eye and
+// a stray pair in an odd direction does not.
+//
+// It is drawn to EXACTLY the precision the words carry and no further. Bearing
+// is quantised to the same step as the text for that tier, and each contact is
+// spread across its whole distance bracket rather than marked at a point. A dot
+// at the true position would be a map, and the game is built on not having one.
+//
+// Herd size is the one place the radar could say more than the text, because at
+// long range the text withholds the count completely. So size is bucketed --
+// on its own, a few, a lot -- which is enough to steer by and still not a
+// number you could count on.
+const RADAR_MODES = {
+	off:   { label: "Off",   em: 0 },
+	small: { label: "Small", em: 8.5 },
+	large: { label: "Large", em: 13 },
+};
+const DEFAULT_RADAR = "small";
+
+// Bearing precision per tier, matched to the words in describeContact(). If
+// one of those steps ever changes, change it here too -- an arrow or a smudge
+// finer than the sentence beside it is a leak.
+const RADAR_STEPS = { sector: 45, coarse: 30, fine: 10, close: 30 };
+
+// Smudge radius, as a fraction of the largest, by herd size.
+const RADAR_BUCKETS = [
+	{ upTo: 2, scale: 0.4 },
+	{ upTo: 9, scale: 0.68 },
+	{ upTo: Infinity, scale: 1 },
+];
+const RADAR_BLOB_MAX = 19;   // viewBox units
 // The sim's stored data is not always readable the instant a panel opens.
 // Keep looking for this long before concluding that nothing is saved.
 const LOAD_RETRIES = 12;
@@ -206,6 +239,32 @@ function distanceBracket(metres) {
 	return Math.floor(km) + " to " + Math.ceil(km === Math.floor(km) ? km + 1 : km) + " km";
 }
 
+// The same brackets distanceBracket() puts into words, as numbers -- so a
+// smudge on the radar covers precisely the span the sentence claims and never
+// a metre less.
+function distanceBand(metres) {
+	if (metres < 1000) {
+		const low = Math.floor(metres / 250) * 250;
+		return [low, low + 250];
+	}
+	const km = Math.floor(metres / 1000);
+	return [km * 1000, (km + 1) * 1000];
+}
+
+function radarBucket(count) {
+	const n = count || 1;
+	for (let i = 0; i < RADAR_BUCKETS.length; i++) {
+		if (n <= RADAR_BUCKETS[i].upTo) return RADAR_BUCKETS[i].scale;
+	}
+	return 1;
+}
+
+function rangeLabel(metres) {
+	if (metres < 1000) return Math.round(metres) + " m";
+	const km = metres / 1000;
+	return (km < 10 ? km.toFixed(1) : String(Math.round(km))) + " km";
+}
+
 function roundTo(value, step) {
 	return Math.round(value / step) * step;
 }
@@ -252,6 +311,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			background: DEFAULT_BACKGROUND,
 			recognition: DEFAULT_RECOGNITION,
 			sortMode: DEFAULT_SORT,
+			radar: DEFAULT_RADAR,
 			lifelist: {},   // species root -> { first, lat, lon, best, count }
 			logged: {},     // contact key -> {species, lat, lon} once identified
 			captured: {},   // contact key -> true once you got close enough
@@ -294,6 +354,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.renderRecognition();
 		this.renderScore();
 		this.renderSort();
+		this.renderRadar();
 		this.showVersion();
 		this.startInSim();
 		this.fetchSpecies();
@@ -354,6 +415,9 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			recognitionBlurb: pick("recognitionBlurb"),
 			resetBtn: pick("resetBtn"),
 			sortToggle: pick("sortToggle"),
+			radarWrap: pick("radarWrap"),
+			radar: pick("radar"),
+			radarRow: pick("radarRow"),
 			quizOverlay: pick("quizOverlay"),
 			quizPrompt: pick("quizPrompt"),
 			quizOptions: pick("quizOptions"),
@@ -480,6 +544,8 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		if (this.state.background === "slight") this.state.background = "tinted";
 		if (!BACKGROUNDS[this.state.background]) this.state.background = DEFAULT_BACKGROUND;
 		if (!RECOGNITION[this.state.recognition]) this.state.recognition = DEFAULT_RECOGNITION;
+		if (!SORT_MODES[this.state.sortMode]) this.state.sortMode = DEFAULT_SORT;
+		if (!RADAR_MODES[this.state.radar]) this.state.radar = DEFAULT_RADAR;
 		if (!this.state.attempts) this.state.attempts = {};
 		if (!this.state.captured) this.state.captured = {};
 		if (!this.state.lifelist) this.state.lifelist = {};
@@ -496,6 +562,8 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.applyBackground();
 		this.renderRecognition();
 		this.renderScore();
+		this.renderSort();
+		this.renderRadar();
 		if (this.view === "hunt") this.renderHunt();
 		if (this.view === "lifelist") this.renderLifelist();
 	}
@@ -727,10 +795,146 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		return ahead.concat(behind);
 	}
 
+	// ------------------------------------------------------------- radar
+
+	// Everything drawn here is quantised before it is placed -- see RADAR_MODES
+	// for why. Rebuilt whole on each poll: it is a few hundred bytes of SVG and
+	// reconciling it would cost more than it saves.
+	drawRadar(contacts) {
+		const wrap = this.nodes.radarWrap;
+		const svg = this.nodes.radar;
+		if (!wrap || !svg) return;
+
+		const mode = RADAR_MODES[this.state.radar] || RADAR_MODES[DEFAULT_RADAR];
+		if (!mode.em) {
+			wrap.classList.add("hidden");
+			return;
+		}
+		wrap.classList.remove("hidden");
+		wrap.style.setProperty("--fh-radar", mode.em + "em");
+
+		// Colours come from the stylesheet rather than being repeated here, so
+		// the radar cannot drift away from the rest of the panel.
+		const css = getComputedStyle(this);
+		const colour = (name, fallback) =>
+			(css.getPropertyValue(name) || "").trim() || fallback;
+		const accent = colour("--fh-accent", "#6fd08c");
+		const dim = colour("--fh-dim", "#b6c3cc");
+		const faint = colour("--fh-faint", "#8b98a4");
+
+		const usable = contacts.filter((c) =>
+			typeof c.relative_bearing_deg === "number"
+			&& typeof c.distance_m === "number");
+
+		// Scale to the furthest contact, rounded out to the end of its own
+		// bracket, so the ring is always a distance the list has already said
+		// out loud and the display is never mostly empty.
+		let max = 0;
+		usable.forEach((c) => { max = Math.max(max, distanceBand(c.distance_m)[1]); });
+		if (max < 1000) max = usable.length ? 1000 : 2000;
+
+		const CX = 120, CY = 120, R = 103;
+		const fix = (n) => Math.round(n * 10) / 10;
+		// Square root, not linear: linear crushes everything close to you into
+		// the middle, and close is where the decisions are.
+		const toR = (m) => R * Math.sqrt(Math.min(m, max) / max);
+		const pt = (deg, r) => {
+			const a = deg * Math.PI / 180;
+			return [CX + r * Math.sin(a), CY - r * Math.cos(a)];
+		};
+		const wedge = (r0, r1, a0, a1) => {
+			const p1 = pt(a0, r1), p2 = pt(a1, r1), p3 = pt(a1, r0), p4 = pt(a0, r0);
+			const large = (a1 - a0) > 180 ? 1 : 0;
+			return "M" + fix(p1[0]) + " " + fix(p1[1])
+				+ "A" + fix(r1) + " " + fix(r1) + " 0 " + large + " 1 "
+				+ fix(p2[0]) + " " + fix(p2[1])
+				+ "L" + fix(p3[0]) + " " + fix(p3[1])
+				+ "A" + fix(r0) + " " + fix(r0) + " 0 " + large + " 0 "
+				+ fix(p4[0]) + " " + fix(p4[1]) + "Z";
+		};
+		// Soft edges, but not faint: a smudge you have to hunt for on the
+		// display defeats the point of having one. The fade is what keeps it
+		// from reading as a pin.
+		const blob = (id, stop, peak) => "<radialGradient id=\"" + id + "\">"
+			+ "<stop offset=\"0%\" stop-color=\"" + stop + "\" stop-opacity=\"" + peak + "\"/>"
+			+ "<stop offset=\"50%\" stop-color=\"" + stop + "\" stop-opacity=\""
+			+ (peak * 0.45).toFixed(2) + "\"/>"
+			+ "<stop offset=\"100%\" stop-color=\"" + stop + "\" stop-opacity=\"0\"/>"
+			+ "</radialGradient>";
+
+		let out = "<defs>" + blob("fhBlobNear", accent, 0.85) + blob("fhBlobFar", dim, 0.72)
+			+ blob("fhBlobDone", faint, 0.34) + "</defs>";
+
+		// Range rings. Two labelled, so the scale is readable without the
+		// display turning into a chart.
+		[0.25, 0.5, 0.75, 1].forEach((f) => {
+			out += "<circle cx=\"" + CX + "\" cy=\"" + CY + "\" r=\"" + fix(toR(max * f))
+				+ "\" fill=\"none\" stroke=\"" + faint
+				+ "\" stroke-opacity=\"0.22\" stroke-width=\"1\"/>";
+		});
+		[0.5, 1].forEach((f) => {
+			out += "<text x=\"" + (CX + 4) + "\" y=\"" + fix(CY - toR(max * f) + 11)
+				+ "\" fill=\"" + faint + "\" fill-opacity=\"0.85\" font-size=\"11\""
+				+ " font-family=\"monospace\">" + rangeLabel(max * f) + "</text>";
+		});
+
+		// Furthest first, so the contacts you can actually reach end up on top.
+		usable.slice().sort((a, b) => b.distance_m - a.distance_m).forEach((c) => {
+			const step = RADAR_STEPS[this.tierFor(c.distance_m)] || 30;
+			const bearing = quantise(c.relative_bearing_deg, step);
+			const band = distanceBand(c.distance_m);
+			const r0 = toR(band[0]);
+			const r1 = toR(band[1]);
+			const done = this.isLogged(c);
+			const near = c.distance_m <= IDENTIFY_RANGE_M;
+			const stroke = done ? faint : (near ? accent : dim);
+			const fill = done ? "fhBlobDone" : (near ? "fhBlobNear" : "fhBlobFar");
+
+			// The wedge is the honest part: it is the whole area the words
+			// allow the animal to be in.
+			out += "<path d=\"" + wedge(r0, r1, bearing - step / 2, bearing + step / 2)
+				+ "\" fill=\"" + stroke + "\" fill-opacity=\"0.09\"/>";
+
+			const mid = pt(bearing, (r0 + r1) / 2);
+			out += "<circle cx=\"" + fix(mid[0]) + "\" cy=\"" + fix(mid[1]) + "\" r=\""
+				+ fix(RADAR_BLOB_MAX * radarBucket(c.count))
+				+ "\" fill=\"url(#" + fill + ")\"/>";
+		});
+
+		// You, nose up. Drawn last so nothing covers it.
+		out += "<path d=\"M120 111 L125.5 125 L120 121.5 L114.5 125 Z\" fill=\""
+			+ accent + "\"/>";
+
+		svg.innerHTML = out;
+	}
+
+	renderRadar() {
+		const row = this.nodes.radarRow;
+		if (!row) return;
+		row.innerHTML = "";
+		Object.keys(RADAR_MODES).forEach((key) => {
+			const button = document.createElement("button");
+			button.type = "button";
+			button.className = "seg-btn" + (key === this.state.radar ? " is-active" : "");
+			button.textContent = RADAR_MODES[key].label;
+			button.addEventListener("click", () => {
+				this.state.radar = key;
+				this.saveState();
+				this.renderRadar();
+				this.renderHunt();
+			});
+			row.appendChild(button);
+		});
+	}
+
 	renderHunt() {
 		const list = this.nodes.contactList;
 		const contacts = this.orderContacts(
 			(this.snapshot && this.snapshot.contacts) || []);
+
+		// Before any of the early returns below -- the radar should keep
+		// working while the list is held and while the list is empty.
+		this.drawRadar(contacts);
 
 		// Re-derive the row map from what is ACTUALLY in the list, and drop any
 		// duplicate for a key we have already seen. Previously this map was the
@@ -834,12 +1038,19 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		row.className = "contact" + (near ? " is-near" : "")
 			+ (logged ? " is-logged" : "")
 			+ (clickable ? " is-clickable" : "");
-		row.innerHTML = "<span class=\"contact-arrow\">" + (described.arrow || "") + "</span>"
+		// Arrow and distance are ONE block, on the left. Kept apart, answering
+		// "which way, how far" took a glance at each end of the row -- a poor
+		// trade in a moving aircraft and worse in VR.
+		row.innerHTML = "<div class=\"contact-nav\">"
+			+ "<span class=\"arrow-box\">" + (described.arrow || "") + "</span>"
+			+ (described.range
+				? "<span class=\"nav-range\">" + described.range + "</span>"
+				: "")
+			+ "</div>"
 			+ "<div class=\"contact-desc\">"
 			+ "<span class=\"contact-what\">" + described.what + "</span>"
 			+ "<span class=\"contact-where\">" + described.where + "</span>"
 			+ "</div>"
-			+ "<span class=\"contact-range\">" + described.range + "</span>"
 			+ (logged
 				// A tick, not the word alone: "identified" and "identify" are
 				// one letter apart at a glance, and people were tapping tiles

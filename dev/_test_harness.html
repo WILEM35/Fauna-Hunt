@@ -189,9 +189,16 @@ const PANEL_MARKUP = `
 		<code class="offline-cmd">python fauna_service.py</code>
 	</div>
 	<div id="viewHunt" class="view">
+		<div id="radarWrap" class="radar-wrap hidden">
+			<svg id="radar" class="radar" viewBox="0 0 240 240" aria-hidden="true"></svg>
+		</div>
 		<div class="spot-bar">
 			<span id="spotHint" class="spot-hint"></span>
 			<span id="listHold" class="list-hold hidden">list held</span>
+			<div id="sortToggle" class="sort-toggle">
+				<button type="button" class="sort-btn is-active" data-sort="near">Nearest</button>
+				<button type="button" class="sort-btn" data-sort="ahead">Ahead</button>
+			</div>
 		</div>
 		<div id="contactList" class="contact-list"></div>
 		<div id="huntEmpty" class="empty hidden">
@@ -212,6 +219,10 @@ const PANEL_MARKUP = `
 		<div class="setting">
 			<label class="setting-label">Background</label>
 			<div id="backgroundRow" class="seg"></div>
+		</div>
+		<div class="setting">
+			<label class="setting-label">Radar</label>
+			<div id="radarRow" class="seg"></div>
 		</div>
 		<div class="setting">
 			<label class="setting-label">Difficulty</label>

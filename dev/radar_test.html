@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Fauna Hunt - radar bench</title>
+<!-- Exercises the SHIPPED drawRadar() against the shipped stylesheet, with the
+     sim's globals stubbed. It draws the real function, not a copy of it -- a
+     copy is how the eight missing helpers went unnoticed in 2.0.x. -->
+<style>
+	body { margin: 0; padding: 16px; background: #1b2026; color: #e8eef2;
+		font-family: "Segoe UI", system-ui, sans-serif; }
+	h1 { font-size: 13px; letter-spacing: .12em; text-transform: uppercase;
+		color: #93a3ae; margin: 0 0 14px; font-weight: 600; }
+	.bench { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start; }
+	.case { background: rgba(12,16,20,0.92); border: 1px solid rgba(255,255,255,0.14);
+		border-radius: 4px; padding: 10px; width: 270px; }
+	.case h2 { font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+		color: #93a3ae; margin: 0 0 8px; font-weight: 600; }
+	.case .note { font-size: 11px; color: #8b98a4; margin-top: 8px;
+		font-family: monospace; white-space: pre-wrap; }
+	ingamepanel-fauna-hunt { display: block; --fh-base: 25; }
+	#report { margin-top: 16px; font-family: monospace; font-size: 12px;
+		white-space: pre-wrap; color: #6fd08c; }
+	#report.bad { color: #d9694f; }
+</style>
+<link rel="stylesheet" href="../PackageSources/Copys/fauna-hunt/Panel/html_ui/InGamePanels/FaunaHunt/FaunaHunt.css"/>
+</head>
+<body>
+
+<h1>Radar bench</h1>
+<div class="bench" id="bench"></div>
+<div id="report">running...</div>
+
+<script>
+class TemplateElement extends HTMLElement {
+	connectedCallback() {}
+	disconnectedCallback() {}
+}
+window.TemplateElement = TemplateElement;
+window.checkAutoload = function () {};
+window.GetStoredData = function () { return null; };
+window.SetStoredData = function () {};
+</script>
+<script src="../PackageSources/Copys/fauna-hunt/Panel/html_ui/InGamePanels/FaunaHunt/FaunaHunt.js"></script>
+<script>
+(function () {
+	var problems = [];
+
+	function make(count, distance, relBearing) {
+		return {
+			key: "k" + count + "-" + distance + "-" + relBearing,
+			species: "TEST", common: "Test", size: "large",
+			count: count, distance_m: distance,
+			relative_bearing_deg: relBearing,
+			bearing_deg: relBearing, clock: 12, above: false,
+		};
+	}
+
+	var CASES = [
+		{ title: "Mixed, small", mode: "small", contacts: [
+			make(14, 900, 40), make(8, 2400, 20), make(40, 3200, 110),
+			make(2, 1600, 300), make(1, 4800, 200) ] },
+		{ title: "Mixed, large", mode: "large", contacts: [
+			make(14, 900, 40), make(8, 2400, 20), make(40, 3200, 110),
+			make(2, 1600, 300), make(1, 4800, 200) ] },
+		{ title: "All close", mode: "large", contacts: [
+			make(3, 120, 5), make(22, 380, 185), make(1, 640, 275) ] },
+		{ title: "All far", mode: "large", contacts: [
+			make(6, 14200, 40), make(22, 9800, 310) ] },
+		{ title: "Nothing in range", mode: "large", contacts: [] },
+		{ title: "Off", mode: "off", contacts: [ make(5, 900, 40) ] },
+	];
+
+	var bench = document.getElementById("bench");
+
+	CASES.forEach(function (c) {
+		var box = document.createElement("div");
+		box.className = "case";
+		box.innerHTML = "<h2>" + c.title + "</h2>";
+		bench.appendChild(box);
+
+		var el = document.createElement("ingamepanel-fauna-hunt");
+		el.innerHTML = "<div id=\"radarWrap\" class=\"radar-wrap hidden\">"
+			+ "<svg id=\"radar\" class=\"radar\" viewBox=\"0 0 240 240\"></svg></div>";
+		box.appendChild(el);
+
+		el.nodes = {
+			radarWrap: el.querySelector("#radarWrap"),
+			radar: el.querySelector("#radar"),
+		};
+		el.state.radar = c.mode;
+		el.state.difficulty = "tracker";
+		el.state.recognition = "ask";
+		el.state.logged = {};
+		el.state.lifelist = {};
+
+		try {
+			el.drawRadar(c.contacts);
+		} catch (err) {
+			problems.push(c.title + ": threw " + err.message);
+			return;
+		}
+
+		var svg = el.nodes.radar;
+		var hidden = el.nodes.radarWrap.classList.contains("hidden");
+
+		if (c.mode === "off") {
+			if (!hidden) problems.push(c.title + ": should be hidden when Off");
+			box.innerHTML += "<p class=\"note\">hidden: " + hidden + "</p>";
+			return;
+		}
+		if (hidden) problems.push(c.title + ": hidden when it should be drawn");
+
+		// Every drawn shape must land inside the viewBox, or the sim clips it
+		// silently and the radar just looks wrong.
+		var circles = svg.querySelectorAll("circle");
+		var paths = svg.querySelectorAll("path");
+		if (!circles.length) problems.push(c.title + ": drew no circles at all");
+		if (!paths.length) problems.push(c.title + ": drew no aircraft marker");
+
+		Array.prototype.forEach.call(circles, function (node) {
+			["cx", "cy", "r"].forEach(function (a) {
+				var v = parseFloat(node.getAttribute(a));
+				if (!isFinite(v)) problems.push(c.title + ": circle " + a + " is " + v);
+			});
+		});
+		Array.prototype.forEach.call(paths, function (node) {
+			var d = node.getAttribute("d") || "";
+			if (/NaN|Infinity|undefined/.test(d)) {
+				problems.push(c.title + ": path has bad numbers -> " + d.slice(0, 60));
+			}
+		});
+
+		var labels = svg.querySelectorAll("text");
+		var said = [];
+		Array.prototype.forEach.call(labels, function (t) { said.push(t.textContent); });
+		box.innerHTML += "<p class=\"note\">rings: " + said.join("  ")
+			+ "\ncircles: " + circles.length + "  paths: " + paths.length + "</p>";
+	});
+
+	// The rule that matters most: nothing may be drawn finer than the words.
+	// A bearing is only ever allowed on its tier's step.
+	var probe = document.createElement("ingamepanel-fauna-hunt");
+	probe.state.difficulty = "tracker";
+	[[900, 30], [2400, 10], [5000, 30], [20000, 45]].forEach(function (pair) {
+		var tier = probe.tierFor(pair[0]);
+		var step = RADAR_STEPS[tier];
+		if (step !== pair[1]) {
+			problems.push("tier step wrong at " + pair[0] + " m: " + tier + " -> " + step);
+		}
+		var q = quantise(37, step);
+		if (q % step !== 0) problems.push("bearing not on the step at " + pair[0] + " m");
+	});
+
+	// Bands must match the words distanceBracket() uses, exactly.
+	[[300, 250, 500], [999, 750, 1000], [1000, 1000, 2000], [3400, 3000, 4000]]
+		.forEach(function (t) {
+			var b = distanceBand(t[0]);
+			if (b[0] !== t[1] || b[1] !== t[2]) {
+				problems.push("band wrong for " + t[0] + " m: " + b.join("-"));
+			}
+		});
+
+	var report = document.getElementById("report");
+	if (problems.length) {
+		report.className = "bad";
+		report.textContent = "FAIL (" + problems.length + ")\n" + problems.join("\n");
+	} else {
+		report.textContent = "PASS - all radar cases drew cleanly";
+	}
+})();
+</script>
+</body>
+</html>
