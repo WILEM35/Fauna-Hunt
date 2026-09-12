@@ -35,6 +35,22 @@ const EAGLE_SPECIES = {
 // The sim answers with at most 250 objects per request.
 const RESPONSE_CAP = 250;
 
+// The furthest a contact is allowed to be, in metres. Kept in step with
+// SEARCH_RADIUS_M in wasm/fauna_module.cpp, which is what the module asks the
+// simulator for.
+//
+// It asks for 60 km and the simulator does not always honour it. Flying the
+// Denmark Strait, twenty minutes and some 160 km clear of Iceland, a horse
+// found back on the coast was still coming back -- and the panel, measuring
+// from the CURRENT aircraft position, dutifully listed a contact 376 km away.
+// Either the radius is ignored for this object type or the simulator keeps
+// offering an object it still holds in memory. From out here those look
+// identical, so the panel stops trusting the filter and applies its own.
+//
+// Slightly more than the radius, because the aircraft moves between the module
+// reading the animals and the panel reading its own position.
+const MAX_CONTACT_M = 66000;
+
 // The panel has no field-of-view reading of its own, so it assumes a normal
 // one. The helper could ask the sim directly; this is the one number the
 // in-sim path estimates rather than measures.
@@ -333,12 +349,23 @@ class FaunaInSimSource {
 		const kept = [];
 		let streamingIn = 0;
 		let notHuntable = 0;
+		let tooFar = 0;
+		let furthestDropped = 0;
 
 		rows.forEach((row) => {
 			const title = row[0], lat = row[1], lon = row[2], alt = row[3];
 			// Still streaming in: the real position has not arrived, and the
 			// animal would otherwise read as a contact 6000 km away.
 			if (Math.abs(lat) < 1e-4 && Math.abs(lon) < 1e-4) { streamingIn++; return; }
+			// Beyond what was asked for -- see MAX_CONTACT_M. Counted rather
+			// than silently dropped, so the Settings page can say whether the
+			// simulator is honouring the radius at all.
+			const range = haversineM(user.lat, user.lon, lat, lon);
+			if (range > MAX_CONTACT_M) {
+				tooFar++;
+				furthestDropped = Math.max(furthestDropped, range);
+				return;
+			}
 			const hit = this.resolve(title);
 			if (!hit) { notHuntable++; return; }
 			kept.push({ title: title, root: hit.root, info: hit.info,
@@ -346,7 +373,9 @@ class FaunaInSimSource {
 		});
 
 		stats.raw_returned = kept.length;
-		stats.rejected = { streaming_in: streamingIn, not_huntable: notHuntable };
+		stats.rejected = { streaming_in: streamingIn, not_huntable: notHuntable,
+			too_far: tooFar };
+		stats.furthest_dropped_m = Math.round(furthestDropped);
 		// At the cap we are seeing an arbitrary subset, so the panel must never
 		// claim the area holds nothing else.
 		stats.capped = (head.returned || 0) >= RESPONSE_CAP;

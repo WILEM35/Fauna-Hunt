@@ -83,7 +83,11 @@ var ZEBRA = [
 ];
 var JUNK = [
 	["SomeRandomWalkingPerson", -1.3985, 35.0000, 400],   // not huntable
-	["CTaurinusAlbojubatusFemale", 0, 0, 0]               // still streaming in
+	["CTaurinusAlbojubatusFemale", 0, 0, 0],              // still streaming in
+	// Out of range. The module asks the sim for 60 km; the sim does not always
+	// honour that and keeps offering animals from somewhere you flew away from.
+	// This one is about 390 km north -- the Denmark Strait horse, in miniature.
+	["ECaballusFemale", 2.1000, 35.0000, 400]
 ];
 
 function reply(source, chunks) {
@@ -111,7 +115,14 @@ try {
 	check("source is labelled", snap.source, "insim");
 	check("contacts found", snap.contacts.length, 2);
 	check("junk rejected", snap.stats.rejected,
-		{ streaming_in: 1, not_huntable: 1 });
+		{ streaming_in: 1, not_huntable: 1, too_far: 1 });
+	// The bug this exists for: a contact hundreds of km behind the aircraft
+	// listed as if it were findable, and stretching the radar until everything
+	// in reach collapsed onto the centre.
+	check("out-of-range animal never becomes a contact",
+		snap.contacts.filter(function (c) { return c.species === "ECaballus"; }).length, 0);
+	check("and how far out it was is reported",
+		Math.round(snap.stats.furthest_dropped_m / 1000) > 300, true);
 	check("individuals counted", snap.stats.individuals, 5);
 	check("not reported as capped", snap.stats.capped, false);
 

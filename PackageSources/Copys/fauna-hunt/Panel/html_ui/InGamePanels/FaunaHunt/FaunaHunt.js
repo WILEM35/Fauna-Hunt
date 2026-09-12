@@ -904,6 +904,17 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		usable.forEach((c) => { max = Math.max(max, distanceBand(c.distance_m)[1]); });
 		if (max < 1000) max = usable.length ? 1000 : 2000;
 
+		// But never let ONE distant contact stretch the display. A stale horse
+		// 376 km behind the aircraft pushed the rings out until everything
+		// within reach collapsed onto the centre dot. Past the coarse tier the
+		// game only ever says "somewhere east" anyway, so anything beyond that
+		// is drawn on the rim and the outer ring is labelled to say so --
+		// pinned rather than plotted, which is exactly as much as the words
+		// claim.
+		const ceiling = TIERS.coarse * (this.difficulty || DIFFICULTIES.tracker).scale;
+		const clamped = max > ceiling;
+		if (clamped) max = ceiling;
+
 		const CX = 120, CY = 120, R = 103;
 		const fix = (n) => Math.round(n * 10) / 10;
 		// Square root, not linear: linear crushes everything close to you into
@@ -944,9 +955,12 @@ class IngamePanelFaunaHunt extends TemplateElement {
 				+ "\" stroke-opacity=\"0.22\" stroke-width=\"1\"/>";
 		});
 		[0.5, 1].forEach((f) => {
+			// "+" on the outer ring when something is sitting on it that is
+			// really further out, so the rim never reads as a measurement.
+			const label = rangeLabel(max * f) + (f === 1 && clamped ? "+" : "");
 			out += "<text x=\"" + (CX + 4) + "\" y=\"" + fix(CY - toR(max * f) + 11)
 				+ "\" fill=\"" + faint + "\" fill-opacity=\"0.85\" font-size=\"11\""
-				+ " font-family=\"monospace\">" + rangeLabel(max * f) + "</text>";
+				+ " font-family=\"monospace\">" + label + "</text>";
 		});
 
 		// Furthest first, so the contacts you can actually reach end up on top.
@@ -1202,6 +1216,19 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		}
 		const stats = snap.stats || {};
 		const rejected = stats.rejected || {};
+		// Everything the simulator offered was outside the radius the module
+		// asked for -- animals it is still holding in memory from somewhere you
+		// have flown away from. Worth saying, because an empty list over open
+		// ocean is otherwise indistinguishable from a broken one.
+		if ((rejected.too_far || 0) > 0 && !(stats.raw_returned || 0)) {
+			const km = Math.round((stats.furthest_dropped_m || 0) / 1000);
+			note.textContent = "Nothing in range. The simulator is still "
+				+ "offering " + rejected.too_far + " "
+				+ plural(rejected.too_far, "animal", "animals")
+				+ " from further back" + (km ? " - the furthest " + km + " km away" : "")
+				+ ", which is too far to hunt.";
+			return;
+		}
 		const offered = (rejected.not_huntable || 0) + (rejected.streaming_in || 0)
 			+ (stats.raw_returned || 0);
 		if (offered > 0) {
