@@ -84,6 +84,20 @@
 			});
 		}
 
+		loadJs(src) {
+			if (document.querySelector("script[src*=\"" + src + "\"]")) {
+				return Promise.resolve();
+			}
+			const script = document.createElement("script");
+			script.type = "text/javascript";
+			script.src = src;
+			document.head.append(script);
+			return new Promise((resolve, reject) => {
+				script.onload = () => resolve();
+				script.onerror = reject;
+			});
+		}
+
 		use(AppClass) {
 			if (!this.bus) throw new Error("Bus has not been initialized yet.");
 			const app = new AppClass();
@@ -186,6 +200,34 @@
 				await Container.instance.loadCss(ROOT + "/FaunaHuntApp.css");
 			} catch (err) {
 				/* already loaded */
+			}
+
+			// THIS is what makes the game work inside the EFB.
+			//
+			// The panel runs in an iframe, and an iframe's own message bus is
+			// wired to nothing: it accepts calls and never hears back. Proven --
+			// thirty polls, no reply, no error, with the toolbar window closed
+			// so nothing else was competing.
+			//
+			// The bus belongs to the page the simulator loaded, which is this
+			// one. Loading the service here gives the iframe an outer window to
+			// borrow it from; see busCandidates() in FaunaInSim.js, which walks
+			// out to the parent before trusting its own.
+			if (typeof window.RegisterCommBusListener !== "function") {
+				try {
+					const loader = (Container.instance && Container.instance.loadJs)
+						? Container.instance.loadJs.bind(Container.instance)
+						: null;
+					if (loader) {
+						await loader("coui://html_ui/JS/Services/CommBus.js");
+					}
+				} catch (err) {
+					// Not fatal here. The panel still loads and says plainly
+					// that it is asking and hearing nothing, which is a far
+					// better failure than a blank app.
+					console.error("Fauna Hunt EFB: could not load the message "
+						+ "bus service into the EFB page.", err);
+				}
 			}
 			return Promise.resolve();
 		}

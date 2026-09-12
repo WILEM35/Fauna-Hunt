@@ -268,6 +268,31 @@ try {
 		returned: 250, rows: HERD }));
 	check("cap reported", src.snapshot.stats.capped, true);
 
+	// ---- which window's message bus gets used -------------------------------
+	// The EFB put the panel in an iframe, where its own bus accepts calls and
+	// never answers, so start() now walks outwards before trusting its own.
+	// This page is NOT framed, which is the toolbar window's case: it must
+	// still pick its own bus and must not go looking for a parent.
+	var busCalls = [];
+	window.RegisterCommBusListener = function (ready) {
+		busCalls.push("registered");
+		return {
+			on: function () { busCalls.push("on"); },
+			callWasm: function () { busCalls.push("callWasm"); }
+		};
+	};
+	var wired = new FaunaInSimSource(FAUNA_SPECIES_DATA);
+	check("unframed panel starts", wired.start(), true);
+	check("unframed panel uses its own bus", wired.busSource, "own");
+	check("and attaches a listener straight away", wired.attached, true);
+	wired.poll();
+	check("and polls the module", wired.polls, 1);
+
+	delete window.RegisterCommBusListener;
+	var stranded = new FaunaInSimSource(FAUNA_SPECIES_DATA);
+	check("no bus anywhere means no start", stranded.start(), false);
+	check("and nothing is claimed about the source", stranded.busSource, null);
+
 } catch (err) {
 	failures++;
 	lines.push("EXCEPTION  " + (err && err.stack ? err.stack : err));

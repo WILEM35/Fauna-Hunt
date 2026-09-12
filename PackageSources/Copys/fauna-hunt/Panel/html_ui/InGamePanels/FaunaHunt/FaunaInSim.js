@@ -201,6 +201,7 @@ class FaunaInSimSource {
 		this.attached = false;
 		this.polls = 0;
 		this.callError = null;
+		this.busSource = null;    // which window's message bus we ended up on
 		// null means "ask the sim". The tests set it directly so both modes
 		// can be exercised without a headset.
 		this.vr = null;
@@ -212,8 +213,55 @@ class FaunaInSimSource {
 		return this.everReplied;
 	}
 
+	// Which window's RegisterCommBusListener to use, and what to call it.
+	//
+	// In the toolbar window there is only one answer: our own. Inside the EFB
+	// the panel runs in an iframe, and there the iframe's own listener exists,
+	// accepts calls and never receives a thing -- thirty polls, no reply, no
+	// error, with the toolbar window closed so nothing else was competing. The
+	// message bus is wired to the page the simulator loaded, and an iframe
+	// inside that page is not it.
+	//
+	// Little Navmap VR's EFB app has the same shape and solves it the same way
+	// round: the app that the simulator loaded does the talking, and the iframe
+	// is only a view. Being same-origin (both coui://html_ui/...) we can simply
+	// borrow the outer window's function rather than build a message protocol.
+	//
+	// Framed: outer windows FIRST, because our own is the one already proven
+	// not to work. Unframed: our own, and nothing else is even considered.
+	busCandidates() {
+		const out = [];
+		const mine = (typeof RegisterCommBusListener === "function")
+			? { win: window, make: RegisterCommBusListener, name: "own" }
+			: null;
+
+		if (window.parent === window && window.top === window) {
+			return mine ? [mine] : [];
+		}
+
+		[["parent", window.parent], ["top", window.top]].forEach((pair) => {
+			const name = pair[0], win = pair[1];
+			if (!win || win === window) return;
+			try {
+				// Cross-origin access throws here, which is the answer.
+				if (typeof win.RegisterCommBusListener === "function"
+					&& !out.some((c) => c.win === win)) {
+					out.push({ win: win, make: win.RegisterCommBusListener, name: name });
+				}
+			} catch (err) {
+				/* not reachable from here */
+			}
+		});
+		if (mine) out.push(mine);
+		return out;
+	}
+
 	start() {
-		if (typeof RegisterCommBusListener !== "function") return false;
+		const candidates = this.busCandidates();
+		if (!candidates.length) return false;
+		const chosen = candidates[0];
+		this.busSource = chosen.name;
+		const RegisterCommBusListener = chosen.make.bind(chosen.win);
 		const attach = () => {
 			if (this.attached || !this.bus) return;
 			try {

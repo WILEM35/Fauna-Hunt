@@ -16,7 +16,7 @@
 // Rewritten by build.ps1 from the package version, so it cannot drift.
 // Shown in Settings: without it there is no way to tell which build is
 // actually running, and a stale one looks exactly like a bug that will not die.
-const PANEL_VERSION = "2.3.0";
+const PANEL_VERSION = "2.3.1";
 
 const STORAGE_KEY = "FaunaHunt_State_v1";
 const POLL_INTERVAL_MS = 1000;
@@ -754,10 +754,13 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			return;
 		}
 		if (!answered) {
+			// Naming the bus is the diagnosis, not decoration: inside the EFB
+			// the panel sits in an iframe whose own bus is wired to nothing, so
+			// "own" in a framed window says exactly what went wrong.
+			const via = this.inSim.busSource;
 			body.textContent = "Asked the simulator " + asked + " "
-				+ plural(asked, "time", "times") + " and heard nothing back. "
-				+ "If another Fauna Hunt window is working, close it and see "
-				+ "whether this one starts.";
+				+ plural(asked, "time", "times") + " and heard nothing back"
+				+ (via ? " (bus: " + via + ")" : "") + ".";
 			return;
 		}
 		body.textContent = "Load a flight and contacts appear on their own. "
