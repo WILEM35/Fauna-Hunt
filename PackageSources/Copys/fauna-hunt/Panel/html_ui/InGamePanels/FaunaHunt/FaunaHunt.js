@@ -16,7 +16,7 @@
 // Rewritten by build.ps1 from the package version, so it cannot drift.
 // Shown in Settings: without it there is no way to tell which build is
 // actually running, and a stale one looks exactly like a bug that will not die.
-const PANEL_VERSION = "2.3.4";
+const PANEL_VERSION = "2.4.0";
 
 const STORAGE_KEY = "FaunaHunt_State_v1";
 const POLL_INTERVAL_MS = 1000;
