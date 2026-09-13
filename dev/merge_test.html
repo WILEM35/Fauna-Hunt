@@ -48,6 +48,8 @@ window.SetStoredData = function (k, v) { DISK[k] = v; };
 	function panel(state) {
 		var el = document.createElement("ingamepanel-fauna-hunt");
 		el.loaded = true;
+		el.nodes = {};
+		el.view = "settings";
 		Object.keys(state).forEach(function (k) { el.state[k] = state[k]; });
 		return el;
 	}
@@ -154,6 +156,52 @@ window.SetStoredData = function (k, v) { DISK[k] = v; };
 	try { survivor.saveState(); } catch (err) { threw = true; }
 	check("a corrupt save does not throw", !threw);
 	check("this window's progress still writes", survivor.state.lifelist.Bison);
+
+	// --- 7. the EFB case: a second window picks up what the first found ------
+	// This is the bug from 13 September. The EFB app sleeps rather than closes,
+	// so it never reloads; without a pull it showed a captured Pronghorn as
+	// "a single animal" for ever.
+	reset();
+	var efb = panel({ score: 10, lifelist: {}, logged: {}, captured: {}, attempts: {} });
+	efb.saveState();                       // EFB has nothing yet
+
+	panel({                                 // toolbar identifies a Pronghorn
+		score: 60,
+		lifelist: { Pronghorn: { first: "2026-09-13", best: 50, count: 1 } },
+		logged: { "p@1": { species: "Pronghorn" } },
+		captured: { "p@1": true }, attempts: {},
+	}).saveState();
+
+	check("the sleeping window has not seen it yet", !efb.state.lifelist.Pronghorn);
+	efb.refreshFromDisk();
+	check("a refresh picks it up without writing", !!efb.state.lifelist.Pronghorn, true);
+	check("and the score comes with it", efb.state.score === 60, "got " + efb.state.score);
+	check("the captured mark arrives too", efb.state.captured["p@1"] === true);
+
+	// --- 8. a reset in one window is not undone by the other -----------------
+	// The trap the pull introduces: unioning against a reset would read back
+	// everything just cleared and the reset would undo itself seconds later.
+	reset();
+	var keeper = panel({
+		score: 500,
+		lifelist: { Zebra: { first: "2026-09-01", best: 20, count: 3 } },
+		logged: { "z@1": { species: "Zebra" } },
+		captured: {}, attempts: {},
+	});
+	keeper.saveState();
+
+	var wiper2 = panel({ score: 0, lifelist: {}, logged: {}, captured: {}, attempts: {} });
+	wiper2.state.resetAt = Date.now();
+	wiper2.saveState(false);
+
+	keeper.refreshFromDisk();
+	check("the other window adopts the reset",
+		Object.keys(keeper.state.lifelist).length === 0,
+		"left " + Object.keys(keeper.state.lifelist).length);
+	check("including the score", keeper.state.score === 0, "got " + keeper.state.score);
+	keeper.saveState();
+	check("and does not write the old progress back",
+		Object.keys(onDisk().lifelist).length === 0);
 
 	var bad = results.filter(function (r) { return !r.pass; });
 	var lines = results.map(function (r) {

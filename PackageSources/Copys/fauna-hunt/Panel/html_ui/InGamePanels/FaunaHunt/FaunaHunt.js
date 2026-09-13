@@ -21,6 +21,19 @@ const PANEL_VERSION = "2.3.2";
 const STORAGE_KEY = "FaunaHunt_State_v1";
 const POLL_INTERVAL_MS = 1000;
 
+// How often a window folds in what the OTHER window has saved.
+//
+// Merging on write alone was not enough. The EFB app is set to SLEEP when you
+// close it rather than shut down, so closing and reopening it reloads nothing
+// -- it is the same instance holding the state it read when it first started.
+// Identify a Pronghorn in the toolbar window and the EFB went on calling it "a
+// single animal" indefinitely, because nothing in the EFB had written since,
+// and only a write folded the two together.
+//
+// Reading is cheap and adds nothing to the simulator's load, so both windows
+// now pull as well as push.
+const STATE_REFRESH_MS = 4000;
+
 // How close you have to be before a contact can be identified at all.
 const IDENTIFY_RANGE_M = 1200;
 // Backing out of an identification costs points: by then you have seen the
@@ -312,6 +325,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 			recognition: DEFAULT_RECOGNITION,
 			sortMode: DEFAULT_SORT,
 			radar: DEFAULT_RADAR,
+			resetAt: 0,     // when progress was last deliberately cleared
 			lifelist: {},   // species root -> { first, lat, lon, best, count }
 			logged: {},     // contact key -> {species, lat, lon} once identified
 			captured: {},   // contact key -> true once you got close enough
@@ -359,6 +373,7 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.startInSim();
 		this.fetchSpecies();
 		this.pollTimer = setInterval(() => this.poll(), POLL_INTERVAL_MS);
+		this.refreshTimer = setInterval(() => this.refreshFromDisk(), STATE_REFRESH_MS);
 		this.poll();
 		// If the timer stops for any reason, start it again. Cheap insurance
 		// against a silent freeze, which is the worst failure to diagnose.
@@ -376,6 +391,10 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		if (this.loadTimer) {
 			clearTimeout(this.loadTimer);
 			this.loadTimer = undefined;
+		}
+		if (this.refreshTimer) {
+			clearInterval(this.refreshTimer);
+			this.refreshTimer = undefined;
 		}
 		if (this.pollTimer) {
 			clearInterval(this.pollTimer);
@@ -594,6 +613,21 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		}
 		if (!stored || typeof stored !== "object") return;
 
+		// A reset in the OTHER window has to win outright. Unioning against it
+		// would read back everything it just cleared and put it straight back,
+		// so a reset would appear to work and then undo itself four seconds
+		// later. Whichever cleared most recently is the deliberate act.
+		if ((stored.resetAt || 0) > (state.resetAt || 0)) {
+			state.resetAt = stored.resetAt;
+			state.score = stored.score || 0;
+			state.lifelist = stored.lifelist || {};
+			state.logged = stored.logged || {};
+			state.captured = stored.captured || {};
+			state.attempts = stored.attempts || {};
+			return;
+		}
+		state.resetAt = Math.max(state.resetAt || 0, stored.resetAt || 0);
+
 		if (typeof stored.score === "number") {
 			state.score = Math.max(state.score || 0, stored.score);
 		}
@@ -634,6 +668,33 @@ class IngamePanelFaunaHunt extends TemplateElement {
 				state.attempts[key] = theirs;
 			}
 		});
+	}
+
+	// Everything that says how far along you are, as one short string. Used
+	// only to tell whether a refresh actually changed anything, so the panel is
+	// not rebuilt every four seconds for nothing.
+	progressFingerprint() {
+		const s = this.state;
+		return [s.score, Object.keys(s.lifelist).length, Object.keys(s.logged).length,
+			Object.keys(s.captured).length, s.resetAt || 0].join("|");
+	}
+
+	// Fold in what the other window has saved. Read-only: this never writes,
+	// so two windows refreshing cannot fight each other.
+	refreshFromDisk() {
+		if (!this.loaded) return;
+		try {
+			const before = this.progressFingerprint();
+			this.mergeStoredInto(this.state);
+			if (this.progressFingerprint() === before) return;
+			this.renderScore();
+			if (this.view === "lifelist") this.renderLifelist();
+			if (this.view === "hunt") this.renderHunt();
+		} catch (err) {
+			// An error thrown out of a timer stops that timer for good, and the
+			// window would then quietly stop noticing the other one.
+			this.panelError = (err && err.message) ? err.message : String(err);
+		}
 	}
 
 	// `merge` is false only for Reset all progress: merging there would read
@@ -1876,6 +1937,9 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		this.state.logged = {};
 		this.state.attempts = {};
 		this.state.captured = {};
+		// Stamped so the other window adopts the reset instead of unioning
+		// against it -- see mergeStoredInto().
+		this.state.resetAt = Date.now();
 		this.resetArmed = false;
 		this.nodes.resetBtn.textContent = "Reset all progress";
 		this.nodes.resetBtn.classList.remove("is-armed");
