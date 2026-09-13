@@ -1022,3 +1022,64 @@ no Fauna Hunt icon appears in the EFB. The app list observed on 12 September
 (GSX, Little Navmap VR, Navigraph Charts, SayIntentions.AI, SimBrief Dispatch)
 confirms where the icon would sit and that third-party apps reach that screen
 normally.
+
+# BUG: the same animal offered twice in one question -- 13 September 2026
+
+Seen in flight, screenshotted: the four choices were Bighorn Sheep, Mountain
+Goat, **Grizzly Bear, Grizzly Bear**. The first Grizzly Bear tapped was wrong,
+the second was right. Two identical buttons, one of them scoring and one of
+them costing a guess.
+
+This is a confirmed, reproducible instance of the vaguer complaint logged from
+flightsim.to -- "the four choices are not obvious or matching the animal that
+they see".
+
+## Cause, found
+
+`buildShortlist()` dedupes decoys by the species ROOT key:
+
+    if (decoys.length < 3 && decoys.indexOf(root) === -1) decoys.push(root);
+
+but the button shows `table[root].common`. Two different roots can carry the
+same common name, and three pairs in `data/species.json` do:
+
+| Shown to the player   | Roots behind it                          |
+|-----------------------|------------------------------------------|
+| Grizzly Bear          | `GrizzlyBear`, `UArctosHorribilis`       |
+| Water Buffalo         | `BBBubalis`, `BBubalis`                  |
+| West African Giraffe  | `GCamelopardalisPeralta`, `GPeralta`     |
+
+Whenever the correct answer is one of a pair and the decoy picker happens to
+draw the other, the player is shown the same words twice and has to guess
+between them. There is no way to be right on purpose.
+
+These read like the same animal entered twice under different keys rather than
+genuine subspecies -- `BBBubalis` / `BBubalis` in particular looks like a typo
+that became a second entry.
+
+## Two fixes, and they are not the same fix
+
+**1. Dedupe by what is shown, not by the key.** One line in
+`buildShortlist()`: reject a decoy whose `common` matches one already taken, or
+the correct answer's. Cheap, safe, and it stops the player ever seeing the
+question. It does NOT stop the same animal existing twice in the lifelist,
+where it can still be collected twice under one name.
+
+**2. Merge the duplicate entries in `data/species.json`.** Fixes the root
+cause, and the lifelist stops being able to hold one animal twice.
+
+**Do not do 2 casually.** Anyone who has already logged the losing root has
+that sighting keyed to it, and merging orphans it -- the lifelist would quietly
+drop an animal they had earned. It needs a migration that rewrites old roots to
+the survivor, in the same place the existing v1/v2/v3 migrations live, and the
+merge test bench is the right place to prove it.
+
+Recommended order: ship 1 now, because it removes the impossible question
+immediately and risks nothing. Do 2 deliberately, with the migration, and check
+all three pairs at once.
+
+## Worth checking at the same time
+
+Whether any of the three pairs differ in `region`, `size`, `tier`, `points` or
+`rank`. If they do, the two entries score differently for what the player sees
+as one animal, and that decides which of the pair should survive the merge.
