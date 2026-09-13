@@ -16,7 +16,7 @@
 // Rewritten by build.ps1 from the package version, so it cannot drift.
 // Shown in Settings: without it there is no way to tell which build is
 // actually running, and a stale one looks exactly like a bug that will not die.
-const PANEL_VERSION = "2.3.2";
+const PANEL_VERSION = "2.3.4";
 
 const STORAGE_KEY = "FaunaHunt_State_v1";
 const POLL_INTERVAL_MS = 1000;
@@ -1548,9 +1548,28 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		const sameSize = pool.filter((root) => table[root].size === contact.size);
 
 		const decoys = [];
+		// Dedupe by the WORDS ON THE BUTTON, not by the species key.
+		//
+		// Three pairs in the table share a common name -- Grizzly Bear, Water
+		// Buffalo and West African Giraffe are each two entries. Deduping by key
+		// let both halves of a pair into the same question, so the player was
+		// shown "Grizzly Bear" twice, one right and one wrong, with no way to
+		// pick the right one on purpose. Seen in flight on 13 September.
+		//
+		// The duplicated ENTRIES are a separate problem and still want merging;
+		// that needs a migration, because sightings are keyed to whichever root
+		// the player happened to log. See BACKLOG.md. This stops the impossible
+		// question either way.
+		const labelOf = (name) => String(name || "").trim().toLowerCase();
+		const taken = {};
+		taken[labelOf(contact.common)] = true;
 		const take = (candidates) => {
 			shuffle(candidates).forEach((root) => {
-				if (decoys.length < 3 && decoys.indexOf(root) === -1) decoys.push(root);
+				if (decoys.length >= 3) return;
+				const key = labelOf(table[root] && table[root].common);
+				if (!key || taken[key]) return;
+				taken[key] = true;
+				decoys.push(root);
 			});
 		};
 		// Same region first, so "it's the only African one" never works.

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Fauna Hunt - shortlist bench</title>
+<!-- The four choices. Exercises the SHIPPED buildShortlist().
+
+     The bug this exists for was seen in flight on 13 September: the question
+     offered "Grizzly Bear" twice, one right and one wrong. Three pairs in the
+     real species table share a common name, and the shortlist was deduping by
+     species key rather than by the words on the button. -->
+<style>
+	body { margin: 0; padding: 18px; background: #1b2026; color: #e8eef2;
+		font-family: "Segoe UI", system-ui, sans-serif; }
+	h1 { font-size: 13px; letter-spacing: .12em; text-transform: uppercase;
+		color: #93a3ae; margin: 0 0 14px; font-weight: 600; }
+	#report { font-family: monospace; font-size: 12.5px; white-space: pre-wrap;
+		line-height: 1.65; }
+	.ok { color: #6fd08c; }
+	.bad { color: #d9694f; }
+</style>
+</head>
+<body>
+<h1>Shortlist bench</h1>
+<div id="report">running...</div>
+
+<script>
+class TemplateElement extends HTMLElement {
+	connectedCallback() {}
+	disconnectedCallback() {}
+}
+window.TemplateElement = TemplateElement;
+window.checkAutoload = function () {};
+window.GetStoredData = function () { return null; };
+window.SetStoredData = function () {};
+</script>
+<script src="../PackageSources/Copys/fauna-hunt/Panel/html_ui/InGamePanels/FaunaHunt/FaunaHunt.js"></script>
+<script src="../PackageSources/Copys/fauna-hunt/Panel/html_ui/InGamePanels/FaunaHunt/FaunaSpeciesData.js"></script>
+<script>
+(function () {
+	var results = [];
+	function check(name, condition, detail) {
+		results.push({ name: name, pass: !!condition, detail: detail || "" });
+	}
+
+	function panel(table) {
+		var el = document.createElement("ingamepanel-fauna-hunt");
+		el.species = table;
+		return el;
+	}
+
+	// ---- 1. the exact case from the screenshot ----------------------------
+	// Two entries, different keys, same words. Deduping by key let both in.
+	var TWINS = {
+		GrizzlyBear:        { common: "Grizzly Bear",  region: "Nearctic", size: "large" },
+		UArctosHorribilis:  { common: "Grizzly Bear",  region: "Nearctic", size: "large" },
+		OCanadensis:        { common: "Bighorn Sheep", region: "Nearctic", size: "medium" },
+		OAmericanus:        { common: "Mountain Goat", region: "Nearctic", size: "medium" },
+		AAlces:             { common: "Moose",         region: "Nearctic", size: "large" },
+	};
+
+	var twinPanel = panel(TWINS);
+	var everDuplicated = false;
+	var everMissingAnswer = false;
+	var sizes = {};
+
+	// Shuffled, so one run proves nothing. Run it hard.
+	for (var i = 0; i < 400; i++) {
+		var options = twinPanel.buildShortlist({
+			species: "GrizzlyBear", common: "Grizzly Bear",
+			region: "Nearctic", size: "large",
+		});
+		var labels = options.map(function (o) { return o.label; });
+		var unique = labels.filter(function (v, idx) { return labels.indexOf(v) === idx; });
+		if (unique.length !== labels.length) everDuplicated = true;
+		if (labels.indexOf("Grizzly Bear") === -1) everMissingAnswer = true;
+		sizes[labels.length] = true;
+	}
+
+	check("no answer is ever offered twice", !everDuplicated,
+		"two buttons with the same words, one right and one wrong");
+	check("the correct answer is always present", !everMissingAnswer);
+	check("the other half of the pair never sneaks in as a decoy",
+		!everDuplicated);
+
+	// ---- 2. the real table, every species, every time ---------------------
+	var real = (typeof FAUNA_SPECIES_DATA !== "undefined" && FAUNA_SPECIES_DATA)
+		? (FAUNA_SPECIES_DATA.species || FAUNA_SPECIES_DATA) : null;
+	check("the real species table loaded", !!real);
+
+	if (real) {
+		var roots = Object.keys(real);
+		var realPanel = panel(real);
+		var dupes = 0, missing = 0, short = 0;
+		roots.forEach(function (root) {
+			var info = real[root];
+			for (var n = 0; n < 3; n++) {
+				var opts = realPanel.buildShortlist({
+					species: root, common: info.common,
+					region: info.region, size: info.size,
+				});
+				var ls = opts.map(function (o) { return o.label; });
+				var uq = ls.filter(function (v, i2) { return ls.indexOf(v) === i2; });
+				if (uq.length !== ls.length) dupes++;
+				if (ls.indexOf(info.common) === -1) missing++;
+				if (ls.length < 4) short++;
+			}
+		});
+		check("no duplicate label across all " + roots.length + " species",
+			dupes === 0, dupes + " question(s) had a repeated answer");
+		check("the right answer is always offered", missing === 0,
+			missing + " question(s) omitted it");
+		check("every question still offers four choices", short === 0,
+			short + " question(s) came up short");
+	}
+
+	var bad = results.filter(function (r) { return !r.pass; });
+	var lines = results.map(function (r) {
+		return (r.pass ? "  ok    " : "  FAIL  ") + r.name
+			+ (r.pass || !r.detail ? "" : "   -- " + r.detail);
+	});
+	lines.push("");
+	lines.push(bad.length ? "FAIL (" + bad.length + " of " + results.length + ")"
+		: "PASS - " + results.length + " checks");
+	var report = document.getElementById("report");
+	report.className = bad.length ? "bad" : "ok";
+	report.textContent = lines.join("\n");
+})();
+</script>
+</body>
+</html>

@@ -1053,9 +1053,19 @@ Whenever the correct answer is one of a pair and the decoy picker happens to
 draw the other, the player is shown the same words twice and has to guess
 between them. There is no way to be right on purpose.
 
-These read like the same animal entered twice under different keys rather than
-genuine subspecies -- `BBBubalis` / `BBubalis` in particular looks like a typo
-that became a second entry.
+**CORRECTION, same day, after looking at the titles.** These are NOT duplicate
+data-entry mistakes, which is what the line above originally guessed. Each root
+carries its own distinct set of simulator object titles:
+
+* `GrizzlyBear` has exactly one title, `GrizzlyBear`. `UArctosHorribilis` has
+  nine (`...Female`, `...Juvenile`, variations).
+* `BBBubalis` and `BBubalis` each have nine, with different prefixes.
+* `GCamelopardalisPeralta` and `GPeralta` likewise.
+
+So the simulator genuinely ships two differently-named object families for the
+same animal, and BOTH roots are needed or those objects stop being recognised
+at all. A merge must take the UNION of the title sets, not pick a winner and
+drop the loser.
 
 ## Two fixes, and they are not the same fix
 
@@ -1077,6 +1087,16 @@ merge test bench is the right place to prove it.
 Recommended order: ship 1 now, because it removes the impossible question
 immediately and risks nothing. Do 2 deliberately, with the migration, and check
 all three pairs at once.
+
+**1 shipped in 2.4.0.** `buildShortlist()` now dedupes on the common name and
+`dev/quiz_test.html` proves it across all 107 species, three draws each: no
+repeated answer, the right answer always present, always four choices.
+
+2 is still open, and it is bigger than it looked. Besides merging the entries it
+has to rewrite existing saves, because contact keys are `species@grid` -- the
+losing root is baked into every `logged`, `captured` and `attempts` key as well
+as into the lifelist. Worth doing properly in its own build rather than riding
+along with a release.
 
 ## Worth checking at the same time
 
