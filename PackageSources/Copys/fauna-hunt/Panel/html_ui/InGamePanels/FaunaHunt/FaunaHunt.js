@@ -1548,25 +1548,38 @@ class IngamePanelFaunaHunt extends TemplateElement {
 		const sameSize = pool.filter((root) => table[root].size === contact.size);
 
 		const decoys = [];
-		// Dedupe by the WORDS ON THE BUTTON, not by the species key.
+		// ONE ANIMAL PER QUESTION. Never two entries the player cannot tell
+		// apart by looking, which is the only thing they have to go on.
 		//
-		// Three pairs in the table share a common name -- Grizzly Bear, Water
-		// Buffalo and West African Giraffe are each two entries. Deduping by key
-		// let both halves of a pair into the same question, so the player was
-		// shown "Grizzly Bear" twice, one right and one wrong, with no way to
-		// pick the right one on purpose. Seen in flight on 13 September.
+		// The table holds 107 entries but only 61 animals: `group` says which
+		// are the same creature. Giraffe has eight entries, Brown Bear seven,
+		// Wildebeest five. Picking decoys without regard to that meant a
+		// question about a giraffe could offer four different giraffes -- and
+		// nobody separates a West African from an Angolan at 400 metres in a
+		// moving aircraft. That is a coin toss dressed up as a question, and it
+		// is what the flightsim.to reviewers meant by "the four choices are not
+		// obvious or matching the animal".
 		//
-		// The duplicated ENTRIES are a separate problem and still want merging;
-		// that needs a migration, because sightings are keyed to whichever root
-		// the player happened to log. See BACKLOG.md. This stops the impossible
-		// question either way.
-		const labelOf = (name) => String(name || "").trim().toLowerCase();
+		// Its worst form was two entries with the SAME name: Grizzly Bear
+		// offered twice, one right and one wrong, seen in flight on 13
+		// September. Grouping fixes that case too, and keeps fixing it if the
+		// names are ever made distinct.
+		//
+		// Collecting is untouched: the eight giraffes still count separately.
+		// This is only about what a single question may offer.
+		const keyOf = (root) => {
+			const info = table[root] || {};
+			// Fall back through group, then name, then the key itself, so a
+			// missing field can never quietly re-open the coin toss.
+			return String(info.group || info.common || root).trim().toLowerCase();
+		};
 		const taken = {};
-		taken[labelOf(contact.common)] = true;
+		taken[String((table[correct] && table[correct].group)
+			|| contact.group || contact.common || correct).trim().toLowerCase()] = true;
 		const take = (candidates) => {
 			shuffle(candidates).forEach((root) => {
 				if (decoys.length >= 3) return;
-				const key = labelOf(table[root] && table[root].common);
+				const key = keyOf(root);
 				if (!key || taken[key]) return;
 				taken[key] = true;
 				decoys.push(root);

@@ -52,11 +52,21 @@ window.SetStoredData = function () {};
 	// ---- 1. the exact case from the screenshot ----------------------------
 	// Two entries, different keys, same words. Deduping by key let both in.
 	var TWINS = {
-		GrizzlyBear:        { common: "Grizzly Bear",  region: "Nearctic", size: "large" },
-		UArctosHorribilis:  { common: "Grizzly Bear",  region: "Nearctic", size: "large" },
-		OCanadensis:        { common: "Bighorn Sheep", region: "Nearctic", size: "medium" },
-		OAmericanus:        { common: "Mountain Goat", region: "Nearctic", size: "medium" },
-		AAlces:             { common: "Moose",         region: "Nearctic", size: "large" },
+		GrizzlyBear:        { common: "Grizzly Bear",  group: "Brown Bear",
+		                      region: "Nearctic", size: "large" },
+		UArctosHorribilis:  { common: "Grizzly Bear",  group: "Brown Bear",
+		                      region: "Nearctic", size: "large" },
+		// Renamed on purpose: the old fix deduped on the words, so distinct
+		// names would have let both of these into one question even though a
+		// player cannot tell them apart. Grouping must still catch it.
+		UArctosMiddendorffi:{ common: "Kodiak Bear",   group: "Brown Bear",
+		                      region: "Nearctic", size: "large" },
+		OCanadensis:        { common: "Bighorn Sheep", group: "Bighorn Sheep",
+		                      region: "Nearctic", size: "medium" },
+		OAmericanus:        { common: "Mountain Goat", group: "Mountain Goat",
+		                      region: "Nearctic", size: "medium" },
+		AAlces:             { common: "Moose",         group: "Moose",
+		                      region: "Nearctic", size: "large" },
 	};
 
 	var twinPanel = panel(TWINS);
@@ -67,7 +77,7 @@ window.SetStoredData = function () {};
 	// Shuffled, so one run proves nothing. Run it hard.
 	for (var i = 0; i < 400; i++) {
 		var options = twinPanel.buildShortlist({
-			species: "GrizzlyBear", common: "Grizzly Bear",
+			species: "GrizzlyBear", common: "Grizzly Bear", group: "Brown Bear",
 			region: "Nearctic", size: "large",
 		});
 		var labels = options.map(function (o) { return o.label; });
@@ -80,8 +90,19 @@ window.SetStoredData = function () {};
 	check("no answer is ever offered twice", !everDuplicated,
 		"two buttons with the same words, one right and one wrong");
 	check("the correct answer is always present", !everMissingAnswer);
-	check("the other half of the pair never sneaks in as a decoy",
-		!everDuplicated);
+	// The one the label check could not catch: same animal, different name.
+	var everSameAnimal = false;
+	for (var j = 0; j < 400; j++) {
+		var opts2 = twinPanel.buildShortlist({
+			species: "GrizzlyBear", common: "Grizzly Bear", group: "Brown Bear",
+			region: "Nearctic", size: "large",
+		});
+		var groups = opts2.map(function (o) { return TWINS[o.root].group; });
+		var uq2 = groups.filter(function (v, i3) { return groups.indexOf(v) === i3; });
+		if (uq2.length !== groups.length) everSameAnimal = true;
+	}
+	check("a renamed subspecies of the answer is never offered", !everSameAnimal,
+		"Kodiak Bear alongside Grizzly Bear is still a coin toss");
 
 	// ---- 2. the real table, every species, every time ---------------------
 	var real = (typeof FAUNA_SPECIES_DATA !== "undefined" && FAUNA_SPECIES_DATA)
@@ -91,7 +112,7 @@ window.SetStoredData = function () {};
 	if (real) {
 		var roots = Object.keys(real);
 		var realPanel = panel(real);
-		var dupes = 0, missing = 0, short = 0;
+		var dupes = 0, missing = 0, short = 0, sameAnimal = 0;
 		roots.forEach(function (root) {
 			var info = real[root];
 			for (var n = 0; n < 3; n++) {
@@ -104,6 +125,9 @@ window.SetStoredData = function () {};
 				if (uq.length !== ls.length) dupes++;
 				if (ls.indexOf(info.common) === -1) missing++;
 				if (ls.length < 4) short++;
+				var gs = opts.map(function (o) { return real[o.root].group; });
+				var ug = gs.filter(function (v, i3) { return gs.indexOf(v) === i3; });
+				if (ug.length !== gs.length) sameAnimal++;
 			}
 		});
 		check("no duplicate label across all " + roots.length + " species",
@@ -112,6 +136,8 @@ window.SetStoredData = function () {};
 			missing + " question(s) omitted it");
 		check("every question still offers four choices", short === 0,
 			short + " question(s) came up short");
+		check("no question offers the same animal twice", sameAnimal === 0,
+			sameAnimal + " question(s) offered two of one group");
 	}
 
 	var bad = results.filter(function (r) { return !r.pass; });
